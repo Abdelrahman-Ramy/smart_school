@@ -5,9 +5,11 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/app_text_feild.dart';
-import 'package:smart_school/features/auth/views/forget_pass_view.dart';
 import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/widgets/custom_selected_type.dart';
+import 'package:smart_school/features/parent/views/parent_home_view.dart';
+import 'package:smart_school/features/student/views/student_home_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -18,7 +20,6 @@ class RegisterView extends StatefulWidget {
 
 class _RegisterViewState extends State<RegisterView> {
   final TextEditingController emailController = TextEditingController();
-
   final TextEditingController passwordController = TextEditingController();
 
   String selectedType = 'Student';
@@ -70,24 +71,24 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
                           Gap(20.h),
                           AppTextFormField(
-                              hintText: 'Password',
-                              controller: passwordController,
-                              textInputAction: TextInputAction.next,
-                              isObscureText: isObscureText,
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isObscureText = !isObscureText;
-                                  });
-                                },
-                                child: Icon(
-                                  color: AppColors.primaryColor,
-                                  isObscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
+                            hintText: 'Password',
+                            controller: passwordController,
+                            textInputAction: TextInputAction.next,
+                            isObscureText: isObscureText,
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isObscureText = !isObscureText;
+                                });
+                              },
+                              child: Icon(
+                                color: AppColors.primaryColor,
+                                isObscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                               ),
                             ),
+                          ),
                           Gap(20.h),
                           AppTextFormField(
                             hintText: 'Phone Number',
@@ -123,7 +124,30 @@ class _RegisterViewState extends State<RegisterView> {
                             isNav: false,
                             textStyle: AppStyle.font14WhiteBold,
                             backgroundColor: AppColors.primaryColor,
-                            onPressed: () {},
+                            onPressed: () {
+                              if (selectedType == "Parent") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const ParentHomeView(),
+                                  ),
+                                );
+                              } else if (selectedType == "Student") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const StudentHomeView(),
+                                  ),
+                                );
+                              } else if (selectedType == "Teacher") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const TeacherHomeView(),
+                                  ),
+                                );
+                              }
+                            },
                           ),
                           Gap(15.h),
                           AppTextButton(
@@ -137,7 +161,7 @@ class _RegisterViewState extends State<RegisterView> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LoginView(),
+                                  builder: (context) => const LoginView(),
                                 ),
                               );
                             },

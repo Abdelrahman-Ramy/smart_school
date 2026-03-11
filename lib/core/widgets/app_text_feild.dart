@@ -33,7 +33,8 @@ class AppTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       textInputAction: textInputAction,
-      style: const TextStyle(fontSize: 20, color: AppColors.primaryColor),
+      style: const TextStyle(
+      fontSize: 20, color: AppColors.primaryColor),
       controller: controller,
       cursorColor: Colors.blue,
       cursorWidth: 1.5,
@@ -47,11 +48,11 @@ class AppTextFormField extends StatelessWidget {
         null;
       },
       decoration: InputDecoration(
-        hintStyle: const TextStyle(fontSize: 16, color: AppColors.primaryColor),
+        hintStyle: hintStyle ?? const TextStyle(fontSize: 16, color: AppColors.primaryColor),
         hintText: hintText,
         suffixIcon: suffixIcon,
         isDense: true,
-        fillColor: Colors.white,
+        fillColor: backgroundColor ?? AppColors.whiteColor,
         filled: true,
         contentPadding:
             contentPadding ??
@@ -60,7 +61,7 @@ class AppTextFormField extends StatelessWidget {
             focusedBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(16.0),
-              borderSide: const BorderSide(color: Colors.blue, width: 1.3),
+              borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.3),
             ),
         enabledBorder:
             enabledBorder ??

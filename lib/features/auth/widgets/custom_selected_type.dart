@@ -10,15 +10,13 @@ class CustomSelectedType extends StatefulWidget {
     required this.selectedType,
     required this.onChanged,
     super.key,
-  }
-  );
+  });
 
   @override
   State<CustomSelectedType> createState() => _CustomSelectedTypeState();
 }
 
 class _CustomSelectedTypeState extends State<CustomSelectedType> {
-
   @override
   Widget build(BuildContext context) {
     final isSelected = widget.selectedType == widget.typeUser;
@@ -30,7 +28,7 @@ class _CustomSelectedTypeState extends State<CustomSelectedType> {
           activeColor: Colors.white,
           groupValue: widget.selectedType,
           onChanged: (value) {
-            setState(() => widget.onChanged(widget.typeUser));
+            widget.onChanged(value!);
           },
         ),
         Text(
