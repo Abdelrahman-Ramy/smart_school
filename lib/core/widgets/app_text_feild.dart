@@ -14,6 +14,7 @@ class AppTextFormField extends StatelessWidget {
   final Widget? suffixIcon;
   final Color? backgroundColor;
   final TextInputAction? textInputAction;
+  final TextInputType? keyboardType;
   const AppTextFormField({
     super.key,
     this.contentPadding,
@@ -27,12 +28,14 @@ class AppTextFormField extends StatelessWidget {
     this.hintStyle,
     this.backgroundColor,
     this.textInputAction,
+     this.keyboardType,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       textInputAction: textInputAction,
+      keyboardType: keyboardType,
       style: const TextStyle(
       fontSize: 20, color: AppColors.primaryColor),
       controller: controller,

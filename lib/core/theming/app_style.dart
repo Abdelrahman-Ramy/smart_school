@@ -27,6 +27,12 @@ class AppStyle {
     color: Colors.grey.shade500,
   );
 
+  static TextStyle font19BlackW500 = TextStyle(
+    fontSize: 19.sp,
+    fontWeight: FontWeight.w500,
+    color: Colors.black,
+  );
+
   static TextStyle font15GreyW500 = TextStyle(
     fontSize: 15.sp,
     fontWeight: FontWeight.w500,
@@ -51,6 +57,18 @@ class AppStyle {
     fontWeight: FontWeight.w500,
   );
 
+  static TextStyle font22BlackW500 = TextStyle(
+    color: Colors.black,
+    fontSize: 22.sp,
+    fontWeight: FontWeight.w500,
+  );
+
+  static TextStyle font25BlackBold = TextStyle(
+    color: Colors.black,
+    fontSize: 25.sp,
+    fontWeight: FontWeight.bold,
+  );
+
   static TextStyle font15GreyW400 = TextStyle(
     color: Colors.grey.shade600,
     fontSize: 15.sp,
@@ -73,5 +91,11 @@ class AppStyle {
     color: Colors.white,
     fontSize: 18.sp,
     fontWeight: FontWeight.w500,
+  );
+  static TextStyle font16Red = TextStyle(
+    color: Colors.red.shade700,
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    decoration: TextDecoration.underline,
   );
 }

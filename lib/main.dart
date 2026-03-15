@@ -18,7 +18,11 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashView(),
+        theme: ThemeData(
+          splashColor: Colors.transparent,
+          scaffoldBackgroundColor: Colors.white
+          ),
+        home: const SplashView(),
       ),
     );
   }

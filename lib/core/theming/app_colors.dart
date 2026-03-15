@@ -4,7 +4,7 @@ class AppColors {
   static const Color primaryColor = Color(0xff254e5a);
   static const Color beigeColor = Color(0xfffbfaf6);
   static const Color beigeLightColor = Color(0xfffffcf7);
-  static const Color beigeDarkColor = Color(0xffF8F6F3);
+  static const Color beigeDarkColor = Color(0xffF2E7D8);
   static const Color yellowColor = Color(0xffe99c4c);
   static const Color blackColor = Color(0xff000000);
   static const Color whiteColor = Color(0xffFFFFFF);

@@ -47,80 +47,87 @@ class _LoginViewState extends State<LoginView> {
                     Gap(50.h),
                     Container(
                       width: double.infinity,
-                      height: 365.h,
+                      height: 390.h,
                       decoration: BoxDecoration(
                         color: AppColors.glassyColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Gap(20.h),
-                            AppTextFormField(
-                              hintText: 'Email',
-                              controller: emailController,
-                              textInputAction: TextInputAction.next,
-                            ),
-                            Gap(20.h),
-                            AppTextFormField(
-                              hintText: 'Password',
-                              controller: passwordController,
-                              textInputAction: TextInputAction.done,
-                              isObscureText: isObscureText,
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isObscureText = !isObscureText;
-                                  });
-                                },
-                                child: Icon(
-                                  color: AppColors.primaryColor,
-                                  isObscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Gap(20.h),
+                              AppTextFormField(
+                                hintText: 'Email',
+                                controller: emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                              ),
+                              Gap(12.h),
+                              AppTextFormField(
+                                hintText: 'Password',
+                                controller: passwordController,
+                                textInputAction: TextInputAction.done,
+                                isObscureText: isObscureText,
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      isObscureText = !isObscureText;
+                                    });
+                                  },
+                                  child: Icon(
+                                    color: AppColors.primaryColor,
+                                    isObscureText
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Gap(15.h),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ForgetPassView(),
-                                  ),
-                                );
-                              },
-                              child: const Text('Forget Password?'),
-                            ),
-                            Gap(30.h),
-                            AppTextButton(
-                              buttonText: 'Login',
-                              isNav: false,
-                              textStyle: AppStyle.font14WhiteBold,
-                              backgroundColor: AppColors.primaryColor,
-                              onPressed: () {},
-                            ),
-                            Gap(15.h),
-                            AppTextButton(
-                              buttonText: 'Create Account ?',
-                              isNav: true,
-                              textStyle: AppStyle.font14WhiteBold.copyWith(
-                                color: AppColors.primaryColor,
+                              Gap(15.h),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ForgetPassView(),
+                                    ),
+                                  );
+                                },
+                                child: const Text('Forget Password?'),
                               ),
-                              backgroundColor: AppColors.whiteColor,
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => RegisterView(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
+                              Gap(30.h),
+                              AppTextButton(
+                                buttonText: 'Login',
+                                isNav: false,
+                                textStyle: AppStyle.font14WhiteBold,
+                                backgroundColor: AppColors.primaryColor,
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()){
+
+                                  }
+                                },
+                              ),
+                              Gap(12.h),
+                              AppTextButton(
+                                buttonText: 'Create Account ?',
+                                isNav: true,
+                                textStyle: AppStyle.font14WhiteBold.copyWith(
+                                  color: AppColors.primaryColor,
+                                ),
+                                backgroundColor: AppColors.whiteColor,
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const RegisterView(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
