@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
-import 'package:smart_school/features/student/views/assignments_view.dart';
-import 'package:smart_school/features/student/widgets/custom_stu_con.dart';
+import 'package:smart_school/features/student/widgets/custom_stu_card.dart';
 
 class StudentHomeView extends StatelessWidget {
   const StudentHomeView({super.key});
@@ -39,51 +37,42 @@ class StudentHomeView extends StatelessWidget {
                 ],
               ),
               Gap(30.h),
-              GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 18,
-                mainAxisSpacing: 18,
-                childAspectRatio: 1.3,
-                shrinkWrap: true,
-                children: [
-                  CustomStuCon(
-                    text: 'Assignments',
-                    icon: Icons.description_outlined,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AssignmentsView(),
-                        ),
-                      );
-                    },
-                  ),
-                  CustomStuCon(
-                    text: 'Quizzes',
-                    icon: Icons.access_time,
-                    onTap: () {},
-                  ),
-                  CustomStuCon(
-                    text: 'Grades',
-                    icon: Icons.list_alt,
-                    onTap: () {},
-                  ),
-                  CustomStuCon(
-                    text: 'Attendance',
-                    icon: Icons.people_outline,
-                    onTap: () {},
-                  ),
-                  CustomStuCon(
-                    text: 'Schedule',
-                    icon: Icons.calendar_today_outlined,
-                    onTap: () {},
-                  ),
-                  CustomStuCon(
-                    text: 'SmartBot',
-                    icon: Icons.smart_toy_outlined,
-                    onTap: () {},
-                  ),
-                ],
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 18.w,
+                  mainAxisSpacing: 18.h,
+                  childAspectRatio: 1.2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children:  [
+                    CustomStuCard(
+                      title: 'Assignments',
+                       imagePath: 'assets/images/assignments.jpg',
+                       onTap: (){ },
+                       ),
+                    CustomStuCard(
+                      title: 'Quizzes',
+                       imagePath: 'assets/images/quiz.jfif',
+                       onTap: (){ },
+                       ),
+                    CustomStuCard(
+                      title: 'Grades',
+                       imagePath: 'assets/images/grades.png',
+                       onTap: (){ },
+                       ),
+                    CustomStuCard(
+                      title: 'Attendance',
+                       imagePath: 'assets/images/attendance.png',
+                       onTap: (){ },
+                       ),
+                    CustomStuCard(
+                      title: 'Schedule',
+                       imagePath: 'assets/images/schedule.png',
+                       onTap: (){ },
+                       ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -93,11 +82,11 @@ class StudentHomeView extends StatelessWidget {
   }
 }
 
-final List<Map<String, dynamic>> menuItems = [
-  {'title': 'Assignments', 'icon': CupertinoIcons.doc_text_fill},
-  {'title': 'Quizzes', 'icon': CupertinoIcons.clock_fill},
-  {'title': 'Grades', 'icon': CupertinoIcons.list_bullet},
-  {'title': 'Attendance', 'icon': CupertinoIcons.group_solid},
-  {'title': 'Schedule', 'icon': CupertinoIcons.calendar_today},
-  {'title': 'SmartBot', 'icon': CupertinoIcons.ant_fill},
-];
+// final List<Map<String, dynamic>> menuItems = [
+//   {'title': 'Assignments', 'icon': CupertinoIcons.doc_text_fill},
+//   {'title': 'Quizzes', 'icon': CupertinoIcons.clock_fill},
+//   {'title': 'Grades', 'icon': CupertinoIcons.list_bullet},
+//   {'title': 'Attendance', 'icon': CupertinoIcons.group_solid},
+//   {'title': 'Schedule', 'icon': CupertinoIcons.calendar_today},
+//   {'title': 'SmartBot', 'icon': CupertinoIcons.ant_fill},
+// ];

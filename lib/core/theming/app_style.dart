@@ -45,6 +45,12 @@ class AppStyle {
     color: Colors.white,
   );
 
+    static TextStyle font14GreyW400 = TextStyle(
+    fontSize: 14.sp,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
   static TextStyle font24PrimaryBold = TextStyle(
     color: AppColors.primaryColor,
     fontSize: 24.sp,
