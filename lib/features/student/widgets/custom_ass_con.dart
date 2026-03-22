@@ -37,7 +37,7 @@ class CustomAssCon extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 16.h, left: 12.w, right: 12.w),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: AppColors.beigeDarkColor,
+        color: AppColors.glassyColor,
         borderRadius: BorderRadius.circular(30.r),
         boxShadow: [
           BoxShadow(

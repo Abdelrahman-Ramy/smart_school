@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:smart_school/core/helpers/extensions.dart';
+import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/features/student/widgets/custom_stu_card.dart';
@@ -22,9 +24,14 @@ class StudentHomeView extends StatelessWidget {
                 children: [
                   Image.asset(width: 260.w, 'assets/images/logo_name.png'),
                   Gap(60.w),
-                  const Icon(
-                    Icons.notifications_active,
-                    color: AppColors.primaryColor,
+                  GestureDetector(
+                    onTap: () {
+                      context.pushNamed(Routes.studentNotifications);
+                    },
+                    child: const Icon(
+                      Icons.notifications_active,
+                      color: AppColors.primaryColor,
+                    ),
                   ),
                 ],
               ),
@@ -45,32 +52,42 @@ class StudentHomeView extends StatelessWidget {
                   childAspectRatio: 1.2,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  children:  [
+                  children: [
                     CustomStuCard(
                       title: 'Assignments',
-                       imagePath: 'assets/images/assignments.jpg',
-                       onTap: (){ },
-                       ),
+                      imagePath: 'assets/images/assignments.jpg',
+                      onTap: () {
+                        context.pushNamed(Routes.studentAssignments);
+                      },
+                    ),
                     CustomStuCard(
                       title: 'Quizzes',
-                       imagePath: 'assets/images/quiz.jfif',
-                       onTap: (){ },
-                       ),
+                      imagePath: 'assets/images/quiz.jfif',
+                      onTap: () {
+                        context.pushNamed(Routes.studentQuizzes);
+                      },
+                    ),
                     CustomStuCard(
                       title: 'Grades',
-                       imagePath: 'assets/images/grades.png',
-                       onTap: (){ },
-                       ),
+                      imagePath: 'assets/images/grades.png',
+                      onTap: () {
+                        context.pushNamed(Routes.studentGrades);
+                      },
+                    ),
                     CustomStuCard(
                       title: 'Attendance',
-                       imagePath: 'assets/images/attendance.png',
-                       onTap: (){ },
-                       ),
+                      imagePath: 'assets/images/attendance.jfif',
+                      onTap: () {
+                        context.pushNamed(Routes.studentAttendance);
+                      },
+                    ),
                     CustomStuCard(
                       title: 'Schedule',
-                       imagePath: 'assets/images/schedule.png',
-                       onTap: (){ },
-                       ),
+                      imagePath: 'assets/images/schedule.png',
+                      onTap: () {
+                        context.pushNamed(Routes.studentSchedule);
+                      },
+                    ),
                   ],
                 ),
               ),

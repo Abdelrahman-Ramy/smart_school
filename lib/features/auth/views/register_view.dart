@@ -8,7 +8,6 @@ import 'package:smart_school/core/widgets/app_text_feild.dart';
 import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/widgets/custom_selected_type.dart';
 import 'package:smart_school/features/parent/views/parent_home_view.dart';
-import 'package:smart_school/features/student/views/student_home_view.dart';
 import 'package:smart_school/features/student/views/student_root.dart';
 import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 
@@ -24,6 +23,7 @@ class _RegisterViewState extends State<RegisterView> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController idController = TextEditingController();
 
   String selectedType = 'Student';
   bool isObscureText = true;
@@ -43,17 +43,16 @@ class _RegisterViewState extends State<RegisterView> {
                 key: formKey,
                 child: Column(
                   children: [
-                    Gap(25.h),
                     Center(
                       child: Image.asset(
-                        width: 350.w,
+                        width: 310.w,
                         'assets/images/logo_splash.png',
                       ),
                     ),
-                    Gap(30.h),
+                    Gap(20.h),
                     Container(
                       width: double.infinity,
-                      height: 560.h,
+                      height: 590.h,
                       decoration: BoxDecoration(
                         color: AppColors.glassyColor,
                         borderRadius: BorderRadius.circular(20),
@@ -64,21 +63,21 @@ class _RegisterViewState extends State<RegisterView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Gap(20.h),
+                              Gap(15.h),
                               AppTextFormField(
-                                hintText: 'Name',
+                                hintText: 'Your Name',
                                 controller: nameController,
                                 keyboardType: TextInputType.name,
                                 textInputAction: TextInputAction.next,
                               ),
-                              Gap(12.h),
+                              Gap(10.h),
                               AppTextFormField(
-                                hintText: 'Email',
+                                hintText: 'Email Address',
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                               ),
-                              Gap(12.h),
+                              Gap(10.h),
                               AppTextFormField(
                                 hintText: 'Password',
                                 controller: passwordController,
@@ -98,11 +97,38 @@ class _RegisterViewState extends State<RegisterView> {
                                   ),
                                 ),
                               ),
-                              Gap(12.h),
+                              Gap(10.h),
+                              if (selectedType == 'Student')
+                                AppTextFormField(
+                                  hintText: 'Student ID',
+                                  controller: idController,
+                                  keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.next,
+                                )
+                              else
+                                AppTextFormField(
+                                  hintText: 'Enter Phone Number',
+                                  controller: phoneController,
+                                  isPhone: true,
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(),
+                                  textInputAction: TextInputAction.next,
+                                ),
+                              Gap(10.h),
+                              if (selectedType == 'Student')
+                                AppTextFormField(
+                                  hintText: "One of your parents phone",
+                                  controller: phoneController,
+                                  isPhone: true,
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(),
+                                  textInputAction: TextInputAction.next,
+                                ),
+                                Gap(10.h),
                               AppTextFormField(
-                                hintText: 'Phone Number',
-                                controller: phoneController,
-                                keyboardType: const TextInputType.numberWithOptions(),
+                                hintText: 'Your Address',
+                                controller: idController,
+                                keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.done,
                               ),
                               Gap(5.h),
@@ -140,7 +166,8 @@ class _RegisterViewState extends State<RegisterView> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => const ParentHomeView(),
+                                          builder: (_) =>
+                                              const ParentHomeView(),
                                         ),
                                       );
                                     } else if (selectedType == "Student") {
@@ -154,14 +181,15 @@ class _RegisterViewState extends State<RegisterView> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => const TeacherHomeView(),
+                                          builder: (_) =>
+                                              const TeacherHomeView(),
                                         ),
                                       );
                                     }
                                   }
                                 },
                               ),
-                              Gap(12.h),
+                              Gap(10.h),
                               AppTextButton(
                                 buttonText: 'Go To Login',
                                 isNav: true,

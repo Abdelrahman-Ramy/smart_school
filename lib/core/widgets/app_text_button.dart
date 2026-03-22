@@ -24,7 +24,7 @@ class AppTextButton extends StatelessWidget {
     required this.buttonText,
     required this.textStyle,
     required this.onPressed,
-     this.isNav,
+    this.isNav,
   });
 
   @override
@@ -43,23 +43,24 @@ class AppTextButton extends StatelessWidget {
         ),
         fixedSize: Size(
           buttonWidth?.w ?? double.maxFinite,
-          buttonHeight ?? 58.h,
+          buttonHeight ?? 55.h,
         ),
       ),
 
-      child: isNav == true ? Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(buttonText, style: textStyle),
-          Icon(
-            Icons.arrow_forward_outlined,
-            color: AppColors.primaryColor,
-            size: 20.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ],
-      ):
-          Text(buttonText, style: textStyle),
+      child: isNav == true
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(buttonText, style: textStyle),
+                Icon(
+                  Icons.arrow_forward_outlined,
+                  color: AppColors.primaryColor,
+                  size: 20.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ],
+            )
+          : Text(buttonText, style: textStyle),
     );
   }
 }

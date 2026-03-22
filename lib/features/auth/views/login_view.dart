@@ -1,6 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:smart_school/core/helpers/extensions.dart';
+import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
@@ -60,7 +63,7 @@ class _LoginViewState extends State<LoginView> {
                             children: [
                               Gap(20.h),
                               AppTextFormField(
-                                hintText: 'Email',
+                                hintText: 'Email Address',
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
@@ -95,7 +98,14 @@ class _LoginViewState extends State<LoginView> {
                                     ),
                                   );
                                 },
-                                child: const Text('Forget Password?'),
+                                child: Text(
+                                  'Forget Password?',
+                                  style: AppStyle.font15GreyW400.copyWith(
+                                    color: AppColors.primaryColor,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                               Gap(30.h),
                               AppTextButton(
@@ -104,27 +114,35 @@ class _LoginViewState extends State<LoginView> {
                                 textStyle: AppStyle.font14WhiteBold,
                                 backgroundColor: AppColors.primaryColor,
                                 onPressed: () {
-                                  if (formKey.currentState!.validate()){
-
-                                  }
+                                  if (formKey.currentState!.validate()) {}
                                 },
                               ),
-                              Gap(12.h),
-                              AppTextButton(
-                                buttonText: 'Create Account ?',
-                                isNav: true,
-                                textStyle: AppStyle.font14WhiteBold.copyWith(
-                                  color: AppColors.primaryColor,
+                              Gap(60.h),
+                              Center(
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: "Haven't any account? ",
+                                        style: AppStyle.font15GreyW400.copyWith(
+                                          fontSize: 13.sp,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: 'Create account.',
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            context.pushNamed(Routes.register);
+                                          },
+                                        style: AppStyle.font15GreyW400.copyWith(
+                                          color: AppColors.primaryColor,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                backgroundColor: AppColors.whiteColor,
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const RegisterView(),
-                                    ),
-                                  );
-                                },
                               ),
                             ],
                           ),
