@@ -37,7 +37,7 @@ class CustomAssCon extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 16.h, left: 12.w, right: 12.w),
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: AppColors.glassyColor,
+        color: AppColors.beigeDarkColor,
         borderRadius: BorderRadius.circular(30.r),
         boxShadow: [
           BoxShadow(
@@ -59,7 +59,7 @@ class CustomAssCon extends StatelessWidget {
                 priority,
                 style: AppStyle.font20BlackW500.copyWith(
                   fontWeight: FontWeight.bold,
-                  fontSize: 19.sp
+                  fontSize: 19.sp,
                 ),
               ),
             ],

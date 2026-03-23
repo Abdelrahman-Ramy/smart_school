@@ -5,7 +5,11 @@ import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/views/register_view.dart';
 import 'package:smart_school/features/auth/views/reset_pass_view.dart';
 import 'package:smart_school/features/auth/views/verification_view.dart';
+import 'package:smart_school/features/parent/views/parent_chat_view.dart';
 import 'package:smart_school/features/parent/views/parent_home_view.dart';
+import 'package:smart_school/features/parent/views/parent_notifications_view.dart';
+import 'package:smart_school/features/parent/views/parent_profile_view.dart';
+import 'package:smart_school/features/parent/views/parent_root.dart';
 import 'package:smart_school/features/student/views/assignments_view.dart';
 import 'package:smart_school/features/student/views/attendance_view.dart';
 import 'package:smart_school/features/student/views/grades_view.dart';
@@ -14,9 +18,13 @@ import 'package:smart_school/features/student/views/schedule_view.dart';
 import 'package:smart_school/features/student/views/student_chat_bot_view.dart';
 import 'package:smart_school/features/student/views/student_home_view.dart';
 import 'package:smart_school/features/student/views/student_notifications_view.dart';
-import 'package:smart_school/features/student/views/student_profile_view.dart';
+import 'package:smart_school/features/student/views/student_settings_view.dart';
 import 'package:smart_school/features/student/views/student_root.dart';
+import 'package:smart_school/features/student/views/student_profile_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_profile_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_root.dart';
 import 'package:smart_school/shared/splash_view.dart';
 
 class AppRouter {
@@ -33,9 +41,7 @@ class AppRouter {
       case Routes.resetPass:
         return MaterialPageRoute(builder: (context) => ResetPassView());
       case Routes.verification:
-        return MaterialPageRoute(
-          builder: (context) => VerificationView(),
-        );
+        return MaterialPageRoute(builder: (context) => VerificationView());
       case Routes.parentHome:
         return MaterialPageRoute(builder: (context) => const ParentHomeView());
       case Routes.studentHome:
@@ -66,10 +72,40 @@ class AppRouter {
         );
       case Routes.studentRoot:
         return MaterialPageRoute(builder: (context) => const StudentRoot());
+      case Routes.parentNotifications:
+        return MaterialPageRoute(
+          builder: (context) => const ParentNotificationsView(),
+        );
+      case Routes.parentRoot:
+        return MaterialPageRoute(builder: (context) => const ParentRoot());
+      case Routes.parentProfile:
+        return MaterialPageRoute(
+          builder: (context) => const ParentProfileView(),
+        );
+      case Routes.parentChat:
+        return MaterialPageRoute(builder: (context) => const ParentChatView());
+      case Routes.teacherRoot:
+        return MaterialPageRoute(builder: (context) => const TeacherRoot());
+      case Routes.teacherProfile:
+        return MaterialPageRoute(
+          builder: (context) => const TeacherProfileView(),
+        );
+      case Routes.teacherChat:
+        return MaterialPageRoute(builder: (context) => const ParentChatView());
+      case Routes.teacherNotifications:
+        return MaterialPageRoute(
+          builder: (context) => const TeacherNotificationsView(),
+        );
+      case Routes.studentSettings:
+        return MaterialPageRoute(
+          builder: (context) => const StudentSettingsView(),
+        );
       default:
         return MaterialPageRoute(
           builder: (context) => Scaffold(
-            body: Center(child: Text('No Route Found ${settings.name}')),
+            body: Center(
+              child: Center(child: Text('No Route Found ${settings.name}')),
+            ),
           ),
         );
     }

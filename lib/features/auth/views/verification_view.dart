@@ -5,7 +5,6 @@ import 'package:pinput/pinput.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
-import 'package:smart_school/core/widgets/app_text_feild.dart';
 import 'package:smart_school/features/auth/views/reset_pass_view.dart';
 
 class VerificationView extends StatelessWidget {

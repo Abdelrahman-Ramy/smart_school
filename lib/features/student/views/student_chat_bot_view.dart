@@ -13,8 +13,8 @@ class StudentChatBotView extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
+          leading: const Icon(Icons.arrow_back, color: Colors.transparent,),
           backgroundColor: AppColors.whiteColor,
           scrolledUnderElevation: 0,
           elevation: 0,

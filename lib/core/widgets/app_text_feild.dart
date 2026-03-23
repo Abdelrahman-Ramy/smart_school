@@ -99,7 +99,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
         if (value == null || value.isEmpty) {
           return 'please fill ${widget.hintText}';
         }
-        null;
+        return null;
       },
       decoration: InputDecoration(
         hintStyle:

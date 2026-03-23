@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:smart_school/core/helpers/extensions.dart';
+import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
@@ -24,6 +26,7 @@ class _RegisterViewState extends State<RegisterView> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController idController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
 
   String selectedType = 'Student';
   bool isObscureText = true;
@@ -127,8 +130,8 @@ class _RegisterViewState extends State<RegisterView> {
                                 Gap(10.h),
                               AppTextFormField(
                                 hintText: 'Your Address',
-                                controller: idController,
-                                keyboardType: TextInputType.number,
+                                controller: addressController,
+                                keyboardType: TextInputType.text,
                                 textInputAction: TextInputAction.done,
                               ),
                               Gap(5.h),
@@ -163,28 +166,11 @@ class _RegisterViewState extends State<RegisterView> {
                                 onPressed: () {
                                   if (formKey.currentState!.validate()) {
                                     if (selectedType == "Parent") {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const ParentHomeView(),
-                                        ),
-                                      );
+                                      context.pushNamed(Routes.parentRoot);
                                     } else if (selectedType == "Student") {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const StudentRoot(),
-                                        ),
-                                      );
+                                      context.pushNamed(Routes.studentRoot);
                                     } else if (selectedType == "Teacher") {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const TeacherHomeView(),
-                                        ),
-                                      );
+                                      context.pushNamed(Routes.teacherRoot);
                                     }
                                   }
                                 },

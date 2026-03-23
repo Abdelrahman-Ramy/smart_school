@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
-import 'package:smart_school/features/student/views/student_chat_bot_view.dart';
-import 'package:smart_school/features/student/views/student_home_view.dart';
-import 'package:smart_school/features/student/views/student_notifications_view.dart';
-import 'package:smart_school/features/student/views/student_settings_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_chat_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_profile_view.dart';
 
-class StudentRoot extends StatefulWidget {
-  const StudentRoot({super.key});
+class TeacherRoot extends StatefulWidget {
+  const TeacherRoot({super.key});
 
   @override
-  State<StudentRoot> createState() => _StudentRootState();
+  State<TeacherRoot> createState() => _TeacherRootState();
 }
 
-class _StudentRootState extends State<StudentRoot> {
+class _TeacherRootState extends State<TeacherRoot> {
   late final PageController controller;
 
   late final List<Widget> screens;
@@ -21,10 +21,10 @@ class _StudentRootState extends State<StudentRoot> {
   @override
   void initState() {
     screens = [
-      const StudentHomeView(),
-      const StudentChatBotView(),
-      const StudentNotificationsView(),
-      const StudentSettingsView(),
+      const TeacherHomeView(),
+      const TeacherChatView(),
+      const TeacherNotificationsView(),
+      const TeacherProfileView(),
     ];
     controller = PageController(initialPage: currentScreen);
     super.initState();
@@ -63,8 +63,8 @@ class _StudentRootState extends State<StudentRoot> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.smart_toy),
-                label: 'Chat Bot',
+                icon: Icon(CupertinoIcons.chat_bubble),
+                label: 'Chat',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.notifications),

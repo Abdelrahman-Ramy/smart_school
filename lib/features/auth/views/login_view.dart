@@ -9,7 +9,6 @@ import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/app_text_feild.dart';
 import 'package:smart_school/features/auth/views/forget_pass_view.dart';
-import 'package:smart_school/features/auth/views/register_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});

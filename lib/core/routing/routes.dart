@@ -16,6 +16,15 @@ class Routes {
   static const String studentSchedule = '/student_schedule';
   static const String studentChatBot = '/student_chat_bot';
   static const String studentNotifications = '/student_notifications';
+  static const String parentNotifications = '/parent_notifications';
+  static const String teacherNotifications = '/teacher_notifications';
+  static const String teacherChat = '/teacher_chat';
+  static const String parentChat = '/parent_chat';
   static const String studentProfile = '/student_profile';
+  static const String studentSettings = '/student_settings';
+  static const String parentProfile = '/parent_profile';
+  static const String teacherProfile = '/teacher_profile';
   static const String studentRoot = '/student_root';
+  static const String parentRoot = '/parent_root';
+  static const String teacherRoot = '/teacher_root';
 }

@@ -24,6 +24,7 @@ class _StudentNotificationsViewState extends State<StudentNotificationsView> {
         scrolledUnderElevation: 0,
         elevation: 0,
         centerTitle: true,
+        leading: const Icon(Icons.arrow_back, color: Colors.transparent,),
         title: Text('Notifications', style: AppStyle.font22BlackW500),
       ),
       body: Column(

@@ -6,7 +6,7 @@ class AppStyle {
   static TextStyle font13White500 = TextStyle(
     fontSize: 13.sp,
     fontWeight: FontWeight.w500,
-    color: Colors.white,
+    color: AppColors.whiteColor,
   );
 
   static TextStyle font11Primary500 = TextStyle(
@@ -18,7 +18,7 @@ class AppStyle {
   static TextStyle font16BlackBold = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.bold,
-    color: Colors.black,
+    color: AppColors.blackColor,
   );
 
   static TextStyle font18GreyW500 = TextStyle(
@@ -30,7 +30,7 @@ class AppStyle {
   static TextStyle font19BlackW500 = TextStyle(
     fontSize: 19.sp,
     fontWeight: FontWeight.w500,
-    color: Colors.black,
+    color: AppColors.blackColor,
   );
 
   static TextStyle font15GreyW500 = TextStyle(
@@ -42,13 +42,13 @@ class AppStyle {
   static TextStyle font14WhiteBold = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.bold,
-    color: Colors.white,
+    color: AppColors.whiteColor,
   );
 
     static TextStyle font14GreyW400 = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.bold,
-    color: Colors.white,
+    color: AppColors.greyColor,
   );
 
   static TextStyle font24PrimaryBold = TextStyle(
@@ -58,19 +58,19 @@ class AppStyle {
   );
 
   static TextStyle font20BlackW500 = TextStyle(
-    color: Colors.black,
+    color: AppColors.blackColor,
     fontSize: 20.sp,
     fontWeight: FontWeight.w500,
   );
 
   static TextStyle font22BlackW500 = TextStyle(
-    color: Colors.black,
+    color: AppColors.blackColor,
     fontSize: 22.sp,
     fontWeight: FontWeight.w500,
   );
 
   static TextStyle font25BlackBold = TextStyle(
-    color: Colors.black,
+    color: AppColors.blackColor,
     fontSize: 25.sp,
     fontWeight: FontWeight.bold,
   );
@@ -82,19 +82,19 @@ class AppStyle {
   );
 
   static TextStyle font15BlackBold = TextStyle(
-    color: Colors.black,
+    color: AppColors.blackColor,
     fontSize: 15.sp,
     fontWeight: FontWeight.bold,
   );
 
   static TextStyle font13BlackBold = TextStyle(
-    color: Colors.black,
+    color: AppColors.blackColor,
     fontSize: 13.sp,
     fontWeight: FontWeight.bold,
   );
 
   static TextStyle font18WhiteW500 = TextStyle(
-    color: Colors.white,
+    color: AppColors.whiteColor,
     fontSize: 18.sp,
     fontWeight: FontWeight.w500,
   );

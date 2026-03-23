@@ -6,7 +6,6 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/app_text_feild.dart';
-import 'package:smart_school/features/auth/views/verification_view.dart';
 
 class ResetPassView extends StatefulWidget {
   ResetPassView({super.key});
@@ -58,7 +57,9 @@ class _ResetPassViewState extends State<ResetPassView> {
               Gap(40.h),
               Text(
                 ' Enter New Password',
-                style: AppStyle.font14WhiteBold.copyWith(color: AppColors.blackColor)
+                style: AppStyle.font14WhiteBold.copyWith(
+                  color: AppColors.blackColor,
+                ),
               ),
               Gap(8.h),
               AppTextFormField(
@@ -82,9 +83,11 @@ class _ResetPassViewState extends State<ResetPassView> {
                 ),
               ),
               Gap(20.h),
-               Text(
+              Text(
                 ' Enter Confirm Password',
-                style: AppStyle.font14WhiteBold.copyWith(color: AppColors.blackColor)
+                style: AppStyle.font14WhiteBold.copyWith(
+                  color: AppColors.blackColor,
+                ),
               ),
               Gap(8.h),
               AppTextFormField(
@@ -112,7 +115,7 @@ class _ResetPassViewState extends State<ResetPassView> {
                 buttonText: 'Done',
                 textStyle: AppStyle.font14WhiteBold,
                 backgroundColor: AppColors.primaryColor,
-                onPressed: () { },
+                onPressed: () {},
               ),
             ],
           ),
