@@ -39,7 +39,7 @@ class StudentHomeView extends StatelessWidget {
               Text('  Good Morning,', style: AppStyle.font25BlackBold),
               Row(
                 children: [
-                  Text('  Ali ', style: AppStyle.font25BlackBold),
+                  Text('  Abdo ', style: AppStyle.font25BlackBold),
                   const Icon(Icons.sunny, color: AppColors.yellowColor),
                 ],
               ),

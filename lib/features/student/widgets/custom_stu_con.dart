@@ -23,9 +23,10 @@ class CustomStuCon extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 5.w),
-          child: Row(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: AppColors.primaryColor, size: 35.sp),
+              Icon(icon, color: AppColors.primaryColor, size: 38.sp),
               Gap(10.w),
               Text(text, style: AppStyle.font19BlackW500),
             ],

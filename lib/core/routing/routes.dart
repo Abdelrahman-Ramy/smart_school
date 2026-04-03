@@ -27,4 +27,9 @@ class Routes {
   static const String studentRoot = '/student_root';
   static const String parentRoot = '/parent_root';
   static const String teacherRoot = '/teacher_root';
+  static const String teacherViewClasses = '/teacher_view_classes';
+  static const String teacherUploadAttendance = '/teacher_upload_attendance';
+  static const String teacherUploadGrades = '/teacher_upload_grades';
+  static const String teacherUploadTasks = '/teacher_upload_tasks';
+  static const String teacherUploadMaterials = '/teacher_upload_materials';
 }

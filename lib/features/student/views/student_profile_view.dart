@@ -30,7 +30,7 @@ class StudentProfileView extends StatelessWidget {
               buildStaticField(
                 Icons.person_outline,
                 'Name',
-                'Omar Ahmed Mohamed',
+                'Abdelrahman Ramy',
               ),
               buildStaticField(Icons.grade, 'Grade', '5B'),
               buildStaticField(Icons.badge_outlined, 'ID', '42022101'),
@@ -42,13 +42,13 @@ class StudentProfileView extends StatelessWidget {
               buildStaticField(
                 Icons.email,
                 'Gmail',
-                'omar_ahmed_x14@gmail.com',
+                'abdo_ramy@gmail.com',
               ),
               buildStaticField(Icons.group_outlined, 'Gender', 'Male'),
               buildStaticField(
                 Icons.calendar_month_outlined,
                 'Date of birth',
-                '14 September, 2015',
+                '14 September, 2000',
               ),
               buildStaticField(
                 Icons.location_on_outlined,

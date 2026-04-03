@@ -42,6 +42,7 @@ dependencies:
   pinput: ^6.0.2
   country_picker: ^2.0.27
   mask_text_input_formatter: ^2.5.0
+  file_picker: ^8.0.0
 
 dev_dependencies:
   flutter_test:

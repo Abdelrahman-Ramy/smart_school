@@ -55,7 +55,7 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Omar Ahmed',
+                        'Abdelrahman',
                         style: AppStyle.font20BlackW500.copyWith(
                           color: AppColors.whiteColor,
                         ),
@@ -130,7 +130,9 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
               textStyle: AppStyle.font22BlackW500.copyWith(
                 color: AppColors.whiteColor,
               ),
-              onPressed: () {},
+              onPressed: () {
+                context.pushNamed(Routes.loginScreen);
+              },
             ),
           ],
         ),

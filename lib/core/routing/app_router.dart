@@ -25,6 +25,11 @@ import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_profile_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_root.dart';
+import 'package:smart_school/features/teacher/views/upload_attendance_view.dart';
+import 'package:smart_school/features/teacher/views/upload_grades_view.dart';
+import 'package:smart_school/features/teacher/views/upload_materials_view.dart';
+import 'package:smart_school/features/teacher/views/upload_tasks_view.dart';
+import 'package:smart_school/features/teacher/views/view_classes_view.dart';
 import 'package:smart_school/shared/splash_view.dart';
 
 class AppRouter {
@@ -99,6 +104,26 @@ class AppRouter {
       case Routes.studentSettings:
         return MaterialPageRoute(
           builder: (context) => const StudentSettingsView(),
+        );
+      case Routes.teacherViewClasses:
+        return MaterialPageRoute(
+          builder: (context) => const ViewClassesView(),
+        );
+      case Routes.teacherUploadAttendance:
+        return MaterialPageRoute(
+          builder: (context) => const UploadAttendanceView(),
+        );
+      case Routes.teacherUploadGrades:
+        return MaterialPageRoute(
+          builder: (context) => const UploadGradesView(),
+        );
+      case Routes.teacherUploadTasks:
+        return MaterialPageRoute(
+          builder: (context) => const UploadTasksView(),
+        );
+      case Routes.teacherUploadMaterials:
+        return MaterialPageRoute(
+          builder: (context) => const UploadMaterialsView(),
         );
       default:
         return MaterialPageRoute(

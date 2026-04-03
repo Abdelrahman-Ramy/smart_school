@@ -73,7 +73,7 @@ class VerificationView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'If you didn’t receive a code,',
+                    "If you didn't receive a code,",
                     style: AppStyle.font13White500.copyWith(
                       color: AppColors.greyColor,
                     ),

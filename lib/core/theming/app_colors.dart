@@ -21,6 +21,7 @@ class AppColors {
   static const Color greyColor = Color(0xff8C8D87);
   static const Color greyDarkColor = Color(0xff7D7D7D);
   static const Color greyLightColor = Color(0xffA9A6A6);
+  static const Color greyVeryLightColor = Color(0xFFE5E5E5);
   static const Color glassyColor = Color(0xffc7d0d0);
   static const Color glassyLightColor = Color.fromARGB(136, 255, 253, 253);
   static const Color blueMoreLightColor = Color(0xffc7d0d0);
