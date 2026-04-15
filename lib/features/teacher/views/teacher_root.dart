@@ -5,6 +5,7 @@ import 'package:smart_school/features/teacher/views/teacher_chat_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_profile_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_settings_view.dart';
 
 class TeacherRoot extends StatefulWidget {
   const TeacherRoot({super.key});
@@ -24,7 +25,7 @@ class _TeacherRootState extends State<TeacherRoot> {
       const TeacherHomeView(),
       const TeacherChatView(),
       const TeacherNotificationsView(),
-      const TeacherProfileView(),
+      const TeacherSettingsView(),
     ];
     controller = PageController(initialPage: currentScreen);
     super.initState();
@@ -71,8 +72,8 @@ class _TeacherRootState extends State<TeacherRoot> {
                 label: 'Notifications',
               ),
               BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.person_circle),
-                label: 'Profile',
+                icon: Icon(Icons.settings),
+                label: 'Settings',
               ),
             ],
           ),

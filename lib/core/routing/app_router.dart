@@ -25,6 +25,7 @@ import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_profile_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_root.dart';
+import 'package:smart_school/features/teacher/views/teacher_settings_view.dart';
 import 'package:smart_school/features/teacher/views/upload_attendance_view.dart';
 import 'package:smart_school/features/teacher/views/upload_grades_view.dart';
 import 'package:smart_school/features/teacher/views/upload_materials_view.dart';
@@ -104,6 +105,10 @@ class AppRouter {
       case Routes.studentSettings:
         return MaterialPageRoute(
           builder: (context) => const StudentSettingsView(),
+        );
+      case Routes.teacherSettings:
+        return MaterialPageRoute(
+          builder: (context) => const TeacherSettingsView(),
         );
       case Routes.teacherViewClasses:
         return MaterialPageRoute(

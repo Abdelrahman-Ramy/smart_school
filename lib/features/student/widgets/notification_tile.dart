@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -11,6 +12,7 @@ class NotificationTile extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final bool isRead;
+  final bool isClick;
   final VoidCallback? onTap;
 
   const NotificationTile({
@@ -21,6 +23,7 @@ class NotificationTile extends StatelessWidget {
     required this.icon,
     required this.iconColor,
     this.isRead = true,
+    this.isClick = false,
     this.onTap,
   });
 
@@ -65,12 +68,35 @@ class NotificationTile extends StatelessWidget {
                   ],
                 ),
                 Gap(5.h),
-                Text(
-                  subtitle,
-                  style: AppStyle.font14GreyW400.copyWith(color: Colors.black87),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                isClick == false
+                    ? Text(
+                        subtitle,
+                        style: AppStyle.font14GreyW400.copyWith(
+                          color: Colors.black87,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: subtitle,
+                              style: AppStyle.font14GreyW400.copyWith(
+                                color: Colors.black87,
+                              ),
+                            ),
+                            TextSpan(
+                              text: "click to view.",
+                              style: const TextStyle(
+                                color: AppColors.blueColor,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()..onTap = () {},
+                            ),
+                          ],
+                        ),
+                      ),
               ],
             ),
           ),

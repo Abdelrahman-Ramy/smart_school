@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_school/core/routing/app_router.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
-import 'package:smart_school/features/auth/views/login_view.dart';
+import 'package:smart_school/features/parent/views/parent_root.dart';
+import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_root.dart';
 import 'package:smart_school/shared/splash_view.dart';
 
 void main() {
@@ -22,12 +24,12 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           bottomSheetTheme: const BottomSheetThemeData(
-            backgroundColor: AppColors.whiteColor
+            backgroundColor: AppColors.whiteColor,
           ),
           splashColor: Colors.transparent,
-          scaffoldBackgroundColor: Colors.white,
+          scaffoldBackgroundColor: AppColors.whiteColor,
         ),
-        home: const SplashView(),
+        home: const ParentRoot(),
         onGenerateRoute: AppRouter().generateRoute,
       ),
     );

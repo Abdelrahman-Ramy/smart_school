@@ -71,8 +71,8 @@ class _StudentRootState extends State<StudentRoot> {
                 label: 'Notifications',
               ),
               BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.person_circle),
-                label: 'Profile',
+                icon: Icon(Icons.settings),
+                label: 'Settings',
               ),
             ],
           ),

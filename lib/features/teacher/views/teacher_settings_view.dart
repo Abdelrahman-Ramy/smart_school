@@ -9,14 +9,14 @@ import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/settings_item.dart';
 
-class StudentSettingsView extends StatefulWidget {
-  const StudentSettingsView({super.key});
+class TeacherSettingsView extends StatefulWidget {
+  const TeacherSettingsView({super.key});
 
   @override
-  State<StudentSettingsView> createState() => _StudentSettingsViewState();
+  State<TeacherSettingsView> createState() => _TeacherSettingsViewState();
 }
 
-class _StudentSettingsViewState extends State<StudentSettingsView> {
+class _TeacherSettingsViewState extends State<TeacherSettingsView> {
   bool isNotificationsEnabled = true;
 
   @override
@@ -56,14 +56,14 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Abdelrahman',
+                        'Mr.Mohamed',
                         style: AppStyle.font20BlackW500.copyWith(
                           color: AppColors.whiteColor,
                         ),
                       ),
                       Gap(5.h),
                       Text(
-                        'ID: 42022101',
+                        'mohamed_x14@example.com',
                         style: AppStyle.font13White500.copyWith(
                           fontSize: 12.sp,
                         ),
@@ -96,7 +96,7 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
               icon: CupertinoIcons.person,
               title: 'Account',
               subtitle: 'Show profile details',
-              onTap: () => context.pushNamed(Routes.studentProfile),
+              onTap: () => context.pushNamed(Routes.teacherProfile),
             ),
             SettingsItem(
               icon: CupertinoIcons.lock,

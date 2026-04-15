@@ -40,6 +40,7 @@ class ParentHomeView extends StatelessWidget {
                 '  Hope you and your child are\n  having a great day.',
                 style: AppStyle.font18GreyW500,
               ),
+              
             ],
           ),
         ),
