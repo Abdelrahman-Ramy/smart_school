@@ -4,7 +4,7 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/features/parent/views/parent_chat_view.dart';
 import 'package:smart_school/features/parent/views/parent_home_view.dart';
 import 'package:smart_school/features/parent/views/parent_notifications_view.dart';
-import 'package:smart_school/features/parent/views/parent_profile_view.dart';
+import 'package:smart_school/features/parent/views/teacher_settings_view.dart';
 
 class ParentRoot extends StatefulWidget {
   const ParentRoot({super.key});
@@ -24,7 +24,7 @@ class _ParentRootState extends State<ParentRoot> {
       const ParentHomeView(),
       const ParentChatView(),
       const ParentNotificationsView(),
-      const ParentProfileView(),
+      const ParentSettingsView(),
     ];
     controller = PageController(initialPage: currentScreen);
     super.initState();
@@ -71,8 +71,8 @@ class _ParentRootState extends State<ParentRoot> {
                 label: 'Notifications',
               ),
               BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.person_circle),
-                label: 'Profile',
+                icon: Icon(Icons.settings),
+                label: 'Settings',
               ),
             ],
           ),

@@ -28,26 +28,13 @@ class ParentProfileView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(30.h),
-              buildStaticField(
-                Icons.person_outline,
-                'Name',
-                'Mohamed Kamal',
-              ),
+              buildStaticField(Icons.person_outline, 'Name', 'Ali Gomaa'),
               buildStaticField(
                 Icons.phone_outlined,
                 'Phone number of Parent',
                 '+20 111 358 9857',
               ),
-              buildStaticField(
-                Icons.email,
-                'email',
-                'abdo_ramy@gmail.com',
-              ),
-              buildStaticField(
-                Icons.menu_book,
-                'Subject specialization',
-                'abdo_ramy@gmail.com',
-              ),
+              buildStaticField(Icons.email, 'email', 'ali_gomaa@example.com'),
               buildStaticField(Icons.group_outlined, 'Gender', 'Male'),
               buildStaticField(
                 Icons.calendar_month_outlined,

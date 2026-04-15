@@ -63,7 +63,7 @@ class NotificationTile extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(title, style: AppStyle.font16BlackBold),
+                    Text(title, style: AppStyle.font16BlackBold.copyWith(fontSize: 18.sp)),
                     Text(time, style: AppStyle.font15GreyW500),
                   ],
                 ),
@@ -72,6 +72,7 @@ class NotificationTile extends StatelessWidget {
                     ? Text(
                         subtitle,
                         style: AppStyle.font14GreyW400.copyWith(
+                          fontSize: 15.sp,
                           color: Colors.black87,
                         ),
                         maxLines: 2,
@@ -84,12 +85,14 @@ class NotificationTile extends StatelessWidget {
                               text: subtitle,
                               style: AppStyle.font14GreyW400.copyWith(
                                 color: Colors.black87,
+                                fontSize: 15.sp,
                               ),
                             ),
                             TextSpan(
                               text: "click to view.",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.blueColor,
+                                fontSize: 15.sp,
                                 decoration: TextDecoration.underline,
                               ),
                               recognizer: TapGestureRecognizer()..onTap = () {},

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 
 class TeacherProfileView extends StatelessWidget {
@@ -11,7 +12,7 @@ class TeacherProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteColor,
         scrolledUnderElevation: 0,
         elevation: 0,
         title: Text('Personal Information', style: AppStyle.font22BlackW500),
@@ -40,12 +41,12 @@ class TeacherProfileView extends StatelessWidget {
               buildStaticField(
                 Icons.email,
                 'email',
-                'abdo_ramy@gmail.com',
+                'mohamed_x14@example.com',
               ),
               buildStaticField(
                 Icons.menu_book,
                 'Subject specialization',
-                'abdo_ramy@gmail.com',
+                'Math',
               ),
               buildStaticField(Icons.group_outlined, 'Gender', 'Male'),
               buildStaticField(

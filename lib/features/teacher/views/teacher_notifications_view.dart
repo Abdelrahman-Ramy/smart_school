@@ -33,7 +33,7 @@ class _TeacherNotificationsViewState extends State<TeacherNotificationsView> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 40.w),
             child: Container(
-              height: 45.h,
+              height: 48.h,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10.r),

@@ -22,7 +22,8 @@ class Routes {
   static const String parentChat = '/parent_chat';
   static const String studentProfile = '/student_profile';
   static const String studentSettings = '/student_settings';
-  static const String teacherSettings = '/student_settings';
+  static const String teacherSettings = '/teacher_settings';
+  static const String parentSettings = '/parent_settings';
   static const String parentProfile = '/parent_profile';
   static const String teacherProfile = '/teacher_profile';
   static const String studentRoot = '/student_root';
