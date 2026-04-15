@@ -4,7 +4,6 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/features/teacher/views/teacher_chat_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
-import 'package:smart_school/features/teacher/views/teacher_profile_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_settings_view.dart';
 
 class TeacherRoot extends StatefulWidget {

@@ -20,7 +20,7 @@ class CustomSmallCardAttend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80.h,
+      height: 56.h,
       decoration: BoxDecoration(
         color: AppColors.glassyColor,
         borderRadius: BorderRadius.circular(5.r),
@@ -32,7 +32,7 @@ class CustomSmallCardAttend extends StatelessWidget {
             iconData,
             color: iconColor,
             fontWeight: FontWeight.bold,
-            size: 55.sp,
+            size: 45.sp,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,

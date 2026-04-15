@@ -43,6 +43,7 @@ dependencies:
   country_picker: ^2.0.27
   mask_text_input_formatter: ^2.5.0
   file_picker: ^8.0.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
