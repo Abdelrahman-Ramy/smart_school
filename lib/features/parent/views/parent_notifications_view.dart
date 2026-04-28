@@ -16,15 +16,73 @@ class ParentNotificationsView extends StatefulWidget {
 class _ParentNotificationsViewState extends State<ParentNotificationsView> {
   bool isAllSelected = true;
 
+  // القائمة اللي هتمثل البيانات اللي هتيجي من الـ API لاحقاً
+  final List<Map<String, dynamic>> notificationsData = [
+    {
+      'title': 'Mrs.mai',
+      'subtitle': "He is ready for the finals, Ali made great progress.",
+      'time': 'Just now',
+      'icon': Icons.person,
+      'isRead': false,
+    },
+    {
+      'title': 'Announcement',
+      'subtitle': 'New practice material has been sent to Ali',
+      'time': '30 min',
+      'icon': Icons.campaign,
+      'isRead': true,
+    },
+    {
+      'title': 'Attendance',
+      'subtitle': 'Attendance report for Ali Gomaa Is available',
+      'time': 'Mon',
+      'icon': Icons.how_to_reg,
+      'isRead': false,
+    },
+    {
+      'title': 'Garde',
+      'subtitle': 'Ali is making excellent progress this semester!',
+      'time': 'Just now',
+      'icon': Icons.grade,
+      'isRead': true,
+    },
+    {
+      'title': 'Attendance',
+      'subtitle': 'Attendance report for Ali Gomaa Is available',
+      'time': 'Mon',
+      'icon': Icons.how_to_reg,
+      'isRead': false,
+    },
+    {
+      'title': 'Mrs.mai',
+      'subtitle': "He is ready for the finals, Ali made great progress.",
+      'time': 'Just now',
+      'icon': Icons.person,
+      'isRead': false,
+    },
+    {
+      'title': 'Announcement',
+      'subtitle': 'New practice material has been sent to Ali',
+      'time': '30 min',
+      'icon': Icons.campaign,
+      'isRead': true,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
+    // منطق الفلترة: بنجهز القائمة اللي هتظهر حالياً بناءً على قيمة isAllSelected
+    final currentList = isAllSelected
+        ? notificationsData
+        : notificationsData.where((item) => item['isRead'] == false).toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.whiteColor,
         scrolledUnderElevation: 0,
         elevation: 0,
         centerTitle: true,
-        leading: const Icon(Icons.arrow_back, color: Colors.transparent,),
+        leading: const Icon(Icons.arrow_back, color: Colors.transparent),
         title: Text('Notifications', style: AppStyle.font22BlackW500),
       ),
       body: Column(
@@ -59,7 +117,9 @@ class _ParentNotificationsViewState extends State<ParentNotificationsView> {
                         child: Text(
                           'All',
                           style: isAllSelected
-                              ? AppStyle.font14WhiteBold.copyWith(fontSize: 16.sp)
+                              ? AppStyle.font14WhiteBold.copyWith(
+                                  fontSize: 16.sp,
+                                )
                               : AppStyle.font16BlackBold,
                         ),
                       ),
@@ -81,9 +141,11 @@ class _ParentNotificationsViewState extends State<ParentNotificationsView> {
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
-                          'Mentions',
+                          'UnRead',
                           style: !isAllSelected
-                              ? AppStyle.font14WhiteBold.copyWith(fontSize: 16.sp)
+                              ? AppStyle.font14WhiteBold.copyWith(
+                                  fontSize: 16.sp,
+                                )
                               : AppStyle.font16BlackBold,
                         ),
                       ),
@@ -95,69 +157,19 @@ class _ParentNotificationsViewState extends State<ParentNotificationsView> {
           ),
           Gap(20.h),
           Expanded(
-            child: ListView(
-              children: const [
-                NotificationTile(
-                  title: 'Mrs.mai',
-                  subtitle:
-                      "He is ready for the finals,Ali made great progress.",
-                  time: 'Just now',
-                  icon: Icons.person,
+            child: ListView.builder(
+              itemCount: currentList.length,
+              itemBuilder: (context, index) {
+                final item = currentList[index];
+                return NotificationTile(
+                  title: item['title'],
+                  subtitle: item['subtitle'],
+                  time: item['time'],
+                  icon: item['icon'],
                   iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),
-                NotificationTile(
-                  title: 'Announcement',
-                  subtitle:
-                      'New practice material has been sent to Ali',
-                  time: '30 min',
-                  icon: Icons.campaign,
-                  iconColor: AppColors.primaryColor,
-                  isRead: true,
-                ),
-                NotificationTile(
-                  title: 'Attendance',
-                  subtitle: 'Attendance report for Ali Gomaa Is available',
-                  time: 'Mon',
-                  icon: Icons.how_to_reg,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),
-                NotificationTile(
-                  title: 'Garde',
-                  subtitle:
-                      'have been updates Ali is making excellent progress this semester!',
-                  time: 'Just now',
-                  icon: Icons.grade,
-                  iconColor: AppColors.primaryColor,
-                  isRead: true,
-                ),
-                NotificationTile(
-                  title: 'Attendance',
-                  subtitle: 'Attendance report for Ali Gomaa Is available',
-                  time: 'Mon',
-                  icon: Icons.how_to_reg,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),NotificationTile(
-                  title: 'Mrs.mai',
-                  subtitle:
-                      "He is ready for the finals,Ali made great progress.",
-                  time: 'Just now',
-                  icon: Icons.person,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),
-                NotificationTile(
-                  title: 'Announcement',
-                  subtitle:
-                      'New practice material has been sent to Ali',
-                  time: '30 min',
-                  icon: Icons.campaign,
-                  iconColor: AppColors.primaryColor,
-                  isRead: true,
-                ),
-              ],
+                  isRead: item['isRead'],
+                );
+              },
             ),
           ),
         ],

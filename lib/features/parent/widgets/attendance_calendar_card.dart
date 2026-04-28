@@ -16,22 +16,26 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
   DateTime focusedDate = DateTime.now();
   final DateTime today = DateTime.now();
 
+  // next 7 days and prev 7 days
   void changeWeek(int weeks) {
     DateTime newDate = focusedDate.add(Duration(days: weeks * 7));
+    // to save future
     if (newDate.isAfter(today) && weeks > 0) return;
     setState(() => focusedDate = newDate);
   }
 
-  List<DateTime> _getWeekDays() {
+  List<DateTime> getWeekDays() {
     DateTime sunday = focusedDate.subtract(
       Duration(days: focusedDate.weekday % 7),
     );
+
+    // to make 5days no 7
     return List.generate(5, (i) => sunday.add(Duration(days: i)));
   }
 
   @override
   Widget build(BuildContext context) {
-    final days = _getWeekDays();
+    final days = getWeekDays();
 
     return Container(
       width: double.infinity,
@@ -47,6 +51,7 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
+                // button back
                 onPressed: () => changeWeek(-1),
                 icon: Icon(Icons.arrow_back_ios, size: 16.sp),
               ),
@@ -56,6 +61,7 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              // button front
               IconButton(
                 onPressed: () => changeWeek(1),
                 icon: Icon(Icons.arrow_forward_ios, size: 16.sp),
@@ -70,7 +76,7 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
                 decoration: BoxDecoration(color: Colors.grey.shade50),
                 children: days
                     .map(
-                      (day) => _buildCell(
+                      (day) => buildCell(
                         DateFormat('E').format(day).toUpperCase(),
                         true,
                       ),
@@ -89,7 +95,7 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
     );
   }
 
-  Widget _buildCell(String text, bool isHeader) {
+  Widget buildCell(String text, bool isHeader) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Center(
@@ -105,6 +111,7 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
 
   Widget buildStatusCell(DateTime date) {
     bool isFuture = date.isAfter(today);
+    // fake data
     bool isPresent = date.day % 3 != 0;
 
     return Padding(
@@ -120,7 +127,7 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
             color: isFuture
                 ? Colors.grey.shade200
                 : (isPresent ? AppColors.greenDarkColor : AppColors.redColor),
-            size: 20.sp,
+            size: 28.sp,
           ),
         ],
       ),
@@ -130,14 +137,14 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
   Widget buildLegend() {
     return Row(
       children: [
-        _legendItem(Icons.check_circle, AppColors.greenDarkColor, "Present"),
+        legendItem(Icons.check_circle, AppColors.greenDarkColor, "Present"),
         const Gap(15),
-        _legendItem(Icons.cancel, AppColors.redColor, "Absent"),
+        legendItem(Icons.cancel, AppColors.redColor, "Absent"),
       ],
     );
   }
 
-  Widget _legendItem(IconData icon, Color color, String label) {
+  Widget legendItem(IconData icon, Color color, String label) {
     return Row(
       children: [
         Icon(icon, color: color, size: 30.sp),

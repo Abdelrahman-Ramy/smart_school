@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_school/core/helpers/pref_helper.dart';
 import 'package:smart_school/core/routing/app_router.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/features/parent/views/parent_root.dart';
-import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
-import 'package:smart_school/features/teacher/views/teacher_root.dart';
-import 'package:smart_school/shared/splash_view.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await PrefHelper.init();
   runApp(const MyApp());
 }
 

@@ -31,7 +31,7 @@ class _ParentHomeViewState extends State<ParentHomeView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Gap(15.h),
+                Gap(8.h),
                 Row(
                   children: [
                     Image.asset(width: 260.w, 'assets/images/logo_name.png'),
