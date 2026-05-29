@@ -3,7 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_school/core/helpers/pref_helper.dart';
 import 'package:smart_school/core/routing/app_router.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
+import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/parent/views/parent_root.dart';
+import 'package:smart_school/features/student/views/student_root.dart';
+import 'package:smart_school/features/teacher/views/teacher_root.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
           splashColor: Colors.transparent,
           scaffoldBackgroundColor: AppColors.whiteColor,
         ),
-        home: const ParentRoot(),
+        home: const TeacherRoot(),
         onGenerateRoute: AppRouter().generateRoute,
       ),
     );

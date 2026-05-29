@@ -1,13 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_school/core/helpers/extensions.dart';
+import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/app_text_feild.dart';
+import 'package:smart_school/core/widgets/custom_snackbar.dart';
+import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/views/forget_pass_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -19,11 +23,61 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
-
   final TextEditingController passwordController = TextEditingController();
-
   final formKey = GlobalKey<FormState>();
   bool isObscureText = true;
+  bool isLoading = false;
+  AuthRepo authRepo = AuthRepo();
+
+  Future<void> login() async {
+    if (formKey.currentState!.validate()) {
+      setState(() => isLoading = true);
+
+      try {
+        final user = await authRepo.login(
+          emailController.text.trim(),
+
+          passwordController.text.trim(),
+        );
+        
+
+        if (user != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            customSnackbar(
+              errorMsg: 'Login Successfully',
+              icon: Icons.check,
+              color: Colors.green.shade900,
+            ),
+          );
+          // Navigate according to role
+
+          if (user.role == 'teacher') {
+            context.pushNamed(Routes.teacherRoot);
+          } else if (user.role == 'student') {
+            context.pushNamed(Routes.studentRoot);
+          } else if (user.role == 'parent') {
+            context.pushNamed(Routes.parentRoot);
+          }
+        }
+      } catch (e) {
+        String errorMsg = 'Unhandled Error in Login';
+
+        if (e is ApiError) {
+          errorMsg = e.message;
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: errorMsg,
+            icon: CupertinoIcons.info,
+            color: Colors.red.shade900,
+          ),
+        );
+      } finally {
+        setState(() => isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +92,7 @@ class _LoginViewState extends State<LoginView> {
               child: Form(
                 key: formKey,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Gap(50.h),
                     Center(
@@ -107,15 +162,21 @@ class _LoginViewState extends State<LoginView> {
                                 ),
                               ),
                               Gap(30.h),
-                              AppTextButton(
-                                buttonText: 'Login',
-                                isNav: false,
-                                textStyle: AppStyle.font14WhiteBold,
-                                backgroundColor: AppColors.primaryColor,
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {}
-                                },
-                              ),
+
+                              // Login Button
+                              isLoading
+                                  ? const Center(
+                                    child: CupertinoActivityIndicator(
+                                        color: AppColors.primaryColor,
+                                      ),
+                                  )
+                                  : AppTextButton(
+                                      buttonText: 'Login',
+                                      isNav: false,
+                                      textStyle: AppStyle.font14WhiteBold,
+                                      backgroundColor: AppColors.primaryColor,
+                                      onPressed: login,
+                                    ),
                               Gap(60.h),
                               Center(
                                 child: RichText(

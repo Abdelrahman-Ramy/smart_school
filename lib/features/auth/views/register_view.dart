@@ -1,17 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_school/core/helpers/extensions.dart';
+import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/app_text_feild.dart';
+import 'package:smart_school/core/widgets/custom_snackbar.dart';
+import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/widgets/custom_selected_type.dart';
-import 'package:smart_school/features/parent/views/parent_home_view.dart';
-import 'package:smart_school/features/student/views/student_root.dart';
-import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -30,7 +31,106 @@ class _RegisterViewState extends State<RegisterView> {
 
   String selectedType = 'Student';
   bool isObscureText = true;
+  bool isLoading = false;
   final formKey = GlobalKey<FormState>();
+  AuthRepo authRepo = AuthRepo();
+  Future<void> signup() async {
+    if (formKey.currentState!.validate()) {
+      //  ROLE validation
+      if (selectedType == null || selectedType!.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: 'Please select user type',
+            icon: CupertinoIcons.info,
+            color: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // PASSWORD validation
+      final password = passwordController.text.trim();
+
+      final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z]).+$');
+
+      if (!regex.hasMatch(password)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: 'Password must contain uppercase & lowercase',
+            icon: CupertinoIcons.info,
+            color: Colors.red,
+          ),
+        );
+        return;
+      }
+      if (selectedType == null || selectedType!.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: 'Please select user type',
+            icon: CupertinoIcons.info,
+            color: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      setState(() => isLoading = true);
+
+      try {
+        print("SELECTED TYPE: $selectedType");
+        final user = await authRepo.signUp(
+          name: nameController.text.trim(),
+
+          email: emailController.text.trim(),
+
+          password: passwordController.text.trim(),
+
+          role: selectedType.toLowerCase(),
+
+          phone: phoneController.text.trim(),
+
+          address: addressController.text.trim(),
+        );
+
+        if (user != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            customSnackbar(
+              errorMsg: 'Register Successfully',
+              icon: Icons.check,
+              color: Colors.green.shade900,
+            ),
+          );
+
+          //  navigation based on REAL response from server
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (user.role == 'student') {
+              context.pushNamed(Routes.studentRoot);
+            } else if (user.role == 'teacher') {
+              context.pushNamed(Routes.teacherRoot);
+            } else if (user.role == 'parent') {
+              context.pushNamed(Routes.parentRoot);
+            }
+          });
+        }
+      } catch (e) {
+        String errMsg = 'Error in Register';
+
+        if (e is ApiError) {
+          errMsg = e.message;
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: errMsg,
+            icon: CupertinoIcons.info,
+            color: Colors.red.shade900,
+          ),
+        );
+      } finally {
+        setState(() => isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +227,7 @@ class _RegisterViewState extends State<RegisterView> {
                                       const TextInputType.numberWithOptions(),
                                   textInputAction: TextInputAction.next,
                                 ),
-                                Gap(10.h),
+                              Gap(10.h),
                               AppTextFormField(
                                 hintText: 'Your Address',
                                 controller: addressController,
@@ -158,23 +258,19 @@ class _RegisterViewState extends State<RegisterView> {
                                 ],
                               ),
                               Gap(10.h),
-                              AppTextButton(
-                                buttonText: 'Sign Up',
-                                isNav: false,
-                                textStyle: AppStyle.font14WhiteBold,
-                                backgroundColor: AppColors.primaryColor,
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    if (selectedType == "Parent") {
-                                      context.pushNamed(Routes.parentRoot);
-                                    } else if (selectedType == "Student") {
-                                      context.pushNamed(Routes.studentRoot);
-                                    } else if (selectedType == "Teacher") {
-                                      context.pushNamed(Routes.teacherRoot);
-                                    }
-                                  }
-                                },
-                              ),
+                              isLoading
+                                  ? const Center(
+                                      child: CupertinoActivityIndicator(
+                                        color: AppColors.primaryColor,
+                                      ),
+                                    )
+                                  : AppTextButton(
+                                      buttonText: 'Sign Up',
+                                      isNav: false,
+                                      textStyle: AppStyle.font14WhiteBold,
+                                      backgroundColor: AppColors.primaryColor,
+                                      onPressed: signup,
+                                    ),
                               Gap(10.h),
                               AppTextButton(
                                 buttonText: 'Go To Login',
