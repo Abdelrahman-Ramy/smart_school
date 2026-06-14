@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school/core/routing/routes.dart';
+import 'package:smart_school/core/widgets/change_pass_view.dart';
 import 'package:smart_school/features/auth/views/forget_pass_view.dart';
 import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/views/register_view.dart';
@@ -10,7 +11,7 @@ import 'package:smart_school/features/parent/views/parent_home_view.dart';
 import 'package:smart_school/features/parent/views/parent_notifications_view.dart';
 import 'package:smart_school/features/parent/views/parent_profile_view.dart';
 import 'package:smart_school/features/parent/views/parent_root.dart';
-import 'package:smart_school/features/parent/views/teacher_settings_view.dart';
+import 'package:smart_school/features/parent/views/parent_settings_view.dart';
 import 'package:smart_school/features/student/views/assignments_view.dart';
 import 'package:smart_school/features/student/views/attendance_view.dart';
 import 'package:smart_school/features/student/views/grades_view.dart';
@@ -130,6 +131,10 @@ class AppRouter {
       case Routes.teacherUploadMaterials:
         return MaterialPageRoute(
           builder: (context) => const UploadMaterialsView(),
+        );
+      case Routes.changePass:
+        return MaterialPageRoute(
+          builder: (context) => ChangePassView(),
         );
       default:
         return MaterialPageRoute(

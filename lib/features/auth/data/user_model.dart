@@ -6,6 +6,10 @@ class UserModel {
   final String? role;
   final String? phone;
   final String? address;
+  final String? gender;
+  final String? dob;
+  final String? specialization;
+  final String? grade;
   final bool? isActive;
   final String? createdAt;
   final String? updatedAt;
@@ -18,6 +22,10 @@ class UserModel {
     this.role,
     this.phone,
     this.address,
+    this.gender,
+    this.dob,
+    this.specialization,
+    this.grade,
     this.isActive,
     this.createdAt,
     this.updatedAt,
@@ -32,6 +40,10 @@ class UserModel {
       role: json['role'],
       phone: json['phone'],
       address: json['address'],
+      gender: json['gender'],
+      dob: json['dob'],
+      specialization: json['specialization'],
+      grade: json['grade'],
 
       isActive:
           json['is_active'] == true ||

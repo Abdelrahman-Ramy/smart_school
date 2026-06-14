@@ -101,17 +101,21 @@ class _RegisterViewState extends State<RegisterView> {
             ),
           );
 
-          //  navigation based on REAL response from server
           Future.delayed(const Duration(milliseconds: 500), () {
-            if (user.role == 'student') {
-              context.pushNamed(Routes.studentRoot);
-            } else if (user.role == 'teacher') {
-              context.pushNamed(Routes.teacherRoot);
-            } else if (user.role == 'parent') {
-              context.pushNamed(Routes.parentRoot);
-            }
+            context.pushNamed(Routes.loginScreen);
           });
         }
+
+        //  navigation based on REAL response from server
+        // Future.delayed(const Duration(milliseconds: 500), () {
+        //   if (user.role == 'student') {
+        //     context.pushNamed(Routes.studentRoot);
+        //   } else if (user.role == 'teacher') {
+        //     context.pushNamed(Routes.teacherRoot);
+        //   } else if (user.role == 'parent') {
+        //     context.pushNamed(Routes.parentRoot);
+        //   }
+        // });
       } catch (e) {
         String errMsg = 'Error in Register';
 

@@ -34,4 +34,5 @@ class Routes {
   static const String teacherUploadGrades = '/teacher_upload_grades';
   static const String teacherUploadTasks = '/teacher_upload_tasks';
   static const String teacherUploadMaterials = '/teacher_upload_materials';
+  static const String changePass = '/change_pass';
 }

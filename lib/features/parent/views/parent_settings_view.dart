@@ -11,18 +11,16 @@ import 'package:smart_school/core/widgets/settings_item.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/data/user_model.dart';
 
-class TeacherSettingsView extends StatefulWidget {
-  const TeacherSettingsView({super.key});
+class ParentSettingsView extends StatefulWidget {
+  const ParentSettingsView({super.key});
 
   @override
-  State<TeacherSettingsView> createState() => _TeacherSettingsViewState();
+  State<ParentSettingsView> createState() => _ParentSettingsViewState();
 }
 
-class _TeacherSettingsViewState extends State<TeacherSettingsView> {
+class _ParentSettingsViewState extends State<ParentSettingsView> {
   bool isNotificationsEnabled = true;
   AuthRepo authRepo = AuthRepo();
-  UserModel? userModel;
-
   // logout
   Future<void> logout() async {
     try {
@@ -43,26 +41,25 @@ class _TeacherSettingsViewState extends State<TeacherSettingsView> {
     }
   }
 
+  UserModel? userModel;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
   Future<void> fetchUserData() async {
     try {
       final user = await authRepo.getProfile();
-
       if (mounted) {
         setState(() {
           userModel = user;
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      // Silently fail or handle error
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchUserData();
   }
 
   @override
@@ -99,14 +96,14 @@ class _TeacherSettingsViewState extends State<TeacherSettingsView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          userModel?.name?.toString() ?? 'Mohamed',
+                          userModel?.name?.toString() ?? 'Ali',
                           style: AppStyle.font20BlackW500.copyWith(
                             color: AppColors.whiteColor,
                           ),
                         ),
                         Gap(5.h),
                         Text(
-                           userModel?.email ?? 'Mohamed@gmail.com',
+                          userModel?.email ?? '',
                           style: AppStyle.font13White500.copyWith(
                             fontSize: 12.sp,
                           ),
@@ -139,7 +136,7 @@ class _TeacherSettingsViewState extends State<TeacherSettingsView> {
                 icon: CupertinoIcons.person,
                 title: 'Account',
                 subtitle: 'Show profile details',
-                onTap: () => context.pushNamed(Routes.teacherProfile),
+                onTap: () => context.pushNamed(Routes.parentProfile),
               ),
               SettingsItem(
                 icon: CupertinoIcons.lock,
@@ -178,7 +175,12 @@ class _TeacherSettingsViewState extends State<TeacherSettingsView> {
                   ],
                 ),
               ),
-              Gap(130.h),
+              SettingsItem(
+                icon: Icons.person_add_alt,
+                title: 'Add Child',
+                onTap: () {},
+              ),
+              Gap(70.h),
               AppTextButton(
                 buttonText: 'Log Out',
                 backgroundColor: AppColors.redColor,

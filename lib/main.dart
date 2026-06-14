@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           splashColor: Colors.transparent,
           scaffoldBackgroundColor: AppColors.whiteColor,
         ),
-        home: const TeacherRoot(),
+        home: const LoginView(),
         onGenerateRoute: AppRouter().generateRoute,
       ),
     );

@@ -4,9 +4,42 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
+import 'package:smart_school/features/auth/data/auth_repo.dart';
+import 'package:smart_school/features/auth/data/user_model.dart';
 
-class StudentProfileView extends StatelessWidget {
+class StudentProfileView extends StatefulWidget {
   const StudentProfileView({super.key});
+
+  @override
+  State<StudentProfileView> createState() => _StudentProfileViewState();
+}
+
+class _StudentProfileViewState extends State<StudentProfileView> {
+  AuthRepo authRepo = AuthRepo();
+
+  UserModel? userModel;
+
+  Future<void> fetchUserData() async {
+    try {
+      final user = await authRepo.getProfile();
+
+      if (mounted) {
+        setState(() {
+          userModel = user;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,30 +64,29 @@ class StudentProfileView extends StatelessWidget {
               buildStaticField(
                 Icons.person_outline,
                 'Name',
-                'Abdelrahman Ramy',
+                userModel?.name.toString() ?? "Abdelrahmddan",
               ),
               buildStaticField(Icons.grade, 'Grade', '5B'),
-              buildStaticField(Icons.badge_outlined, 'ID', '42022101'),
+              buildStaticField(
+                Icons.badge_outlined,
+                'ID',
+                userModel?.id?.toString() ?? "42022101"
+              ),
               buildStaticField(
                 Icons.phone_outlined,
                 'Phone number of Parent',
-                '+20 111 358 9857',
+                userModel?.phone ?? "+20123456207890aa",
               ),
               buildStaticField(
                 Icons.email,
                 'Gmail',
-                'abdo_ramy@gmail.com',
+                userModel?.email.toString() ?? 'abdo_ramy@gmail.com',
               ),
               buildStaticField(Icons.group_outlined, 'Gender', 'Male'),
               buildStaticField(
-                Icons.calendar_month_outlined,
-                'Date of birth',
-                '14 September, 2000',
-              ),
-              buildStaticField(
                 Icons.location_on_outlined,
                 'Address',
-                'Khulna, Bangladesh',
+                userModel?.address ?? "Cairo, Egypt"
               ),
               Gap(30.h),
             ],

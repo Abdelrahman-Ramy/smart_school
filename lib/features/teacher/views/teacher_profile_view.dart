@@ -4,9 +4,42 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
+import 'package:smart_school/features/auth/data/auth_repo.dart';
+import 'package:smart_school/features/auth/data/user_model.dart';
 
-class TeacherProfileView extends StatelessWidget {
+class TeacherProfileView extends StatefulWidget {
   const TeacherProfileView({super.key});
+
+  @override
+  State<TeacherProfileView> createState() => _TeacherProfileViewState();
+}
+
+class _TeacherProfileViewState extends State<TeacherProfileView> {
+AuthRepo authRepo = AuthRepo();
+
+  UserModel? userModel;
+
+  Future<void> fetchUserData() async {
+    try {
+      final user = await authRepo.getProfile();
+
+      if (mounted) {
+        setState(() {
+          userModel = user;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +61,13 @@ class TeacherProfileView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(30.h),
-              buildStaticField(
-                Icons.person_outline,
-                'Name',
-                'Mohamed Kamal',
-              ),
+              buildStaticField(Icons.person_outline, 'Name',  userModel?.name?.toString() ?? 'Mohamed'),
               buildStaticField(
                 Icons.phone_outlined,
-                'Phone number of Parent',
-                '+20 111 358 9857',
+                'Phone number',
+                 userModel?.phone ?? '+20 123 456 789',
               ),
-              buildStaticField(
-                Icons.email,
-                'email',
-                'mohamed_x14@example.com',
-              ),
+              buildStaticField(Icons.email, 'email',  userModel?.email ?? 'Mohamed'),
               buildStaticField(
                 Icons.menu_book,
                 'Subject specialization',
@@ -50,14 +75,9 @@ class TeacherProfileView extends StatelessWidget {
               ),
               buildStaticField(Icons.group_outlined, 'Gender', 'Male'),
               buildStaticField(
-                Icons.calendar_month_outlined,
-                'Date of birth',
-                '14 September, 2000',
-              ),
-              buildStaticField(
                 Icons.location_on_outlined,
                 'Address',
-                'Khulna, Bangladesh',
+                 userModel?.address?.toString() ?? 'Cairo, Egypt',
               ),
               Gap(30.h),
             ],

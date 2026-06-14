@@ -8,6 +8,8 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/settings_item.dart';
+import 'package:smart_school/features/auth/data/auth_repo.dart';
+import 'package:smart_school/features/auth/data/user_model.dart';
 
 class StudentSettingsView extends StatefulWidget {
   const StudentSettingsView({super.key});
@@ -18,6 +20,49 @@ class StudentSettingsView extends StatefulWidget {
 
 class _StudentSettingsViewState extends State<StudentSettingsView> {
   bool isNotificationsEnabled = true;
+  AuthRepo authRepo = AuthRepo();
+  UserModel? userModel;
+  // logout
+  Future<void> logout() async {
+    try {
+      await authRepo.logout();
+
+      if (context.mounted) {
+        context.pushNamedAndRemoveUntil(
+          Routes.loginScreen,
+          predicate: (Route<dynamic> route) {
+            return false;
+          },
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  // get user data
+  Future<void> fetchUserData() async {
+    try {
+      final user = await authRepo.getProfile();
+      if (mounted) {
+        setState(() {
+          userModel = user;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,29 +90,33 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
               child: Row(
                 children: [
                   Gap(8.w),
-                  Icon(
-                      Icons.person,
-                      size: 50.sp,
-                      color: AppColors.glassyColor,
-                    ),
+                  Icon(Icons.person, size: 50.sp, color: AppColors.glassyColor),
                   Gap(10.w),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Abdelrahman',
-                        style: AppStyle.font20BlackW500.copyWith(
-                          color: AppColors.whiteColor,
-                        ),
-                      ),
+                      userModel == null
+                          ? const CircularProgressIndicator(
+                              color: AppColors.primaryColor,
+                            )
+                          : Text(
+                              userModel?.name.toString() ?? "Abdelrahman",
+                              style: AppStyle.font20BlackW500.copyWith(
+                                color: AppColors.whiteColor,
+                              ),
+                            ),
                       Gap(5.h),
-                      Text(
-                        'ID: 42022101',
-                        style: AppStyle.font13White500.copyWith(
-                          fontSize: 12.sp,
-                        ),
-                      ),
+                      userModel == null
+                          ? const CircularProgressIndicator(
+                              color: AppColors.primaryColor,
+                            )
+                          : Text(
+                              userModel?.id.toString() ?? "42022101",
+                              style: AppStyle.font13White500.copyWith(
+                                fontSize: 12.sp,
+                              ),
+                            ),
                     ],
                   ),
                   const Spacer(),
@@ -101,7 +150,9 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
             SettingsItem(
               icon: CupertinoIcons.lock,
               title: 'Change Password',
-              onTap: () {},
+              onTap: () {
+                context.pushNamed(Routes.changePass);
+              },
             ),
             SettingsItem(
               icon: Icons.notifications_none_outlined,
@@ -140,9 +191,7 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
               textStyle: AppStyle.font22BlackW500.copyWith(
                 color: AppColors.whiteColor,
               ),
-              onPressed: () {
-                context.pushNamed(Routes.loginScreen);
-              },
+              onPressed: logout,
             ),
           ],
         ),

@@ -11,6 +11,9 @@ import 'package:smart_school/features/parent/widgets/attendance_calendar_card.da
 import 'package:smart_school/features/parent/widgets/custom_small_card_attend.dart';
 import 'package:smart_school/features/parent/widgets/grads_card.dart';
 
+import 'package:smart_school/features/auth/data/auth_repo.dart';
+import 'package:smart_school/features/auth/data/user_model.dart';
+
 class ParentHomeView extends StatefulWidget {
   const ParentHomeView({super.key});
 
@@ -20,6 +23,28 @@ class ParentHomeView extends StatefulWidget {
 
 class _ParentHomeViewState extends State<ParentHomeView> {
   bool isSelected = true;
+
+  UserModel? userModel;
+  AuthRepo authRepo = AuthRepo();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      final user = await authRepo.getProfile();
+      if (mounted) {
+        setState(() {
+          userModel = user;
+        });
+      }
+    } catch (e) {
+      // Silently fail or handle error
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +82,8 @@ class _ParentHomeViewState extends State<ParentHomeView> {
                 SettingsItem(
                   icon: CupertinoIcons.person,
                   trailing: const Icon(CupertinoIcons.chevron_down),
-                  title: 'Kareem Ali',
-                  subtitle: '4th Garde - Section B',
+                  title: userModel?.name ?? 'Loading...',
+                  subtitle: 'Parent Account',
                   onTap: () {},
                 ),
                 Gap(8.h),

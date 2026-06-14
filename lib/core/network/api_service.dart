@@ -6,6 +6,10 @@ class ApiService {
   // to use dioClient into class
   final DioClient _dioClient = DioClient();
 
+  void updateToken(String token) {
+    _dioClient.dio.options.headers['Authorization'] = 'Bearer $token';
+  }
+
   // CURD Methods
 
   /// get

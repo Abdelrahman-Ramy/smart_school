@@ -5,10 +5,43 @@ import 'package:smart_school/core/helpers/extensions.dart';
 import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
+import 'package:smart_school/features/auth/data/auth_repo.dart';
+import 'package:smart_school/features/auth/data/user_model.dart';
 import 'package:smart_school/features/student/widgets/custom_stu_card.dart';
 
-class StudentHomeView extends StatelessWidget {
+class StudentHomeView extends StatefulWidget {
   const StudentHomeView({super.key});
+
+  @override
+  State<StudentHomeView> createState() => _StudentHomeViewState();
+}
+
+class _StudentHomeViewState extends State<StudentHomeView> {
+  AuthRepo authRepo = AuthRepo();
+
+  UserModel? userModel;
+
+  Future<void> fetchUserData() async {
+    try {
+      final user = await authRepo.getProfile();
+
+      if (mounted) {
+        setState(() {
+          userModel = user;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +69,10 @@ class StudentHomeView extends StatelessWidget {
                 ],
               ),
               Gap(20.h),
-              Text('  Good Morning,', style: AppStyle.font25BlackBold),
+              Text('Good Morning,', style: AppStyle.font25BlackBold),
               Row(
                 children: [
-                  Text('  Abdo ', style: AppStyle.font25BlackBold),
+                  Text(userModel?.name?.toString() ?? "Abdelrahman", style: AppStyle.font25BlackBold),
                   const Icon(Icons.sunny, color: AppColors.yellowColor),
                 ],
               ),

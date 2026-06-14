@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_school/core/helpers/extensions.dart';
+import 'package:smart_school/core/helpers/pref_helper.dart';
 import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
@@ -12,6 +13,7 @@ import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/app_text_feild.dart';
 import 'package:smart_school/core/widgets/custom_snackbar.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
+import 'package:smart_school/features/auth/data/user_model.dart';
 import 'package:smart_school/features/auth/views/forget_pass_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -28,6 +30,7 @@ class _LoginViewState extends State<LoginView> {
   bool isObscureText = true;
   bool isLoading = false;
   AuthRepo authRepo = AuthRepo();
+  UserModel? userModel;
 
   Future<void> login() async {
     if (formKey.currentState!.validate()) {
@@ -39,7 +42,6 @@ class _LoginViewState extends State<LoginView> {
 
           passwordController.text.trim(),
         );
-        
 
         if (user != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -166,10 +168,10 @@ class _LoginViewState extends State<LoginView> {
                               // Login Button
                               isLoading
                                   ? const Center(
-                                    child: CupertinoActivityIndicator(
+                                      child: CupertinoActivityIndicator(
                                         color: AppColors.primaryColor,
                                       ),
-                                  )
+                                    )
                                   : AppTextButton(
                                       buttonText: 'Login',
                                       isNav: false,
