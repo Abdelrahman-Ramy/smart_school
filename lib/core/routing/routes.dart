@@ -35,4 +35,7 @@ class Routes {
   static const String teacherUploadTasks = '/teacher_upload_tasks';
   static const String teacherUploadMaterials = '/teacher_upload_materials';
   static const String changePass = '/change_pass';
+  static const String chatScreen = '/chat_screen';
+  static const String chatView = '/chat_view';
+  static const String usersChatList = '/users_chat_list';
 }

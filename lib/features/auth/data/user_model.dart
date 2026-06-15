@@ -1,5 +1,6 @@
 class UserModel {
   final int? id;
+  final String? firebaseUid; 
   final String? name;
   final String? email;
   final String? password;
@@ -16,6 +17,7 @@ class UserModel {
 
   UserModel({
     this.id,
+    this.firebaseUid,
     this.name,
     this.email,
     this.password,
@@ -34,6 +36,7 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
+      firebaseUid: json['firebase_uid'],
       name: json['name'],
       email: json['email'],
       password: json['password'],

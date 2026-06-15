@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -77,18 +78,12 @@ class _RegisterViewState extends State<RegisterView> {
       setState(() => isLoading = true);
 
       try {
-        print("SELECTED TYPE: $selectedType");
         final user = await authRepo.signUp(
           name: nameController.text.trim(),
-
           email: emailController.text.trim(),
-
           password: passwordController.text.trim(),
-
           role: selectedType.toLowerCase(),
-
           phone: phoneController.text.trim(),
-
           address: addressController.text.trim(),
         );
 
@@ -100,6 +95,16 @@ class _RegisterViewState extends State<RegisterView> {
               color: Colors.green.shade900,
             ),
           );
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(user.id.toString())
+              .set({
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role,
+                "createdAt": FieldValue.serverTimestamp(),
+              });
 
           Future.delayed(const Duration(milliseconds: 500), () {
             context.pushNamed(Routes.loginScreen);

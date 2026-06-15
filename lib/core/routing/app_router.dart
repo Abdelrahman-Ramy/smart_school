@@ -6,6 +6,9 @@ import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/views/register_view.dart';
 import 'package:smart_school/features/auth/views/reset_pass_view.dart';
 import 'package:smart_school/features/auth/views/verification_view.dart';
+import 'package:smart_school/features/chats/views/chat_screen.dart';
+import 'package:smart_school/features/chats/views/chat_view.dart';
+import 'package:smart_school/features/chats/views/users_chat_list_view.dart';
 import 'package:smart_school/features/parent/views/parent_chat_view.dart';
 import 'package:smart_school/features/parent/views/parent_home_view.dart';
 import 'package:smart_school/features/parent/views/parent_notifications_view.dart';
@@ -23,6 +26,7 @@ import 'package:smart_school/features/student/views/student_notifications_view.d
 import 'package:smart_school/features/student/views/student_settings_view.dart';
 import 'package:smart_school/features/student/views/student_root.dart';
 import 'package:smart_school/features/student/views/student_profile_view.dart';
+import 'package:smart_school/features/teacher/views/teacher_chat_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_profile_view.dart';
@@ -91,7 +95,7 @@ class AppRouter {
           builder: (context) => const ParentProfileView(),
         );
       case Routes.parentChat:
-        return MaterialPageRoute(builder: (context) => const ParentChatView());
+        return MaterialPageRoute(builder: (context) => ParentChatView());
       case Routes.teacherRoot:
         return MaterialPageRoute(builder: (context) => const TeacherRoot());
       case Routes.teacherProfile:
@@ -99,7 +103,7 @@ class AppRouter {
           builder: (context) => const TeacherProfileView(),
         );
       case Routes.teacherChat:
-        return MaterialPageRoute(builder: (context) => const ParentChatView());
+        return MaterialPageRoute(builder: (context) => const TeacherChatView());
       case Routes.teacherNotifications:
         return MaterialPageRoute(
           builder: (context) => const TeacherNotificationsView(),
@@ -133,9 +137,10 @@ class AppRouter {
           builder: (context) => const UploadMaterialsView(),
         );
       case Routes.changePass:
-        return MaterialPageRoute(
-          builder: (context) => ChangePassView(),
-        );
+        return MaterialPageRoute(builder: (context) => ChangePassView());
+      case Routes.usersChatList:
+        return MaterialPageRoute(builder: (context) => UsersChatListView());
+
       default:
         return MaterialPageRoute(
           builder: (context) => Scaffold(

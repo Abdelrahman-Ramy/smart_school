@@ -55,6 +55,7 @@ class AuthRepo {
 
       if (token != null) {
         await PrefHelper.saveToken(token);
+        await PrefHelper.saveUserId(user.id.toString());
         // FORCE update current dio headers if needed
         apiService.updateToken(token);
       }

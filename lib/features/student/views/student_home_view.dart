@@ -42,6 +42,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
     super.initState();
     fetchUserData();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +122,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
                         context.pushNamed(Routes.studentSchedule);
                       },
                     ),
+                    
                   ],
                 ),
               ),

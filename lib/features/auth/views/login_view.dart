@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,20 @@ class _LoginViewState extends State<LoginView> {
               color: Colors.green.shade900,
             ),
           );
+
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(user.id.toString())
+              .set({
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role,
+              }, SetOptions(merge: true));
+          await FirebaseFirestore.instance
+              .collection("userChats")
+              .doc(user.id.toString())
+              .set({"chats": {}}, SetOptions(merge: true));
           // Navigate according to role
 
           if (user.role == 'teacher') {

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_school/core/helpers/pref_helper.dart';
@@ -7,10 +8,15 @@ import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/parent/views/parent_root.dart';
 import 'package:smart_school/features/student/views/student_root.dart';
 import 'package:smart_school/features/teacher/views/teacher_root.dart';
+import 'package:smart_school/firebase_options.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   await PrefHelper.init();
+
   runApp(const MyApp());
 }
 

@@ -22,7 +22,7 @@ class _ParentRootState extends State<ParentRoot> {
   void initState() {
     screens = [
       const ParentHomeView(),
-      const ParentChatView(),
+      ParentChatView(),
       const ParentNotificationsView(),
       const ParentSettingsView(),
     ];
