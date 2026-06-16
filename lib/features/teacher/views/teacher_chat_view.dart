@@ -15,7 +15,6 @@ class TeacherChatView extends StatefulWidget {
 class _TeacherChatViewState extends State<TeacherChatView> {
   final FirebaseChatService chatService = FirebaseChatService();
 
-  Map<String, DateTime> lastChatTime = {};
   String searchText = "";
 
   @override
@@ -30,7 +29,6 @@ class _TeacherChatViewState extends State<TeacherChatView> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: AppColors.whiteColor,
-
         appBar: AppBar(
           backgroundColor: AppColors.whiteColor,
           scrolledUnderElevation: 0,
@@ -46,9 +44,7 @@ class _TeacherChatViewState extends State<TeacherChatView> {
               padding: const EdgeInsets.all(12),
               child: TextField(
                 onChanged: (value) {
-                  setState(() {
-                    searchText = value;
-                  });
+                  setState(() => searchText = value);
                 },
                 decoration: InputDecoration(
                   hintText: "Search user...",
@@ -64,104 +60,132 @@ class _TeacherChatViewState extends State<TeacherChatView> {
             ),
 
             Expanded(
-              child: StreamBuilder<List<Map<String, dynamic>>>(
-                stream: chatService.streamUsersByRole("teacher"),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('chats')
+                    .where('participants', arrayContains: myId)
+                    .orderBy('updatedAt', descending: true)
+                    .snapshots(),
+                builder: (context, chatSnap) {
+                  if (!chatSnap.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    );
                   }
 
-                  var users = snapshot.data!;
+                  final chats = chatSnap.data!.docs;
+                  chats.sort((a, b) {
+                    final chatA = a.data() as Map<String, dynamic>;
+                    final chatB = b.data() as Map<String, dynamic>;
 
-                  // remove self
-                  users = users
-                      .where((u) => u['id'].toString() != myId)
-                      .toList();
+                    final unreadA = chatA['unread_$myId'] ?? 0;
+                    final unreadB = chatB['unread_$myId'] ?? 0;
 
-                  // search
-                  if (searchText.isNotEmpty) {
-                    users = users.where((u) {
-                      final name = u['name'].toString().toLowerCase();
-                      return name.contains(searchText.toLowerCase());
-                    }).toList();
-                  }
+                    if (unreadA > 0 && unreadB == 0) return -1;
+                    if (unreadA == 0 && unreadB > 0) return 1;
 
-                  return StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('chats')
-                        .where('participants', arrayContains: myId)
-                        .snapshots(),
-                    builder: (context, chatSnap) {
-                      if (chatSnap.hasData) {
-                        lastChatTime.clear();
+                    final timeA = chatA['updatedAt'] as Timestamp?;
+                    final timeB = chatB['updatedAt'] as Timestamp?;
 
-                        for (var doc in chatSnap.data!.docs) {
-                          final data = doc.data() as Map<String, dynamic>;
+                    if (timeA == null && timeB == null) return 0;
+                    if (timeA == null) return 1;
+                    if (timeB == null) return -1;
 
-                          final participants = List<String>.from(
-                            data['participants'],
-                          );
+                    return timeB.compareTo(timeA);
+                  });
 
-                          final otherId = participants.firstWhere(
-                            (id) => id != myId,
-                          );
+                  return ListView.builder(
+                    itemCount: chats.length,
+                    itemBuilder: (context, index) {
+                      final chat = chats[index].data() as Map<String, dynamic>;
 
-                          final time =
-                              data['updatedAt']?.toDate() ?? DateTime(0);
+                      final participants = List<String>.from(
+                        chat['participants'],
+                      );
 
-                          lastChatTime[otherId] = time;
-                        }
+                      final otherId = participants.firstWhere(
+                        (id) => id != myId,
+                      );
 
-                        users.sort((a, b) {
-                          final aTime =
-                              lastChatTime[a['id'].toString()] ?? DateTime(0);
+                      final unread = chat['unread_$myId'] ?? 0;
+                      final lastMessage = (chat['lastMessage'] ?? '')
+                          .toString();
 
-                          final bTime =
-                              lastChatTime[b['id'].toString()] ?? DateTime(0);
+                      return FutureBuilder(
+                        future: chatService.getUserById(otherId),
+                        builder: (context, userSnap) {
+                          if (!userSnap.hasData) {
+                            return const ListTile(title: Text("Loading..."));
+                          }
 
-                          return bTime.compareTo(aTime);
-                        });
-                      }
+                          final name = userSnap.data?.name ?? "User";
 
-                      if (users.isEmpty) {
-                        return const Center(child: Text("No users found"));
-                      }
-
-                      return ListView.builder(
-                        itemCount: users.length,
-                        itemBuilder: (context, index) {
-                          final user = users[index];
+                          if (searchText.isNotEmpty &&
+                              !name.toLowerCase().contains(
+                                searchText.toLowerCase(),
+                              )) {
+                            return const SizedBox();
+                          }
 
                           return ListTile(
                             leading: CircleAvatar(
                               backgroundColor: AppColors.primaryColor,
                               child: Text(
-                                user['name'][0].toString().toUpperCase(),
-                                style: AppStyle.font16BlackBold.copyWith(
-                                  color: AppColors.whiteColor,
-                                ),
+                                name.isNotEmpty ? name[0].toUpperCase() : "?",
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
+                            title: Text(name),
 
-                            title: Text(
-                              user['name'],
-                              style: AppStyle.font18WhiteW500.copyWith(
-                                color: AppColors.blackColor,
-                              ),
+                            subtitle: FutureBuilder<QuerySnapshot>(
+                              future: FirebaseFirestore.instance
+                                  .collection('chats')
+                                  .doc(chats[index].id)
+                                  .collection('messages')
+                                  .orderBy('timestamp', descending: true)
+                                  .limit(1)
+                                  .get(),
+                              builder: (context, msgSnap) {
+                                String text = "No messages yet";
+
+                                if (msgSnap.hasData &&
+                                    msgSnap.data!.docs.isNotEmpty) {
+                                  text = msgSnap.data!.docs.first['text'] ?? "";
+                                }
+
+                                return Text(
+                                  text,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              },
                             ),
 
-                            subtitle: Text(user['role'] ?? ""),
+                            trailing: unread > 0
+                                ? CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: Colors.red,
+                                    child: Text(
+                                      unread.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  )
+                                : null,
 
                             onTap: () async {
-                              final chatId = await chatService
-                                  .createOrGetDirectChat(user['id'].toString());
+                              final chatId = chats[index].id;
 
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => ChatView(
                                     chatId: chatId,
-                                    otherUserName: user['name'],
+                                    otherUserName: name,
                                   ),
                                 ),
                               );

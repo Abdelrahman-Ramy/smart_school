@@ -14,6 +14,7 @@ import 'package:smart_school/core/widgets/custom_snackbar.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/widgets/custom_selected_type.dart';
+import 'package:smart_school/features/chats/services/firebase_chat_service.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -35,111 +36,105 @@ class _RegisterViewState extends State<RegisterView> {
   bool isLoading = false;
   final formKey = GlobalKey<FormState>();
   AuthRepo authRepo = AuthRepo();
-  Future<void> signup() async {
-    if (formKey.currentState!.validate()) {
-      //  ROLE validation
-      if (selectedType == null || selectedType!.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar(
-            errorMsg: 'Please select user type',
-            icon: CupertinoIcons.info,
-            color: Colors.red,
-          ),
-        );
-        return;
-      }
+Future<void> signup() async { 
+  if (formKey.currentState!.validate()) { 
+    //  ROLE validation 
+    if (selectedType == null || selectedType!.isEmpty) { 
+      ScaffoldMessenger.of(context).showSnackBar( 
+        customSnackbar( 
+          errorMsg: 'Please select user type', 
+          icon: CupertinoIcons.info, 
+          color: Colors.red, 
+        ), 
+      ); 
+      return; 
+    } 
 
-      // PASSWORD validation
-      final password = passwordController.text.trim();
+    // PASSWORD validation 
+    final password = passwordController.text.trim(); 
+    final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z]).+$'); 
 
-      final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z]).+$');
+    if (!regex.hasMatch(password)) { 
+      ScaffoldMessenger.of(context).showSnackBar( 
+        customSnackbar( 
+          errorMsg: 'Password must contain uppercase & lowercase', 
+          icon: CupertinoIcons.info, 
+          color: Colors.red, 
+        ), 
+      ); 
+      return; 
+    } 
 
-      if (!regex.hasMatch(password)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar(
-            errorMsg: 'Password must contain uppercase & lowercase',
-            icon: CupertinoIcons.info,
-            color: Colors.red,
-          ),
-        );
-        return;
-      }
-      if (selectedType == null || selectedType!.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar(
-            errorMsg: 'Please select user type',
-            icon: CupertinoIcons.info,
-            color: Colors.red,
-          ),
-        );
-        return;
-      }
+    if (selectedType == null || selectedType!.isEmpty) { 
+      ScaffoldMessenger.of(context).showSnackBar( 
+        customSnackbar( 
+          errorMsg: 'Please select user type', 
+          icon: CupertinoIcons.info, 
+          color: Colors.red, 
+        ), 
+      ); 
+      return; 
+    } 
 
-      setState(() => isLoading = true);
+    setState(() => isLoading = true); 
 
-      try {
-        final user = await authRepo.signUp(
-          name: nameController.text.trim(),
-          email: emailController.text.trim(),
-          password: passwordController.text.trim(),
-          role: selectedType.toLowerCase(),
-          phone: phoneController.text.trim(),
-          address: addressController.text.trim(),
-        );
+    try { 
+      final user = await authRepo.signUp( 
+        name: nameController.text.trim(), 
+        email: emailController.text.trim(), 
+        password: passwordController.text.trim(), 
+        role: selectedType.toLowerCase(), 
+        phone: phoneController.text.trim(), 
+        address: addressController.text.trim(), 
+      ); 
 
-        if (user != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            customSnackbar(
-              errorMsg: 'Register Successfully',
-              icon: Icons.check,
-              color: Colors.green.shade900,
-            ),
-          );
-          await FirebaseFirestore.instance
-              .collection("users")
-              .doc(user.id.toString())
-              .set({
-                "id": user.id,
-                "name": user.name,
-                "email": user.email,
-                "role": user.role,
-                "createdAt": FieldValue.serverTimestamp(),
-              });
+      if (user != null) { 
+        ScaffoldMessenger.of(context).showSnackBar( 
+          customSnackbar( 
+            errorMsg: 'Register Successfully', 
+            icon: Icons.check, 
+            color: Colors.green.shade900, 
+          ), 
+        ); 
 
-          Future.delayed(const Duration(milliseconds: 500), () {
-            context.pushNamed(Routes.loginScreen);
-          });
-        }
+        await FirebaseFirestore.instance 
+            .collection("users") 
+            .doc(user.id.toString()) 
+            .set({ 
+              "id": user.id, 
+              "name": user.name, 
+              "email": user.email, 
+              "role": user.role, 
+              "createdAt": FieldValue.serverTimestamp(), 
+            }); 
 
-        //  navigation based on REAL response from server
-        // Future.delayed(const Duration(milliseconds: 500), () {
-        //   if (user.role == 'student') {
-        //     context.pushNamed(Routes.studentRoot);
-        //   } else if (user.role == 'teacher') {
-        //     context.pushNamed(Routes.teacherRoot);
-        //   } else if (user.role == 'parent') {
-        //     context.pushNamed(Routes.parentRoot);
-        //   }
-        // });
-      } catch (e) {
-        String errMsg = 'Error in Register';
+        // 🔥 ADDED ONLY THIS LINE
+        await FirebaseChatService.createInitialChats(user.id.toString(), user.role ?? '');
 
-        if (e is ApiError) {
-          errMsg = e.message;
-        }
+        Future.delayed(const Duration(milliseconds: 500), () { 
+          context.pushNamed(Routes.loginScreen); 
+        }); 
+      } 
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar(
-            errorMsg: errMsg,
-            icon: CupertinoIcons.info,
-            color: Colors.red.shade900,
-          ),
-        );
-      } finally {
-        setState(() => isLoading = false);
-      }
-    }
-  }
+    } catch (e) { 
+      String errMsg = 'Error in Register'; 
+
+      if (e is ApiError) { 
+        errMsg = e.message; 
+      } 
+
+      ScaffoldMessenger.of(context).showSnackBar( 
+        customSnackbar( 
+          errorMsg: errMsg, 
+          icon: CupertinoIcons.info, 
+          color: Colors.red.shade900, 
+        ), 
+      ); 
+    } finally { 
+      setState(() => isLoading = false); 
+    } 
+  } 
+}
 
   @override
   Widget build(BuildContext context) {

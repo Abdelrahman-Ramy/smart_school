@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -23,6 +24,35 @@ class _ChatViewState extends State<ChatView> {
   final FirebaseChatService chatService = FirebaseChatService();
 
   final TextEditingController messageController = TextEditingController();
+
+  Future<void> markMessagesAsRead() async {
+    final myId = chatService.currentUserId;
+
+    final chatRef = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.chatId);
+
+    final messagesRef = chatRef.collection('messages');
+
+    final snapshot = await messagesRef.where('isRead', isEqualTo: false).get();
+
+    for (var doc in snapshot.docs) {
+      if (doc['senderId'] != myId) {
+        await doc.reference.update({'isRead': true});
+      }
+    }
+
+    await chatRef.update({'unread_$myId': 0});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      markMessagesAsRead();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +84,11 @@ class _ChatViewState extends State<ChatView> {
                 stream: chatService.streamMessages(widget.chatId),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ),
+                    );
                   }
 
                   final messages = snapshot.data!;
@@ -116,9 +150,9 @@ class _ChatViewState extends State<ChatView> {
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: messageController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
-                      controller: messageController,
                       decoration: InputDecoration(
                         hintText: "Write message...",
                         hintStyle: AppStyle.font15GreyW500,
@@ -139,9 +173,7 @@ class _ChatViewState extends State<ChatView> {
                     backgroundColor: AppColors.primaryColor,
                     child: IconButton(
                       onPressed: () async {
-                        if (messageController.text.trim().isEmpty) {
-                          return;
-                        }
+                        if (messageController.text.trim().isEmpty) return;
 
                         await chatService.sendMessage(
                           chatId: widget.chatId,

@@ -14,15 +14,17 @@ class ParentChatView extends StatefulWidget {
 
 class _ParentChatViewState extends State<ParentChatView> {
   final FirebaseChatService chatService = FirebaseChatService();
+
   final TextEditingController searchController = TextEditingController();
-
   String searchText = "";
-
-  Map<String, DateTime> lastChatTime = {};
 
   @override
   Widget build(BuildContext context) {
     final myId = chatService.currentUserId;
+
+    if (myId == null || myId.isEmpty) {
+      return const Scaffold(body: Center(child: Text("User not logged in")));
+    }
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -32,9 +34,9 @@ class _ParentChatViewState extends State<ParentChatView> {
         appBar: AppBar(
           backgroundColor: AppColors.whiteColor,
           scrolledUnderElevation: 0,
+          leading: const Icon(Icons.arrow_back, color: Colors.transparent),
           elevation: 0,
           centerTitle: true,
-          leading: const Icon(Icons.arrow_back, color: Colors.transparent),
           title: Text('All Teachers', style: AppStyle.font22BlackW500),
         ),
 
@@ -44,11 +46,7 @@ class _ParentChatViewState extends State<ParentChatView> {
               padding: const EdgeInsets.all(12),
               child: TextField(
                 controller: searchController,
-                onChanged: (value) {
-                  setState(() {
-                    searchText = value;
-                  });
-                },
+                onChanged: (value) => setState(() => searchText = value),
                 decoration: InputDecoration(
                   hintText: "Search teacher...",
                   prefixIcon: const Icon(Icons.search),
@@ -63,96 +61,129 @@ class _ParentChatViewState extends State<ParentChatView> {
             ),
 
             Expanded(
-              child: StreamBuilder<List<Map<String, dynamic>>>(
-                stream: chatService.streamUsersByRole("parent"),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('chats')
+                    .where('participants', arrayContains: myId)
+                    .orderBy('updatedAt', descending: true)
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  var users = snapshot.data!;
+                  final chats = snapshot.data!.docs;
+                  chats.sort((a, b) {
+                    final chatA = a.data() as Map<String, dynamic>;
+                    final chatB = b.data() as Map<String, dynamic>;
 
-                  // remove self
-                  users = users
-                      .where((u) => u['id'].toString() != myId)
-                      .toList();
+                    final unreadA = chatA['unread_$myId'] ?? 0;
+                    final unreadB = chatB['unread_$myId'] ?? 0;
 
-                  // search
-                  if (searchText.isNotEmpty) {
-                    users = users.where((u) {
-                      final name = u['name'].toString().toLowerCase();
-                      return name.contains(searchText.toLowerCase());
-                    }).toList();
-                  }
+                    if (unreadA > 0 && unreadB == 0) return -1;
+                    if (unreadA == 0 && unreadB > 0) return 1;
 
-                  return StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('chats')
-                        .where('participants', arrayContains: myId)
-                        .snapshots(),
-                    builder: (context, chatSnap) {
-                      if (chatSnap.hasData) {
-                        lastChatTime.clear();
+                    final timeA = chatA['updatedAt'] as Timestamp?;
+                    final timeB = chatB['updatedAt'] as Timestamp?;
 
-                        for (var doc in chatSnap.data!.docs) {
-                          final data = doc.data() as Map<String, dynamic>;
+                    if (timeA == null && timeB == null) return 0;
+                    if (timeA == null) return 1;
+                    if (timeB == null) return -1;
 
-                          final participants = List<String>.from(
-                            data['participants'],
-                          );
+                    return timeB.compareTo(timeA);
+                  });
 
-                          final otherId = participants.firstWhere(
-                            (id) => id != myId,
-                          );
+                  return ListView.builder(
+                    itemCount: chats.length,
+                    itemBuilder: (context, index) {
+                      final chat = chats[index].data() as Map<String, dynamic>;
 
-                          final time =
-                              data['updatedAt']?.toDate() ?? DateTime(0);
+                      final participants = List<String>.from(
+                        chat['participants'],
+                      );
 
-                          lastChatTime[otherId] = time;
-                        }
-                        users.sort((a, b) {
-                          final aTime =
-                              lastChatTime[a['id'].toString()] ?? DateTime(0);
+                      final otherId = participants.firstWhere(
+                        (id) => id != myId,
+                      );
 
-                          final bTime =
-                              lastChatTime[b['id'].toString()] ?? DateTime(0);
+                      final unread = chat['unread_$myId'] ?? 0;
+                      final lastMessage = (chat['lastMessage'] ?? '')
+                          .toString();
 
-                          return bTime.compareTo(aTime);
-                        });
-                      }
+                      return FutureBuilder(
+                        future: chatService.getUserById(otherId),
+                        builder: (context, userSnap) {
+                          if (!userSnap.hasData) {
+                            return const ListTile(title: Text("User"));
+                          }
 
-                      if (users.isEmpty) {
-                        return const Center(child: Text("No teachers found"));
-                      }
+                          final name = userSnap.data?.name ?? "User";
 
-                      return ListView.builder(
-                        itemCount: users.length,
-                        itemBuilder: (context, index) {
-                          final user = users[index];
+                          if (searchText.isNotEmpty &&
+                              !name.toLowerCase().contains(
+                                searchText.toLowerCase(),
+                              )) {
+                            return const SizedBox();
+                          }
 
                           return ListTile(
-                            leading: const CircleAvatar(
+                            leading: CircleAvatar(
                               backgroundColor: AppColors.primaryColor,
-                              child: Icon(
-                                Icons.person,
-                                color: AppColors.whiteColor,
+                              child: Text(
+                                name.isNotEmpty ? name[0].toUpperCase() : "?",
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
 
-                            title: Text('Mr. ${user['name']}'),
+                            title: Text(name),
 
-                            subtitle: Text(user['role']),
+                            subtitle: FutureBuilder<QuerySnapshot>(
+                              future: FirebaseFirestore.instance
+                                  .collection('chats')
+                                  .doc(chats[index].id)
+                                  .collection('messages')
+                                  .orderBy('timestamp', descending: true)
+                                  .limit(1)
+                                  .get(),
+                              builder: (context, msgSnap) {
+                                String text = "No messages yet";
+
+                                if (msgSnap.hasData &&
+                                    msgSnap.data!.docs.isNotEmpty) {
+                                  text = msgSnap.data!.docs.first['text'] ?? "";
+                                }
+
+                                return Text(
+                                  text,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              },
+                            ),
+
+                            trailing: unread > 0
+                                ? CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: Colors.red,
+                                    child: Text(
+                                      unread.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  )
+                                : null,
 
                             onTap: () async {
-                              final chatId = await chatService
-                                  .createOrGetDirectChat(user['id'].toString());
+                              final chatId = chats[index].id;
 
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => ChatView(
                                     chatId: chatId,
-                                    otherUserName: user['name'],
+                                    otherUserName: name,
                                   ),
                                 ),
                               );

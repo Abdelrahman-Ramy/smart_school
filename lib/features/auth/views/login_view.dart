@@ -16,6 +16,7 @@ import 'package:smart_school/core/widgets/custom_snackbar.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/data/user_model.dart';
 import 'package:smart_school/features/auth/views/forget_pass_view.dart';
+import 'package:smart_school/features/chats/services/firebase_chat_service.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -33,68 +34,71 @@ class _LoginViewState extends State<LoginView> {
   AuthRepo authRepo = AuthRepo();
   UserModel? userModel;
 
-  Future<void> login() async {
-    if (formKey.currentState!.validate()) {
-      setState(() => isLoading = true);
+Future<void> login() async { 
+  if (formKey.currentState!.validate()) { 
+    setState(() => isLoading = true); 
 
-      try {
-        final user = await authRepo.login(
-          emailController.text.trim(),
+    try { 
+      final user = await authRepo.login( 
+        emailController.text.trim(), 
+        passwordController.text.trim(), 
+      ); 
 
-          passwordController.text.trim(),
-        );
+      if (user != null) { 
+        ScaffoldMessenger.of(context).showSnackBar( 
+          customSnackbar( 
+            errorMsg: 'Login Successfully', 
+            icon: Icons.check, 
+            color: Colors.green.shade900, 
+          ), 
+        ); 
 
-        if (user != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            customSnackbar(
-              errorMsg: 'Login Successfully',
-              icon: Icons.check,
-              color: Colors.green.shade900,
-            ),
-          );
+        await FirebaseFirestore.instance 
+            .collection("users") 
+            .doc(user.id.toString()) 
+            .set({ 
+              "id": user.id, 
+              "name": user.name, 
+              "email": user.email, 
+              "role": user.role, 
+            }, SetOptions(merge: true)); 
 
-          await FirebaseFirestore.instance
-              .collection("users")
-              .doc(user.id.toString())
-              .set({
-                "id": user.id,
-                "name": user.name,
-                "email": user.email,
-                "role": user.role,
-              }, SetOptions(merge: true));
-          await FirebaseFirestore.instance
-              .collection("userChats")
-              .doc(user.id.toString())
-              .set({"chats": {}}, SetOptions(merge: true));
-          // Navigate according to role
+        await FirebaseFirestore.instance 
+            .collection("userChats") 
+            .doc(user.id.toString()) 
+            .set({"chats": {}}, SetOptions(merge: true)); 
 
-          if (user.role == 'teacher') {
-            context.pushNamed(Routes.teacherRoot);
-          } else if (user.role == 'student') {
-            context.pushNamed(Routes.studentRoot);
-          } else if (user.role == 'parent') {
-            context.pushNamed(Routes.parentRoot);
-          }
-        }
-      } catch (e) {
-        String errorMsg = 'Unhandled Error in Login';
+        // 🔥 ADDED ONLY THIS LINE
+        await FirebaseChatService.createInitialChats(user.id.toString(), user.role ?? '');
 
-        if (e is ApiError) {
-          errorMsg = e.message;
-        }
+        if (user.role == 'teacher') { 
+          context.pushNamed(Routes.teacherRoot); 
+        } else if (user.role == 'student') { 
+          context.pushNamed(Routes.studentRoot); 
+        } else if (user.role == 'parent') { 
+          context.pushNamed(Routes.parentRoot); 
+        } 
+      } 
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar(
-            errorMsg: errorMsg,
-            icon: CupertinoIcons.info,
-            color: Colors.red.shade900,
-          ),
-        );
-      } finally {
-        setState(() => isLoading = false);
-      }
-    }
-  }
+    } catch (e) { 
+      String errorMsg = 'Unhandled Error in Login'; 
+
+      if (e is ApiError) { 
+        errorMsg = e.message; 
+      } 
+
+      ScaffoldMessenger.of(context).showSnackBar( 
+        customSnackbar( 
+          errorMsg: errorMsg, 
+          icon: CupertinoIcons.info, 
+          color: Colors.red.shade900, 
+        ), 
+      ); 
+    } finally { 
+      setState(() => isLoading = false); 
+    } 
+  } 
+}
 
   @override
   Widget build(BuildContext context) {

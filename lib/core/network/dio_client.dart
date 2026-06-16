@@ -19,9 +19,9 @@ class DioClient {
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
-          print("REQUEST URL: ${options.baseUrl}${options.path}");
-          print("REQUEST DATA: ${options.data}");
-          print("REQUEST HEADERS: ${options.headers}");
+          // print("REQUEST URL: ${options.baseUrl}${options.path}");
+          // print("REQUEST DATA: ${options.data}");
+          // print("REQUEST HEADERS: ${options.headers}");
           return handler.next(options);
         },
         onResponse: (response, handler) {
@@ -29,8 +29,8 @@ class DioClient {
           return handler.next(response);
         },
         onError: (error, handler) {
-          print("ERROR RESPONSE: ${error.response?.data}");
-          print("ERROR STATUS: ${error.response?.statusCode}");
+          // print("ERROR RESPONSE: ${error.response?.data}");
+          // print("ERROR STATUS: ${error.response?.statusCode}");
           return handler.next(error);
         },
       ),
