@@ -11,6 +11,7 @@ class CustomTaskField extends StatelessWidget {
   final Widget? suffixIcon;
   final Widget? prefixIcon;
   final VoidCallback? onTap;
+  final TextEditingController? controller;
   final bool readOnly;
 
   const CustomTaskField({
@@ -19,6 +20,7 @@ class CustomTaskField extends StatelessWidget {
     required this.hintText,
     this.maxLines = 1,
     this.suffixIcon,
+    this.controller,
     this.prefixIcon,
     this.onTap,
     this.readOnly = false,
@@ -39,6 +41,7 @@ class CustomTaskField extends StatelessWidget {
           ),
           Gap(8.h),
           TextFormField(
+            controller: controller,
             readOnly: readOnly,
             onTap: onTap,
             maxLines: maxLines,
@@ -56,7 +59,7 @@ class CustomTaskField extends StatelessWidget {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.r),
-                borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5),
+                borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5),
               ),
             ),
           ),

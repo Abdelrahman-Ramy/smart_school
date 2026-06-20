@@ -34,71 +34,72 @@ class _LoginViewState extends State<LoginView> {
   AuthRepo authRepo = AuthRepo();
   UserModel? userModel;
 
-Future<void> login() async { 
-  if (formKey.currentState!.validate()) { 
-    setState(() => isLoading = true); 
+  Future<void> login() async {
+    if (formKey.currentState!.validate()) {
+      setState(() => isLoading = true);
 
-    try { 
-      final user = await authRepo.login( 
-        emailController.text.trim(), 
-        passwordController.text.trim(), 
-      ); 
+      try {
+        final user = await authRepo.login(
+          emailController.text.trim(),
+          passwordController.text.trim(),
+        );
 
-      if (user != null) { 
-        ScaffoldMessenger.of(context).showSnackBar( 
-          customSnackbar( 
-            errorMsg: 'Login Successfully', 
-            icon: Icons.check, 
-            color: Colors.green.shade900, 
-          ), 
-        ); 
+        if (user != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            customSnackbar(
+              errorMsg: 'Login Successfully',
+              icon: Icons.check,
+              color: Colors.green.shade900,
+            ),
+          );
 
-        await FirebaseFirestore.instance 
-            .collection("users") 
-            .doc(user.id.toString()) 
-            .set({ 
-              "id": user.id, 
-              "name": user.name, 
-              "email": user.email, 
-              "role": user.role, 
-            }, SetOptions(merge: true)); 
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(user.id.toString())
+              .set({
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role,
+              }, SetOptions(merge: true));
 
-        await FirebaseFirestore.instance 
-            .collection("userChats") 
-            .doc(user.id.toString()) 
-            .set({"chats": {}}, SetOptions(merge: true)); 
+          await FirebaseFirestore.instance
+              .collection("userChats")
+              .doc(user.id.toString())
+              .set({"chats": {}}, SetOptions(merge: true));
 
-        // 🔥 ADDED ONLY THIS LINE
-        await FirebaseChatService.createInitialChats(user.id.toString(), user.role ?? '');
+          await FirebaseChatService.createInitialChats(
+            user.id.toString(),
+            user.role ?? '',
+          );
 
-        if (user.role == 'teacher') { 
-          context.pushNamed(Routes.teacherRoot); 
-        } else if (user.role == 'student') { 
-          context.pushNamed(Routes.studentRoot); 
-        } else if (user.role == 'parent') { 
-          context.pushNamed(Routes.parentRoot); 
-        } 
-      } 
+          if (user.role == 'teacher') {
+            context.pushNamed(Routes.teacherRoot);
+          } else if (user.role == 'student') {
+            context.pushNamed(Routes.studentRoot);
+          } else if (user.role == 'parent') {
+            context.pushNamed(Routes.parentRoot);
+          }
+        }
+      } catch (e) {
+        String errorMsg = 'Unhandled Error in Login';
 
-    } catch (e) { 
-      String errorMsg = 'Unhandled Error in Login'; 
+        if (e is ApiError) {
+          errorMsg = e.message;
+        }
 
-      if (e is ApiError) { 
-        errorMsg = e.message; 
-      } 
-
-      ScaffoldMessenger.of(context).showSnackBar( 
-        customSnackbar( 
-          errorMsg: errorMsg, 
-          icon: CupertinoIcons.info, 
-          color: Colors.red.shade900, 
-        ), 
-      ); 
-    } finally { 
-      setState(() => isLoading = false); 
-    } 
-  } 
-}
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: errorMsg,
+            icon: CupertinoIcons.info,
+            color: Colors.red.shade900,
+          ),
+        );
+      } finally {
+        setState(() => isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,10 +167,11 @@ Future<void> login() async {
                               Gap(15.h),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ForgetPassView(),
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    customSnackbar(
+                                      errorMsg: 'contact administration to reset your password',
+                                      icon: CupertinoIcons.info,
+                                      color: AppColors.greyColor,
                                     ),
                                   );
                                 },

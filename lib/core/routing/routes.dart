@@ -38,4 +38,6 @@ class Routes {
   static const String chatScreen = '/chat_screen';
   static const String chatView = '/chat_view';
   static const String usersChatList = '/users_chat_list';
+  static const String assignmentSubmissions = '/assignment_submissions';
+  static const String studentAttendanceHistory = '/student_attendance_history';
 }

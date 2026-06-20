@@ -67,7 +67,7 @@ class GradesView extends StatelessWidget {
       ),
       bottomSheet: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-        height: 150.h,
+        height: 100.h,
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -83,31 +83,7 @@ class GradesView extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
-          children: [
-            const SummaryBar(),
-            Gap(12.h),
-            Row(
-              children: [
-                CustomElevatedButton(
-                  textButt: 'Save',
-                  backgroundColor: Colors.grey.shade300,
-                  foregroundColor: AppColors.blackColor,
-                  onPressed: () {},
-                ),
-                Gap(10.w),
-                CustomElevatedButton(
-                  textButt: 'Share',
-                  backgroundColor: AppColors.greenLightColor,
-                  foregroundColor: AppColors.whiteColor,
-                  fontColor: AppColors.whiteColor,
-                  onPressed: () {},
-                ),
-              ],
-            ),
-            Gap(12.h),
-          ],
-        ),
+        child: const SummaryBar(),
       ),
     );
   }

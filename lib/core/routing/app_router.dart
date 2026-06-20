@@ -26,6 +26,8 @@ import 'package:smart_school/features/student/views/student_notifications_view.d
 import 'package:smart_school/features/student/views/student_settings_view.dart';
 import 'package:smart_school/features/student/views/student_root.dart';
 import 'package:smart_school/features/student/views/student_profile_view.dart';
+import 'package:smart_school/features/teacher/views/assignment_submissions_view.dart';
+import 'package:smart_school/features/teacher/views/student_attendance_history_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_chat_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
@@ -95,7 +97,7 @@ class AppRouter {
           builder: (context) => const ParentProfileView(),
         );
       case Routes.parentChat:
-        return MaterialPageRoute(builder: (context) => ParentChatView());
+        return MaterialPageRoute(builder: (context) => const ParentChatView());
       case Routes.teacherRoot:
         return MaterialPageRoute(builder: (context) => const TeacherRoot());
       case Routes.teacherProfile:
@@ -123,30 +125,76 @@ class AppRouter {
       case Routes.teacherViewClasses:
         return MaterialPageRoute(builder: (context) => const ViewClassesView());
       case Routes.teacherUploadAttendance:
+        final args = settings.arguments;
+        String attendanceClassId = "";
+        if (args is Map<String, dynamic>) {
+          attendanceClassId = args['classId']?.toString() ?? "";
+        } else if (args != null) {
+          attendanceClassId = args.toString();
+        }
         return MaterialPageRoute(
-          builder: (context) => const UploadAttendanceView(),
+          builder: (context) =>
+              UploadAttendanceView(classId: attendanceClassId),
         );
       case Routes.teacherUploadGrades:
+        final args = settings.arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (context) => const UploadGradesView(),
+          builder: (context) => UploadGradesView(
+            classId: args?['classId']?.toString() ?? '',
+            students: args?['students'] as List<dynamic>? ?? const [],
+          ),
         );
       case Routes.teacherUploadTasks:
-        return MaterialPageRoute(builder: (context) => const UploadTasksView());
-      case Routes.teacherUploadMaterials:
+        final args = settings.arguments;
+        String classId = "";
+        String assignmentId = "";
+
+        if (args is Map<String, dynamic>) {
+          classId = args['classId']?.toString() ?? "";
+          assignmentId = args['assignmentId']?.toString() ?? "";
+        } else if (args != null) {
+          classId = args.toString();
+        }
+
         return MaterialPageRoute(
-          builder: (context) => const UploadMaterialsView(),
+          builder: (context) =>
+              UploadTasksView(classId: classId, assignmentId: assignmentId),
+        );
+      case Routes.teacherUploadMaterials:
+        final args = settings.arguments;
+        String materialsClassId = "";
+        if (args is Map<String, dynamic>) {
+          materialsClassId = args['classId']?.toString() ?? "";
+        } else if (args != null) {
+          materialsClassId = args.toString();
+        }
+        return MaterialPageRoute(
+          builder: (context) => UploadMaterialsView(classId: materialsClassId),
         );
       case Routes.changePass:
-        return MaterialPageRoute(builder: (context) => ChangePassView());
+        return MaterialPageRoute(builder: (context) => const ChangePassView());
       case Routes.usersChatList:
         return MaterialPageRoute(builder: (context) => UsersChatListView());
-
+      case Routes.assignmentSubmissions:
+        final args = settings.arguments as Map<String, dynamic>;
+        final assignmentId = args['assignmentId']?.toString() ?? '';
+        final classId = args['classId']?.toString() ?? '';
+        return MaterialPageRoute(
+          builder: (_) => AssignmentSubmissionsView(
+            assignmentId: assignmentId,
+            classId: classId,
+          ),
+        );
+      case Routes.studentAttendanceHistory:
+        final args = settings.arguments;
+        final studentId = args is int ? args : int.parse(args.toString());
+        return MaterialPageRoute(
+          builder: (_) => StudentAttendanceHistoryView(studentId: studentId),
+        );
       default:
         return MaterialPageRoute(
           builder: (context) => Scaffold(
-            body: Center(
-              child: Center(child: Text('No Route Found ${settings.name}')),
-            ),
+            body: Center(child: Text('No Route Found ${settings.name}')),
           ),
         );
     }

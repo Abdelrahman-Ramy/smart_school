@@ -9,6 +9,7 @@ import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/data/user_model.dart';
 import 'package:smart_school/features/student/widgets/custom_stu_con.dart';
+import 'package:smart_school/features/teacher/data/teacher_class_model.dart';
 
 class TeacherHomeView extends StatefulWidget {
   const TeacherHomeView({super.key});
@@ -19,6 +20,7 @@ class TeacherHomeView extends StatefulWidget {
 
 class _TeacherHomeViewState extends State<TeacherHomeView> {
   AuthRepo authRepo = AuthRepo();
+  TeacherClassModel teacherClassModel = TeacherClassModel();
 
   UserModel? userModel;
 
@@ -71,7 +73,10 @@ class _TeacherHomeViewState extends State<TeacherHomeView> {
               ),
               Gap(20.h),
               Text('Welcome Mr,', style: AppStyle.font25BlackBold),
-              Text( userModel?.name?.toString() ?? 'Mohamed', style: AppStyle.font25BlackBold),
+              Text(
+                userModel?.name?.toString() ?? 'Mohamed',
+                style: AppStyle.font25BlackBold,
+              ),
               Gap(30.h),
               Expanded(
                 child: GridView.count(
@@ -107,14 +112,20 @@ class _TeacherHomeViewState extends State<TeacherHomeView> {
                       text: 'Upload Tasks',
                       icon: Icons.task_alt,
                       onTap: () {
-                        context.pushNamed(Routes.teacherUploadTasks);
+                        context.pushNamed(
+                          Routes.teacherUploadTasks,
+                          arguments: teacherClassModel.classId.toString(),
+                        );
                       },
                     ),
                     CustomStuCon(
                       text: 'Upload Materials',
                       icon: Icons.cloud_upload,
                       onTap: () {
-                        context.pushNamed(Routes.teacherUploadMaterials);
+                        Navigator.of(context).pushNamed(
+                          Routes.teacherUploadMaterials,
+                          arguments: teacherClassModel.classId.toString(),
+                        );
                       },
                     ),
                   ],

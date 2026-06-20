@@ -16,15 +16,74 @@ class TeacherNotificationsView extends StatefulWidget {
 class _TeacherNotificationsViewState extends State<TeacherNotificationsView> {
   bool isAllSelected = true;
 
+  final List<Map<String, dynamic>> teacherNotificationsData = [
+    {
+      'title': 'Mrs.mai',
+      'subtitle':
+          "Great lesson today!\nenjoyed the practice exercise,\nThank You.",
+      'time': 'Just now',
+      'icon': Icons.person,
+      'isRead': false,
+    },
+    {
+      'title': 'Announcement',
+      'subtitle': 'Remember to review the last\nfew lessons in preparation',
+      'time': '30 min',
+      'icon': Icons.campaign,
+      'isRead': true,
+    },
+    {
+      'title': 'Mrs.Mona',
+      'subtitle': 'sent you a message\n',
+      'time': 'Mon',
+      'icon': Icons.notifications,
+      'isRead': false,
+    },
+    {
+      'title': 'Dashboard',
+      'subtitle': 'Breakdowns have been updates\n',
+      'time': 'Just now',
+      'icon': Icons.bar_chart,
+      'isRead': true,
+    },
+    {
+      'title': 'Mr.Mohamed',
+      'subtitle': "I want toThank You for Your Efforts.",
+      'time': 'Just now',
+      'icon': Icons.person,
+      'isRead': false,
+    },
+    {
+      'title': 'Announcement',
+      'subtitle': 'Remember to review the last\nfew lessons in preparation',
+      'time': '30 min',
+      'icon': Icons.campaign,
+      'isRead': true,
+    },
+    {
+      'title': 'Announcement',
+      'subtitle': 'Remember to review the last\nfew lessons in preparation',
+      'time': '30 min',
+      'icon': Icons.campaign,
+      'isRead': false,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final currentList = isAllSelected
+        ? teacherNotificationsData
+        : teacherNotificationsData
+              .where((item) => item['isRead'] == false)
+              .toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.whiteColor,
         scrolledUnderElevation: 0,
         elevation: 0,
         centerTitle: true,
-        leading: const Icon(Icons.arrow_back, color: Colors.transparent,),
+        leading: const Icon(Icons.arrow_back, color: Colors.transparent),
         title: Text('Notifications', style: AppStyle.font22BlackW500),
       ),
       body: Column(
@@ -59,7 +118,9 @@ class _TeacherNotificationsViewState extends State<TeacherNotificationsView> {
                         child: Text(
                           'All',
                           style: isAllSelected
-                              ? AppStyle.font14WhiteBold.copyWith(fontSize: 16.sp)
+                              ? AppStyle.font14WhiteBold.copyWith(
+                                  fontSize: 16.sp,
+                                )
                               : AppStyle.font16BlackBold,
                         ),
                       ),
@@ -81,9 +142,11 @@ class _TeacherNotificationsViewState extends State<TeacherNotificationsView> {
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
-                          'Mentions',
+                          'UnRead',
                           style: !isAllSelected
-                              ? AppStyle.font14WhiteBold.copyWith(fontSize: 16.sp)
+                              ? AppStyle.font14WhiteBold.copyWith(
+                                  fontSize: 16.sp,
+                                )
                               : AppStyle.font16BlackBold,
                         ),
                       ),
@@ -95,74 +158,29 @@ class _TeacherNotificationsViewState extends State<TeacherNotificationsView> {
           ),
           Gap(20.h),
           Expanded(
-            child: ListView(
-              children: const [
-                NotificationTile(
-                  title: 'Mrs.mai',
-                  subtitle:
-                      "Great lesson today!\nenjoyed the practice exercise,\nThank You.",
-                  time: 'Just now',
-                  icon: Icons.person,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),
-                NotificationTile(
-                  title: 'Announcement',
-                  subtitle:
-                      'Remember to review the last\nfew lessons in preparation',
-                  time: '30 min',
-                  icon: Icons.campaign,
-                  iconColor: AppColors.primaryColor,
-                  isRead: true,
-                ),
-                NotificationTile(
-                  title: 'Mrs.Mona',
-                  subtitle: 'sent you a message\n',
-                  time: 'Mon',
-                  icon: Icons.notifications,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                  isClick: true,
-                ),
-                NotificationTile(
-                  title: 'Dashboard',
-                  subtitle:
-                      'Breakdowns have been updates\n',
-                  time: 'Just now',
-                  icon: Icons.bar_chart,
-                  iconColor: AppColors.primaryColor,
-                  isRead: true,
-                  isClick: true,
-                ),
-                NotificationTile(
-                  title: 'Mr.Mohamed',
-                  subtitle:
-                      "I want toThank You for Your Efforts.",
-                  time: 'Just now',
-                  icon: Icons.person,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),
-                 NotificationTile(
-                  title: 'Announcement',
-                  subtitle:
-                      'Remember to review the last\nfew lessons in preparation',
-                  time: '30 min',
-                  icon: Icons.campaign,
-                  iconColor: AppColors.primaryColor,
-                  isRead: true,
-                ),
-                 NotificationTile(
-                  title: 'Announcement',
-                  subtitle:
-                      'Remember to review the last\nfew lessons in preparation',
-                  time: '30 min',
-                  icon: Icons.campaign,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),
-              ],
-            ),
+            child: currentList.isEmpty
+                ? Center(
+                    child: Text(
+                      'No Unread Notifications',
+                      style: AppStyle.font16BlackBold.copyWith(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: currentList.length,
+                    itemBuilder: (context, index) {
+                      final item = currentList[index];
+                      return NotificationTile(
+                        title: item['title'],
+                        subtitle: item['subtitle'],
+                        time: item['time'],
+                        icon: item['icon'],
+                        iconColor: AppColors.primaryColor,
+                        isRead: item['isRead'],
+                      );
+                    },
+                  ),
           ),
         ],
       ),

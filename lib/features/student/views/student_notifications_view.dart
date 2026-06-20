@@ -16,15 +16,90 @@ class StudentNotificationsView extends StatefulWidget {
 class _StudentNotificationsViewState extends State<StudentNotificationsView> {
   bool isAllSelected = true;
 
+  final List<Map<String, dynamic>> studentNotificationsData = [
+    {
+      'title': 'Mr.Mohamed',
+      'subtitle':
+          'Extra material has been sent. Make sure to review it before the finals.',
+      'time': 'Just now',
+      'icon': Icons.notifications,
+      'iconColor': AppColors.primaryColor,
+      'isRead': false,
+    },
+    {
+      'title': 'Math',
+      'subtitle': 'You got A on your latest Math exam. Excellent Work!',
+      'time': '30 min',
+      'icon': Icons.campaign,
+      'iconColor': AppColors.glassyColor,
+      'isRead': true,
+    },
+    {
+      'title': 'Grades',
+      'subtitle': 'Your overall GPA is 3.5. keep up the great effort!',
+      'time': 'Yesterday',
+      'icon': Icons.grade,
+      'iconColor': AppColors.greenColor,
+      'isRead': false,
+    },
+    {
+      'title': 'Science',
+      'subtitle': 'You got B+ on your latest Science exam. Excellent Work!',
+      'time': 'Mon',
+      'icon': Icons.campaign,
+      'iconColor': AppColors.glassyColor,
+      'isRead': true,
+    },
+    {
+      'title': 'Mrs.Mona',
+      'subtitle': 'Mrs.Mona has uploaded new materials. Tap to view',
+      'time': 'Mon',
+      'icon': Icons.notifications,
+      'iconColor': AppColors.primaryColor,
+      'isRead': false,
+    },
+    {
+      'title': 'Grades',
+      'subtitle': 'Your overall GPA is 3.5. keep up the great effort!',
+      'time': 'Yesterday',
+      'icon': Icons.grade,
+      'iconColor': AppColors.greenColor,
+      'isRead': true,
+    },
+    {
+      'title': 'Mr.Mohamed',
+      'subtitle':
+          'Extra material has been sent. Make sure to review it before the finals.',
+      'time': 'Just now',
+      'icon': Icons.notifications,
+      'iconColor': AppColors.primaryColor,
+      'isRead': true,
+    },
+    {
+      'title': 'Math',
+      'subtitle': 'You got A on your latest Math exam. Excellent Work!',
+      'time': '30 min',
+      'icon': Icons.campaign,
+      'iconColor': AppColors.glassyColor,
+      'isRead': false,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final currentList = isAllSelected
+        ? studentNotificationsData
+        : studentNotificationsData
+              .where((item) => item['isRead'] == false)
+              .toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.whiteColor,
         scrolledUnderElevation: 0,
         elevation: 0,
         centerTitle: true,
-        leading: const Icon(Icons.arrow_back, color: Colors.transparent,),
+        leading: const Icon(Icons.arrow_back, color: Colors.transparent),
         title: Text('Notifications', style: AppStyle.font22BlackW500),
       ),
       body: Column(
@@ -59,7 +134,9 @@ class _StudentNotificationsViewState extends State<StudentNotificationsView> {
                         child: Text(
                           'All',
                           style: isAllSelected
-                              ? AppStyle.font14WhiteBold.copyWith(fontSize: 16.sp)
+                              ? AppStyle.font14WhiteBold.copyWith(
+                                  fontSize: 16.sp,
+                                )
                               : AppStyle.font16BlackBold,
                         ),
                       ),
@@ -81,9 +158,11 @@ class _StudentNotificationsViewState extends State<StudentNotificationsView> {
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
-                          'Mentions',
+                          'UnRead',
                           style: !isAllSelected
-                              ? AppStyle.font14WhiteBold.copyWith(fontSize: 16.sp)
+                              ? AppStyle.font14WhiteBold.copyWith(
+                                  fontSize: 16.sp,
+                                )
                               : AppStyle.font16BlackBold,
                         ),
                       ),
@@ -95,81 +174,29 @@ class _StudentNotificationsViewState extends State<StudentNotificationsView> {
           ),
           Gap(20.h),
           Expanded(
-            child: ListView(
-              children: const [
-                NotificationTile(
-                  title: 'Mr.Mohamed',
-                  subtitle:
-                      'Extra material has been sent. Make sure to review it before the finals.',
-                  time: 'Just now',
-                  icon: Icons.notifications,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),
-                NotificationTile(
-                  title: 'Math',
-                  subtitle:
-                      'You got A on your latest Math exam. Excellent Work!',
-                  time: '30 min',
-                  icon: Icons.campaign,
-                  iconColor: AppColors.glassyColor,
-                  isRead: true,
-                ),
-                NotificationTile(
-                  title: 'Grades',
-                  subtitle:
-                      'Your overall GPA is 3.5. keep up the great effort!',
-                  time: 'Yesterday',
-                  icon: Icons.grade,
-                  iconColor: AppColors.greenColor,
-                  isRead: false,
-                ),
-                NotificationTile(
-                  title: 'Science',
-                  subtitle:
-                      'You got B+ on your latest Science exam. Excellent Work!',
-                  time: 'Mon',
-                  icon: Icons.campaign,
-                  iconColor: AppColors.glassyColor,
-                  isRead: true,
-                ),
-                NotificationTile(
-                  title: 'Mrs.Mona',
-                  subtitle: 'Mrs.Mona has uploaded new materials. Tap to view',
-                  time: 'Mon',
-                  icon: Icons.notifications,
-                  iconColor: AppColors.primaryColor,
-                  isRead: false,
-                ),
-                NotificationTile(
-                  title: 'Grades',
-                  subtitle:
-                      'Your overall GPA is 3.5. keep up the great effort!',
-                  time: 'Yesterday',
-                  icon: Icons.grade,
-                  iconColor: AppColors.greenColor,
-                  isRead: true,
-                ),
-                NotificationTile(
-                  title: 'Mr.Mohamed',
-                  subtitle:
-                      'Extra material has been sent. Make sure to review it before the finals.',
-                  time: 'Just now',
-                  icon: Icons.notifications,
-                  iconColor: AppColors.primaryColor,
-                  isRead: true,
-                ),
-                NotificationTile(
-                  title: 'Math',
-                  subtitle:
-                      'You got A on your latest Math exam. Excellent Work!',
-                  time: '30 min',
-                  icon: Icons.campaign,
-                  iconColor: AppColors.glassyColor,
-                  isRead: false,
-                ),
-              ],
-            ),
+            child: currentList.isEmpty
+                ? Center(
+                    child: Text(
+                      'No Unread Notifications',
+                      style: AppStyle.font16BlackBold.copyWith(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: currentList.length,
+                    itemBuilder: (context, index) {
+                      final item = currentList[index];
+                      return NotificationTile(
+                        title: item['title'],
+                        subtitle: item['subtitle'],
+                        time: item['time'],
+                        icon: item['icon'],
+                        iconColor: item['iconColor'],
+                        isRead: item['isRead'],
+                      );
+                    },
+                  ),
           ),
         ],
       ),

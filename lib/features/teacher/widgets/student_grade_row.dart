@@ -8,12 +8,14 @@ class StudentGradeRow extends StatelessWidget {
   final String name;
   final String rollNo;
   final String totalMarks;
+  final TextEditingController? controller;
 
   const StudentGradeRow({
     super.key,
     required this.name,
     required this.rollNo,
     required this.totalMarks,
+    this.controller,
   });
 
   @override
@@ -42,7 +44,7 @@ class StudentGradeRow extends StatelessWidget {
               Gap(4.h),
               Row(
                 children: [
-                  const GradeInputBox(), 
+                  GradeInputBox(controller: controller), 
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 6.w),
                     child: Text('|', style: AppStyle.font14GreyW400),

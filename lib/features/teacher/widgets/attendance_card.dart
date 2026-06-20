@@ -4,17 +4,24 @@ import 'package:gap/gap.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 
-class AttendanceCard extends StatefulWidget {
-  const AttendanceCard({super.key});
+class AttendanceCard extends StatelessWidget {
+  final String studentName;
+  final String currentStatus;
+  final ValueChanged<String> onStatusChanged;
+  final VoidCallback onViewHistoryTap;
 
-  @override
-  State<AttendanceCard> createState() => _AttendanceCardState();
-}
+  const AttendanceCard({
+    super.key,
+    required this.studentName,
+    required this.currentStatus,
+    required this.onStatusChanged,
+    required this.onViewHistoryTap,
+  });
 
-class _AttendanceCardState extends State<AttendanceCard> {
-  bool isPresent = true;
   @override
   Widget build(BuildContext context) {
+    bool isPresent = currentStatus == 'present';
+
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(12.dg),
@@ -31,19 +38,25 @@ class _AttendanceCardState extends State<AttendanceCard> {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 25.r,
-            backgroundColor: Colors.blue[50],
-            child: const Icon(Icons.person, color: AppColors.blueLightColor),
+          GestureDetector(
+            onTap: onViewHistoryTap,
+            child: CircleAvatar(
+              radius: 25.r,
+              backgroundColor: Colors.blue[50],
+              child: const Icon(Icons.person, color: AppColors.blueLightColor),
+            ),
           ),
           Gap(12.w),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Ahmed Hassan', style: AppStyle.font16BlackBold),
-                Text('Roll No: 1', style: AppStyle.font14GreyW400),
-              ],
+            child: GestureDetector(
+              onTap: onViewHistoryTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(studentName, style: AppStyle.font16BlackBold),
+                  Text('Tap to view history', style: AppStyle.font14GreyW400),
+                ],
+              ),
             ),
           ),
           Container(
@@ -54,26 +67,23 @@ class _AttendanceCardState extends State<AttendanceCard> {
             ),
             child: Row(
               children: [
-                isPresent ? const Text(
-                  'Present',
-                  style: TextStyle(
-                    color:  AppColors.greenColor,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: EdgeInsets.only(left: 4.w),
+                  child: Text(
+                    isPresent ? 'Present' : 'Absent',
+                    style: TextStyle(
+                      color: isPresent
+                          ? AppColors.greenColor
+                          : AppColors.greyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ) : const Text(
-                  'Absent',
-                  style: TextStyle(
-                    color:  AppColors.greyColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ) ,
+                ),
                 Gap(8.w),
                 Switch(
                   value: isPresent,
-                  onChanged: (v) {
-                    setState(() {
-                      isPresent = v;
-                    });
+                  onChanged: (value) {
+                    onStatusChanged(value ? 'present' : 'absent');
                   },
                   activeColor: AppColors.whiteColor,
                   activeTrackColor: AppColors.greenDarkColor,

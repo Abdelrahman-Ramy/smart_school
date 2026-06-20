@@ -112,7 +112,8 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
                               color: AppColors.primaryColor,
                             )
                           : Text(
-                              userModel?.id.toString() ?? "42022101",
+                              userModel?.email.toString() ??
+                                  "example@email.com",
                               style: AppStyle.font13White500.copyWith(
                                 fontSize: 12.sp,
                               ),
@@ -120,19 +121,20 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
                     ],
                   ),
                   const Spacer(),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.r),
-                      ),
-                      fixedSize: Size(80.h, 30.w),
-                      backgroundColor: AppColors.glassyColor,
+                  Container(
+                    width: 80.w,
+                    height: 50.h,
+                    decoration: BoxDecoration(
+                      color: AppColors.glassyColor,
+                      borderRadius: BorderRadius.circular(15.r),
                     ),
-                    onPressed: () {},
-                    child: Text(
-                      'Edit',
-                      style: AppStyle.font14WhiteBold.copyWith(
-                        color: AppColors.primaryColor,
+
+                    child: Center(
+                      child: Text(
+                        'ID:  ${userModel?.id.toString()}' ?? "42022101",
+                        style: AppStyle.font14WhiteBold.copyWith(
+                          color: AppColors.primaryColor,
+                        ),
                       ),
                     ),
                   ),
@@ -154,37 +156,37 @@ class _StudentSettingsViewState extends State<StudentSettingsView> {
                 context.pushNamed(Routes.changePass);
               },
             ),
-            SettingsItem(
-              icon: Icons.notifications_none_outlined,
-              title: 'Notifications',
-              trailing: Switch(
-                value: isNotificationsEnabled,
-                onChanged: (val) {
-                  setState(() {
-                    isNotificationsEnabled = val;
-                  });
-                },
-                activeColor: Colors.white,
-                activeTrackColor: AppColors.greenDarkColor,
-              ),
-            ),
-            SettingsItem(
-              icon: CupertinoIcons.globe,
-              title: 'Language',
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('English', style: AppStyle.font15GreyW400),
-                  SizedBox(width: 8.w),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16.sp,
-                    color: AppColors.greyColor,
-                  ),
-                ],
-              ),
-            ),
-            Gap(130.h),
+            // SettingsItem(
+            //   icon: Icons.notifications_none_outlined,
+            //   title: 'Notifications',
+            //   trailing: Switch(
+            //     value: isNotificationsEnabled,
+            //     onChanged: (val) {
+            //       setState(() {
+            //         isNotificationsEnabled = val;
+            //       });
+            //     },
+            //     activeColor: Colors.white,
+            //     activeTrackColor: AppColors.greenDarkColor,
+            //   ),
+            // ),
+            // SettingsItem(
+            //   icon: CupertinoIcons.globe,
+            //   title: 'Language',
+            //   trailing: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       Text('English', style: AppStyle.font15GreyW400),
+            //       SizedBox(width: 8.w),
+            //       Icon(
+            //         Icons.arrow_forward_ios,
+            //         size: 16.sp,
+            //         color: AppColors.greyColor,
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            Gap(250.h),
             AppTextButton(
               buttonText: 'Log Out',
               backgroundColor: AppColors.redColor,

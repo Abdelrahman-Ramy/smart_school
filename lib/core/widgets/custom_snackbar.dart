@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 
 SnackBar customSnackbar({
@@ -18,9 +19,9 @@ SnackBar customSnackbar({
     backgroundColor: color,
     content: Row(
       children: [
-        Icon(icon, color: Colors.white),
+        Icon(icon, color: AppColors.whiteColor,),
         Gap(5.w),
-        Text(errorMsg, style: AppStyle.font13White500),
+        Expanded(child: Text(errorMsg, style: AppStyle.font13White500)),
       ],
     ),
   );

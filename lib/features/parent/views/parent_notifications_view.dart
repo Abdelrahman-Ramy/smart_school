@@ -16,7 +16,6 @@ class ParentNotificationsView extends StatefulWidget {
 class _ParentNotificationsViewState extends State<ParentNotificationsView> {
   bool isAllSelected = true;
 
-  // القائمة اللي هتمثل البيانات اللي هتيجي من الـ API لاحقاً
   final List<Map<String, dynamic>> notificationsData = [
     {
       'title': 'Mrs.mai',
@@ -71,7 +70,6 @@ class _ParentNotificationsViewState extends State<ParentNotificationsView> {
 
   @override
   Widget build(BuildContext context) {
-    // منطق الفلترة: بنجهز القائمة اللي هتظهر حالياً بناءً على قيمة isAllSelected
     final currentList = isAllSelected
         ? notificationsData
         : notificationsData.where((item) => item['isRead'] == false).toList();
