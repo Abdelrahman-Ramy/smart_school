@@ -16,10 +16,10 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
   DateTime focusedDate = DateTime.now();
   final DateTime today = DateTime.now();
 
-  // next 7 days and prev 7 days
+ 
   void changeWeek(int weeks) {
     DateTime newDate = focusedDate.add(Duration(days: weeks * 7));
-    // to save future
+    
     if (newDate.isAfter(today) && weeks > 0) return;
     setState(() => focusedDate = newDate);
   }
@@ -29,7 +29,7 @@ class _AttendanceCalendarCardState extends State<AttendanceCalendarCard> {
       Duration(days: focusedDate.weekday % 7),
     );
 
-    // to make 5days no 7
+   
     return List.generate(5, (i) => sunday.add(Duration(days: i)));
   }
 

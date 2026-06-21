@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:smart_school/core/helpers/extensions.dart';
+import 'package:smart_school/core/helpers/pref_helper.dart';
 import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
@@ -33,18 +33,23 @@ class UploadTasksView extends StatefulWidget {
 class _UploadTasksViewState extends State<UploadTasksView> {
   PlatformFile? pickedFile;
   bool isUploading = false;
+  bool _showAttachmentField = false;
   String? currentAssignmentId;
 
   final TeacherRepo _teacherRepo = TeacherRepo();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _dueDateController = TextEditingController();
+  final TextEditingController _maxScoreController = TextEditingController(
+    text: '100',
+  );
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
     _dueDateController.dispose();
+    _maxScoreController.dispose();
     FocusManager.instance.primaryFocus?.unfocus();
     super.dispose();
   }
@@ -82,7 +87,8 @@ class _UploadTasksViewState extends State<UploadTasksView> {
   Future<void> _submitAssignment() async {
     if (_titleController.text.isEmpty ||
         _descriptionController.text.isEmpty ||
-        _dueDateController.text.isEmpty) {
+        _dueDateController.text.isEmpty ||
+        _maxScoreController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         customSnackbar(
           errorMsg: 'Please fill all required fields',
@@ -97,19 +103,25 @@ class _UploadTasksViewState extends State<UploadTasksView> {
 
     try {
       final dynamic responseData = await _teacherRepo.uploadAssignment(
-        teacherId: '11',
+        teacherId: PrefHelper.getUserId() ?? '11',
         classId: widget.classId,
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
         dueDate: _dueDateController.text.trim(),
-        maxScore: '100',
+        maxScore: _maxScoreController.text.trim(),
         type: 'homework',
         filePath: pickedFile?.path,
       );
 
-      if (responseData != null &&
-          (responseData['success'] == true || responseData.success == true) &&
-          mounted) {
+      bool success = false;
+      String serverMessage = 'Validation failed';
+
+      if (responseData is Map) {
+        success = responseData['success'] == true;
+        serverMessage = responseData['message'] ?? serverMessage;
+      }
+
+      if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar(
             errorMsg: 'Assignment uploaded successfully!',
@@ -119,19 +131,9 @@ class _UploadTasksViewState extends State<UploadTasksView> {
         );
 
         setState(() {
-          if (responseData is Map) {
-            currentAssignmentId = responseData['data']?['id']?.toString() ?? '';
-          } else {
-            try {
-              currentAssignmentId = responseData.data?.id?.toString() ?? '';
-            } catch (_) {
-              currentAssignmentId = '';
-            }
-          }
+          currentAssignmentId = responseData['data']?['id']?.toString() ?? '';
         });
-      } else if (responseData != null && mounted) {
-        final String serverMessage =
-            responseData['message'] ?? 'Validation failed';
+      } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar(
             errorMsg: serverMessage,
@@ -172,16 +174,8 @@ class _UploadTasksViewState extends State<UploadTasksView> {
           actions: [
             IconButton(
               onPressed: () {
-                print("🚨 [DEBUG] Clicked Submissions Button");
-                print("🚨 [DEBUG] currentAssignmentId: '$currentAssignmentId'");
-                print("🚨 [DEBUG] classId: '${widget.classId}'");
-
                 if (currentAssignmentId == null ||
                     currentAssignmentId!.isEmpty) {
-                  print(
-                    "❌ [DEBUG] Stopped because currentAssignmentId is NULL or EMPTY!",
-                  );
-
                   ScaffoldMessenger.of(context).showSnackBar(
                     customSnackbar(
                       errorMsg:
@@ -192,10 +186,6 @@ class _UploadTasksViewState extends State<UploadTasksView> {
                   );
                   return;
                 }
-
-                print(
-                  "🚀 [DEBUG] All IDs valid! Navigating to assignmentSubmissions...",
-                );
                 Navigator.of(context).pushNamed(
                   Routes.assignmentSubmissions,
                   arguments: {
@@ -254,40 +244,69 @@ class _UploadTasksViewState extends State<UploadTasksView> {
                 suffixIcon: const Icon(Icons.keyboard_arrow_down),
                 onTap: () => _selectDueDate(context),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text(
-                  'Attachment',
-                  style: AppStyle.font14GreyW400.copyWith(
-                    color: Colors.grey[500],
+              CustomTaskField(
+                controller: _maxScoreController,
+                label: 'Max Score',
+                hintText: 'Enter max score (e.g. 100)',
+              ),
+              if (!_showAttachmentField)
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 18.w,
+                    vertical: 5.h,
+                  ),
+                  child: AppTextButton(
+                    buttonText: 'Upload Task',
+                    backgroundColor: AppColors.primaryColor,
+                    textStyle: AppStyle.font18WhiteW500.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _showAttachmentField = true;
+                      });
+                    },
                   ),
                 ),
-              ),
-              CustomAttachmentSection(
-                onFileChanged: (file) {
-                  setState(() {
-                    pickedFile = file;
-                  });
-                },
-              ),
-              Gap(10.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 5.h),
-                child: isUploading
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primaryColor,
+              if (_showAttachmentField) ...[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Text(
+                    'Attachment',
+                    style: AppStyle.font14GreyW400.copyWith(
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ),
+                CustomAttachmentSection(
+                  onFileChanged: (file) {
+                    setState(() {
+                      pickedFile = file;
+                    });
+                  },
+                ),
+                Gap(10.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 18.w,
+                    vertical: 5.h,
+                  ),
+                  child: isUploading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primaryColor,
+                          ),
+                        )
+                      : AppTextButton(
+                          buttonText: 'Create Assignment',
+                          backgroundColor: AppColors.primaryColor,
+                          textStyle: AppStyle.font18WhiteW500.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          onPressed: _submitAssignment,
                         ),
-                      )
-                    : AppTextButton(
-                        buttonText: 'Upload Task',
-                        backgroundColor: AppColors.primaryColor,
-                        textStyle: AppStyle.font18WhiteW500.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        onPressed: _submitAssignment,
-                      ),
-              ),
+                ),
+              ],
               Gap(20.h),
             ],
           ),

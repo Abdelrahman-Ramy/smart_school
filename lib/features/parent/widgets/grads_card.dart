@@ -9,6 +9,7 @@ class GradsCard extends StatelessWidget {
   final String subTitle;
   final String percentage;
   final IconData icon;
+
   const GradsCard({
     super.key,
     required this.title,

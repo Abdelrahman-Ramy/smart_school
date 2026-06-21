@@ -144,7 +144,7 @@ class _LoginViewState extends State<LoginView> {
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                               ),
-                              Gap(12.h),
+                              Gap(15.h),
                               AppTextFormField(
                                 hintText: 'Password',
                                 controller: passwordController,
@@ -164,12 +164,13 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                                 ),
                               ),
-                              Gap(15.h),
+                              Gap(10.h),
                               GestureDetector(
                                 onTap: () {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     customSnackbar(
-                                      errorMsg: 'contact administration to reset your password',
+                                      errorMsg:
+                                          'contact administration to reset your password',
                                       icon: CupertinoIcons.info,
                                       color: AppColors.greyColor,
                                     ),
@@ -184,7 +185,7 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                                 ),
                               ),
-                              Gap(30.h),
+                              Gap(70.h),
 
                               // Login Button
                               isLoading
@@ -200,7 +201,7 @@ class _LoginViewState extends State<LoginView> {
                                       backgroundColor: AppColors.primaryColor,
                                       onPressed: login,
                                     ),
-                              Gap(60.h),
+                              Gap(15.h),
                               Center(
                                 child: RichText(
                                   text: TextSpan(

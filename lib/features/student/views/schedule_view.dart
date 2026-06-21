@@ -16,6 +16,40 @@ class ScheduleView extends StatefulWidget {
 
 class _ScheduleViewState extends State<ScheduleView> {
   final List<String> days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+  static const List<Map<String, dynamic>> _dummyLessons = [
+    {
+      'lessonColor': AppColors.primaryColor,
+      'lessonSubject': 'English - Grammar',
+      'lessonTime': '08:00 AM - 10:00 AM',
+      'classroom': 'A12',
+    },
+    {
+      'lessonColor': Colors.blue,
+      'lessonSubject': 'Mathematics - Calculus',
+      'lessonTime': '10:15 AM - 11:45 AM',
+      'classroom': 'B04',
+    },
+    {
+      'lessonColor': Colors.green,
+      'lessonSubject': 'Biology - Lab',
+      'lessonTime': '12:00 PM - 01:30 PM',
+      'classroom': 'Lab 2',
+    },
+    {
+      'lessonColor': Colors.orange,
+      'lessonSubject': 'Arabic - Literature',
+      'lessonTime': '01:45 PM - 03:15 PM',
+      'classroom': 'C01',
+    },
+    {
+      'lessonColor': Colors.purple,
+      'lessonSubject': 'History - Civilization',
+      'lessonTime': '03:30 PM - 05:00 PM',
+      'classroom': 'A08',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,16 +75,17 @@ class _ScheduleViewState extends State<ScheduleView> {
           Expanded(
             child: ListView.separated(
               padding: EdgeInsets.only(bottom: 160.h),
-              itemCount: 9,
+              itemCount: _dummyLessons.length,
               separatorBuilder: (_, _) => Gap(12.h),
               itemBuilder: (context, index) {
+                final lesson = _dummyLessons[index];
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
-                  child: const LessonCard(
-                    lessonColor: AppColors.primaryColor,
-                    lessonSubject: 'English-Grammer',
-                    lessonTime: '08:00AM-10:00AM',
-                    classroom: 'A12',
+                  child: LessonCard(
+                    lessonColor: lesson['lessonColor'],
+                    lessonSubject: lesson['lessonSubject'],
+                    lessonTime: lesson['lessonTime'],
+                    classroom: lesson['classroom'],
                   ),
                 );
               },

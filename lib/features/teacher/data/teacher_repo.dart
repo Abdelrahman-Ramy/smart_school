@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/network/api_exception.dart';
@@ -64,7 +62,7 @@ class TeacherRepo {
   // ----------------------------------------------------------------─
   // 2. Upload Assignment
   // ----------------------------------------------------------------─
-  Future<bool> uploadAssignment({
+  Future<dynamic> uploadAssignment({
     required String teacherId,
     required String classId,
     required String title,
@@ -75,7 +73,7 @@ class TeacherRepo {
     String? filePath,
   }) async {
     try {
-      final Map<String, dynamic> bodyData = {
+      final Map<String, dynamic> fields = {
         'teacher_id': int.tryParse(teacherId) ?? 0,
         'class_id': int.tryParse(classId) ?? 0,
         'title': title,
@@ -83,16 +81,27 @@ class TeacherRepo {
         'due_date': dueDate,
         'max_score': int.tryParse(maxScore) ?? 100,
         'type': type,
-        'attachment_path': filePath,
       };
 
-      final response = await apiService.post('/teacher/assignments', bodyData);
-
-      if (response['success'] == true) {
-        return true;
+      dynamic data;
+      if (filePath != null) {
+        data = FormData.fromMap({
+          ...fields,
+          'attachment': await MultipartFile.fromFile(
+            filePath,
+            filename: filePath.split('/').last,
+          ),
+        });
+      } else {
+        data = fields;
       }
-      return false;
+
+      final response = await apiService.post('/teacher/assignments', data);
+      return response;
     } catch (e) {
+      if (e is DioException) {
+        print("❌ API Error: ${e.response?.data}");
+      }
       rethrow;
     }
   }
@@ -103,9 +112,7 @@ class TeacherRepo {
     try {
       final response = await apiService.post(
         '/teacher/assignments/submissions',
-        {
-          'assignment_id': assignmentId,
-        },
+        {'assignment_id': assignmentId},
       );
       return SubmissionResponse.fromJson(response);
     } catch (e) {
@@ -189,10 +196,7 @@ class TeacherRepo {
         'status': status,
       };
 
-      final response = await apiService.post(
-        '/attendance/mark',
-        bodyData,
-      );
+      final response = await apiService.post('/attendance/mark', bodyData);
 
       if (response is Map<String, dynamic>) {
         return AttendanceMarkResponse.fromJson(response);

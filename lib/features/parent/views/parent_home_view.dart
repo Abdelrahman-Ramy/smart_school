@@ -27,6 +27,39 @@ class _ParentHomeViewState extends State<ParentHomeView> {
   UserModel? userModel;
   AuthRepo authRepo = AuthRepo();
 
+  static const List<Map<String, dynamic>> _dummyGrades = [
+    {
+      'title': 'Mathematics',
+      'subTitle': 'Unit 3 Test',
+      'percentage': '95',
+      'icon': Icons.calculate_outlined,
+    },
+    {
+      'title': 'English',
+      'subTitle': 'Grammar Quiz',
+      'percentage': '88',
+      'icon': Icons.g_translate_outlined,
+    },
+    {
+      'title': 'Science',
+      'subTitle': 'Physics Lab Exam',
+      'percentage': '76',
+      'icon': Icons.science_outlined,
+    },
+    {
+      'title': 'History',
+      'subTitle': 'Midterm Revision',
+      'percentage': '91',
+      'icon': Icons.menu_book_outlined,
+    },
+    {
+      'title': 'Arabic',
+      'subTitle': 'Reading Assessment',
+      'percentage': '100',
+      'icon': Icons.translate_outlined,
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +75,6 @@ class _ParentHomeViewState extends State<ParentHomeView> {
         });
       }
     } catch (e) {
-      // Silently fail or handle error
     }
   }
 
@@ -152,8 +184,6 @@ class _ParentHomeViewState extends State<ParentHomeView> {
                   ),
                 ),
                 Gap(15.h),
-                // if()  => This can store a widget
-                // ... => This can store a list
                 if (isSelected) ...[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -184,13 +214,14 @@ class _ParentHomeViewState extends State<ParentHomeView> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) => Gap(10.h),
-                    itemCount: 10,
+                    itemCount: _dummyGrades.length,
                     itemBuilder: (context, index) {
-                      return const GradsCard(
-                        title: 'Math',
-                        subTitle: 'Unit 3 Test',
-                        percentage: '95',
-                        icon: Icons.calculate_outlined,
+                      final grade = _dummyGrades[index];
+                      return GradsCard(
+                        title: grade['title'],
+                        subTitle: grade['subTitle'],
+                        percentage: grade['percentage'],
+                        icon: grade['icon'],
                       );
                     },
                   ),
