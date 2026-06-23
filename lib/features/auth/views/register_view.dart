@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -108,7 +109,6 @@ Future<void> signup() async {
               "createdAt": FieldValue.serverTimestamp(), 
             }); 
 
-        // 🔥 ADDED ONLY THIS LINE
         await FirebaseChatService.createInitialChats(user.id.toString(), user.role ?? '');
 
         Future.delayed(const Duration(milliseconds: 500), () { 
@@ -275,22 +275,32 @@ Future<void> signup() async {
                                       backgroundColor: AppColors.primaryColor,
                                       onPressed: signup,
                                     ),
-                              Gap(10.h),
-                              AppTextButton(
-                                buttonText: 'Go To Login',
-                                isNav: true,
-                                textStyle: AppStyle.font14WhiteBold.copyWith(
-                                  color: AppColors.primaryColor,
+                              Gap(15.h),
+                              Center(
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: "Already have an account? ",
+                                        style: AppStyle.font15GreyW400.copyWith(
+                                          fontSize: 13.sp,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: 'Login',
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            context.pushNamed(Routes.loginScreen);
+                                          },
+                                        style: AppStyle.font15GreyW400.copyWith(
+                                          color: AppColors.primaryColor,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                backgroundColor: AppColors.whiteColor,
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const LoginView(),
-                                    ),
-                                  );
-                                },
                               ),
                             ],
                           ),

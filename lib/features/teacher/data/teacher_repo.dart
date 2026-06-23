@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/network/api_exception.dart';
@@ -23,7 +21,9 @@ class TeacherRepo {
   // ----------------------------------------------------------------─
   Future<List<TeacherClassModel>> fetchTeacherClasses() async {
     try {
-      final response = await apiService.get("/teacher/schedules");
+      // Use the teacher classes endpoint which returns classes owned by the
+      // authenticated teacher. The backend route is GET /api/v1/teacher/classes
+      final response = await apiService.get("/teacher/classes");
 
       if (response is ApiError) {
         throw response;
@@ -52,7 +52,9 @@ class TeacherRepo {
           : data;
 
       return classesList
-          .map((json) => TeacherClassModel.fromJson(json))
+          .map(
+            (json) => TeacherClassModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
     } on DioException catch (e) {
       throw ApiExceptions.handleError(e);
@@ -61,10 +63,25 @@ class TeacherRepo {
     }
   }
 
+  /// Fetch a single class by id from the teacher classes list.
+  Future<TeacherClassModel?> fetchClassById(String classId) async {
+    try {
+      final classes = await fetchTeacherClasses();
+      final idInt = int.tryParse(classId) ?? 0;
+      for (final c in classes) {
+        final cid = c.classId ?? c.id ?? 0;
+        if (cid == idInt) return c;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   // ----------------------------------------------------------------─
   // 2. Upload Assignment
   // ----------------------------------------------------------------─
-  Future<bool> uploadAssignment({
+  Future<dynamic> uploadAssignment({
     required String teacherId,
     required String classId,
     required String title,
@@ -75,7 +92,7 @@ class TeacherRepo {
     String? filePath,
   }) async {
     try {
-      final Map<String, dynamic> bodyData = {
+      final Map<String, dynamic> fields = {
         'teacher_id': int.tryParse(teacherId) ?? 0,
         'class_id': int.tryParse(classId) ?? 0,
         'title': title,
@@ -83,30 +100,48 @@ class TeacherRepo {
         'due_date': dueDate,
         'max_score': int.tryParse(maxScore) ?? 100,
         'type': type,
-        'attachment_path': filePath,
       };
 
-      final response = await apiService.post('/teacher/assignments', bodyData);
-
-      if (response['success'] == true) {
-        return true;
+      dynamic data;
+      if (filePath != null) {
+        data = FormData.fromMap({
+          ...fields,
+          'attachment': await MultipartFile.fromFile(
+            filePath,
+            filename: filePath.split('/').last,
+          ),
+        });
+      } else {
+        data = fields;
       }
-      return false;
+
+      final response = await apiService.post('/teacher/assignments', data);
+      return response;
     } catch (e) {
+      if (e is DioException) {
+        print("API Error: ${e.response?.data}");
+      }
       rethrow;
     }
   }
 
   Future<SubmissionResponse> getAssignmentSubmissions({
-    required String assignmentId,
+    required int assignmentId,
   }) async {
     try {
       final response = await apiService.post(
         '/teacher/assignments/submissions',
-        {
-          'assignment_id': assignmentId,
-        },
+        {'assignment_id': assignmentId},
       );
+
+      // Log raw response for debugging runtime type issues
+      try {
+        print(
+          'getAssignmentSubmissions raw response type: ${response.runtimeType}',
+        );
+        print('getAssignmentSubmissions raw response: $response');
+      } catch (_) {}
+
       return SubmissionResponse.fromJson(response);
     } catch (e) {
       rethrow;
@@ -178,7 +213,7 @@ class TeacherRepo {
   }
 
   Future<AttendanceMarkResponse> markStudentAttendance({
-    required int studentId,
+    required dynamic studentId,
     required int classId,
     required String status,
   }) async {
@@ -190,7 +225,7 @@ class TeacherRepo {
       };
 
       final response = await apiService.post(
-        '/attendance/mark',
+        '/teacher/attendance/mark',
         bodyData,
       );
 
@@ -209,9 +244,7 @@ class TeacherRepo {
     required int studentId,
   }) async {
     try {
-      final response = await apiService.get(
-        '/attendance/student/$studentId/history',
-      );
+      final response = await apiService.get('/teacher/attendance/student/22');
 
       if (response is Map<String, dynamic>) {
         return StudentAttendanceResponse.fromJson(response);
@@ -219,7 +252,7 @@ class TeacherRepo {
         throw Exception('Unexpected response format');
       }
     } catch (e) {
-      print("خطأ الـ Repo في جلب غياب الطالب: $e");
+      print(e);
       rethrow;
     }
   }
@@ -238,91 +271,132 @@ class TeacherRepo {
         throw Exception('Unexpected response format');
       }
     } catch (e) {
-      print("خطأ الـ Repo في جلب غياب الفصل لليوم: $e");
+      print(e);
       rethrow;
     }
   }
 
-  Future<QuizCreateResponse> addQuiz({
-    required String classId,
+  Future<QuizModel?> createQuiz({
     required String title,
-    required String description,
-    required String quizDate,
-    required String totalMarks,
+    required String maxScore,
   }) async {
     try {
-      final Map<String, dynamic> quizBody = {
-        'class_id': classId,
+      final response = await apiService.post('/teacher/quizzes', {
         'title': title,
-        'description': description,
-        'quiz_date': quizDate,
-        'total_marks': totalMarks,
-      };
+        'max_score': maxScore,
+      });
 
-      final response = await apiService.post('/teacher/quizzes', quizBody);
-
-      if (response is Map<String, dynamic>) {
-        return QuizCreateResponse.fromJson(response);
-      } else {
-        throw Exception('Unexpected response format');
+      if (response['success'] == true) {
+        return QuizModel.fromJson(response['data']);
       }
+
+      return null;
     } catch (e) {
-      rethrow;
+      print('Create Quiz Error: $e');
+      return null;
     }
   }
 
-  Future<QuizListResponse> getClassQuizzes({required int classId}) async {
-    try {
-      final response = await apiService.get('/teacher/quizzes/$classId');
-
-      if (response is Map<String, dynamic>) {
-        return QuizListResponse.fromJson(response);
-      } else {
-        throw Exception('Unexpected response format');
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<QuizDeleteResponse> deleteQuiz({required int quizId}) async {
-    try {
-      final response = await apiService.delete('/teacher/quizzes/$quizId', {});
-
-      if (response != null) {
-        return QuizDeleteResponse.fromJson(response);
-      } else {
-        throw Exception('Unexpected response format');
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<QuizResultSaveResponse> saveStudentQuizResult({
-    required String quizId,
-    required int studentId,
+  Future<bool> saveGradeResult({
+    required String title,
+    required String studentId,
     required String score,
+    required String maxScore,
   }) async {
     try {
-      final Map<String, dynamic> resultBody = {
-        'quiz_id': quizId,
+      final response = await apiService.post('/teacher/grades-results', {
+        'title': title,
         'student_id': studentId,
         'score': score,
-      };
+        'max_score': maxScore,
+      });
 
-      final response = await apiService.post(
-        '/teacher/quiz-results',
-        resultBody,
-      );
-
-      if (response is Map<String, dynamic>) {
-        return QuizResultSaveResponse.fromJson(response);
-      } else {
-        throw Exception('Unexpected response format');
-      }
+      return response['success'] == true;
     } catch (e) {
-      rethrow;
+      print('Save Grade Error: $e');
+      return false;
     }
   }
+
+  // Future<QuizCreateResponse> addQuiz({
+  //   required String classId,
+  //   required String title,
+  //   required String description,
+  //   required String quizDate,
+  //   required String totalMarks,
+  // }) async {
+  //   try {
+  //     final Map<String, dynamic> quizBody = {
+  //       'class_id': classId,
+  //       'title': title,
+  //       'description': description,
+  //       'quiz_date': quizDate,
+  //       'total_marks': totalMarks,
+  //     };
+
+  //     final response = await apiService.post('/teacher/quizzes', quizBody);
+
+  //     if (response is Map<String, dynamic>) {
+  //       return QuizCreateResponse.fromJson(response);
+  //     } else {
+  //       throw Exception('Unexpected response format');
+  //     }
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+  // Future<QuizListResponse> getClassQuizzes({required int classId}) async {
+  //   try {
+  //     final response = await apiService.get('/teacher/quizzes/$classId');
+
+  //     if (response is Map<String, dynamic>) {
+  //       return QuizListResponse.fromJson(response);
+  //     } else {
+  //       throw Exception('Unexpected response format');
+  //     }
+  //   } catch (e) {
+  //     rethrow;
+  //   }
 }
+
+  // Future<QuizDeleteResponse> deleteQuiz({required int quizId}) async {
+  //   try {
+  //     final response = await apiService.delete('/teacher/quizzes/$quizId', {});
+
+  //     if (response != null) {
+  //       return QuizDeleteResponse.fromJson(response);
+  //     } else {
+  //       throw Exception('Unexpected response format');
+  //     }
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+  // Future<QuizResultSaveResponse> saveStudentQuizResult({
+  //   required String quizId,
+  //   required int studentId,
+  //   required String score,
+  // }) async {
+  //   try {
+  //     final Map<String, dynamic> resultBody = {
+  //       'quiz_id': quizId,
+  //       'student_id': studentId,
+  //       'score': score,
+  //     };
+
+  //     final response = await apiService.post(
+  //       '/teacher/quiz-results',
+  //       resultBody,
+  //     );
+
+  //     if (response is Map<String, dynamic>) {
+  //       return QuizResultSaveResponse.fromJson(response);
+  //     } else {
+  //       throw Exception('Unexpected response format');
+  //     }
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }

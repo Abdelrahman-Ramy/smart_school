@@ -5,7 +5,9 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 
 class BuildDaysSelector extends StatefulWidget {
-  const BuildDaysSelector({super.key});
+  final Function(String) onDaySelected;
+
+  const BuildDaysSelector({super.key, required this.onDaySelected});
 
   @override
   State<BuildDaysSelector> createState() => _BuildDaysSelectorState();
@@ -13,7 +15,9 @@ class BuildDaysSelector extends StatefulWidget {
 
 class _BuildDaysSelectorState extends State<BuildDaysSelector> {
   String selectedDay = 'Sun';
+
   final List<String> days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,17 +30,22 @@ class _BuildDaysSelectorState extends State<BuildDaysSelector> {
         itemBuilder: (context, index) {
           final day = days[index];
           final isSelected = day == selectedDay;
+
           return GestureDetector(
             onTap: () {
               setState(() {
                 selectedDay = day;
               });
+
+              widget.onDaySelected(day);
             },
             child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: 18.w),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primaryColor : Colors.grey.shade200,
+                color: isSelected
+                    ? AppColors.primaryColor
+                    : Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Text(

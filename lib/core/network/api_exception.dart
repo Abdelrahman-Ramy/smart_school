@@ -6,7 +6,7 @@ class ApiExceptions {
     final statusCode = error.response?.statusCode;
     final data = error.response?.data;
 
-    // Case 1: structured validation errors
+    
     if (data is Map<String, dynamic>) {
 
       // backend validation format

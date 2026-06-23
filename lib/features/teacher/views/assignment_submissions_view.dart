@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_school/core/network/dio_client.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/custom_snackbar.dart';
-import 'package:smart_school/features/teacher/data/submission_model.dart';
+import 'package:smart_school/core/helpers/pref_helper.dart';
 import 'package:smart_school/features/teacher/data/teacher_repo.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_school/features/teacher/cubit/submission_search_cubit.dart';
+import 'package:smart_school/features/teacher/cubit/submission_search_state.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AssignmentSubmissionsView extends StatefulWidget {
@@ -25,221 +29,177 @@ class AssignmentSubmissionsView extends StatefulWidget {
 
 class _AssignmentSubmissionsViewState extends State<AssignmentSubmissionsView> {
   final TeacherRepo _teacherRepo = TeacherRepo();
-  late Future<SubmissionResponse> _submissionsFuture;
+  late final SubmissionSearchCubit _searchCubit;
+
+  final TextEditingController _taskIdController = TextEditingController();
+
+  final Map<int, TextEditingController> _gradeControllers = {};
+  final Map<int, bool> _isSaving = {};
 
   @override
   void initState() {
     super.initState();
-    _submissionsFuture = _teacherRepo.getAssignmentSubmissions(
-      assignmentId: widget.assignmentId,
-    );
-  }
-
-  void _loadSubmissions() {
-    setState(() {
-      _submissionsFuture = _teacherRepo.getAssignmentSubmissions(
-        assignmentId: widget.assignmentId,
-      );
-    });
+    _searchCubit = SubmissionSearchCubit(_teacherRepo);
   }
 
   Future<void> _openSubmissionFile(String filePath) async {
-    final String baseUrl = "https://your-api-domain.com/";
-    final String fullUrl = filePath.startsWith('http')
-        ? filePath
-        : "$baseUrl$filePath";
+    final DioClient client = DioClient();
+    final String baseUrl = client.dio.options.baseUrl;
+    final String trimmedBase = baseUrl.endsWith('/') ? baseUrl : '$baseUrl/';
+    if (filePath.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: 'No file to open',
+            icon: CupertinoIcons.info,
+            color: AppColors.greyColor,
+          ),
+        );
+      }
+      return;
+    }
 
-    final Uri url = Uri.parse(fullUrl);
+    final String fullUrl;
+    if (filePath.toLowerCase().startsWith('http')) {
+      fullUrl = filePath;
+    } else {
+      final cleaned = filePath.replaceFirst(RegExp(r'^/+'), '');
+      fullUrl = '$trimmedBase$cleaned';
+    }
+
+    final Uri url = Uri.tryParse(fullUrl) ?? Uri();
+
     try {
-      final bool launched = await launchUrl(
+      final launched = await launchUrl(
         url,
         mode: LaunchMode.externalApplication,
       );
-
-      if (!launched && mounted) {
-       ScaffoldMessenger.of(context).showSnackBar(
-        customSnackbar(
-          errorMsg: 'Could not launch submission file',
-          icon: CupertinoIcons.info,
-          color: AppColors.greyColor,
-        ),
-      );
+      if (launched != true && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: 'Could not open file',
+            icon: CupertinoIcons.info,
+            color: AppColors.greyColor,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-        customSnackbar(
-          errorMsg: 'Error launching file: $e',
-          icon: CupertinoIcons.info,
-          color: AppColors.greyColor,
-        ),
-      );
+          customSnackbar(
+            errorMsg: 'Error launching file',
+            icon: CupertinoIcons.info,
+            color: AppColors.greyColor,
+          ),
+        );
       }
     }
   }
 
-  void _showGradeDialog(
-    BuildContext context, {
-    required String submissionId,
-    required String studentId,
-    required String currentScore,
-    required String currentFeedback,
-  }) {
-    final TextEditingController scoreController = TextEditingController(
-      text: currentScore == '0' ? '' : currentScore,
-    );
-    final TextEditingController feedbackController = TextEditingController(
-      text: currentFeedback,
-    );
-    final ValueNotifier<bool> isSavingNotifier = ValueNotifier<bool>(false);
-
+  void _showSubmissionDialog(dynamic item) {
     showDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          backgroundColor: AppColors.whiteColor,
-          title: Text(
-            'Grade Submission',
-            style: AppStyle.font18GreyW500.copyWith(
-              color: AppColors.blackColor,
-              fontWeight: FontWeight.bold,
+      builder: (_) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
             ),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: scoreController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Score',
-                    hintText: 'e.g. 10',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                TextField(
-                  controller: feedbackController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Feedback',
-                    hintText: 'e.g. Well done!',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                scoreController.dispose();
-                feedbackController.dispose();
-                Navigator.pop(dialogContext);
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: AppColors.greyColor),
-              ),
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: isSavingNotifier,
-              builder: (context, isSaving, child) {
-                return isSaving
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: AppColors.primaryColor,
-                            strokeWidth: 2.5,
-                          ),
+            elevation: 8,
+            child: Padding(
+              padding: EdgeInsets.all(12.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20.r,
+                        backgroundColor: AppColors.primaryColor,
+                        child: Text(
+                          item.student.user.name.isNotEmpty
+                              ? item.student.user.name[0].toUpperCase()
+                              : 'S',
+                          style: const TextStyle(color: AppColors.whiteColor),
                         ),
-                      )
-                    : ElevatedButton(
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.student.user.name,
+                              style: AppStyle.font19BlackW500,
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              "Student ID: ${item.studentId}",
+                              style: AppStyle.font15GreyW400,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.picture_as_pdf,
+                        color: AppColors.redColor,
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: Text(
+                          item.filePath.split('/').last,
+                          style: AppStyle.font15GreyW500,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 14.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Close'),
+                      ),
+                      SizedBox(width: 8.w),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _openSubmissionFile(item.filePath);
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
                         ),
-                        onPressed: () async {
-                          if (scoreController.text.trim().isEmpty) {
-                            ScaffoldMessenger.of(dialogContext).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please enter a score!'),
-                              ),
-                            );
-                            return;
-                          }
-
-                          isSavingNotifier.value = true;
-
-                          try {
-                            final success = await _teacherRepo.gradeAssignment(
-                              submissionId: submissionId,
-                              assignmentId: widget.assignmentId.toString(),
-                              studentId: studentId,
-                              score: scoreController.text.trim(),
-                              feedback: feedbackController.text.trim(),
-                              teacherId: '11',
-                              classId: widget.classId.toString(),
-                            );
-
-                            if (mounted) {
-                              if (success) {
-                                scoreController.dispose();
-                                feedbackController.dispose();
-                                Navigator.pop(dialogContext);
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  customSnackbar(
-                                    errorMsg: 'Graded successfully!',
-                                    icon: Icons.check,
-                                    color: Colors.green.shade900,
-                                  ),
-                                );
-                                _loadSubmissions();
-                              } else {
-                                isSavingNotifier.value = false;
-                                ScaffoldMessenger.of(
-                                  dialogContext,
-                                ).showSnackBar(
-                                  customSnackbar(
-                                    errorMsg:
-                                        'Failed to save grade. Try again.',
-                                    icon: CupertinoIcons.info,
-                                    color: AppColors.greyColor,
-                                  ),
-                                );
-                              }
-                            }
-                          } catch (e) {
-                            if (mounted) {
-                              isSavingNotifier.value = false;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                customSnackbar(
-                                  errorMsg: 'Error: $e',
-                                  icon: CupertinoIcons.info,
-                                  color: AppColors.greyColor,
-                                ),
-                              );
-                            }
-                          }
-                        },
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(color: AppColors.whiteColor),
-                        ),
-                      );
-              },
+                        child: const Text('Open'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         );
       },
-    ).then((_) {
-      scoreController.dispose();
-      feedbackController.dispose();
-    });
+    );
+  }
+
+  @override
+  void dispose() {
+    _taskIdController.dispose();
+    for (final c in _gradeControllers.values) {
+      c.dispose();
+    }
+    _searchCubit.close();
+    super.dispose();
   }
 
   @override
@@ -251,154 +211,306 @@ class _AssignmentSubmissionsViewState extends State<AssignmentSubmissionsView> {
         elevation: 0,
         scrolledUnderElevation: 0,
         title: Text('Student Submissions', style: AppStyle.font22BlackW500),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(
-            color: AppColors.blackColor,
-            size: 26.sp,
-            CupertinoIcons.chevron_back,
-          ),
-        ),
       ),
-      body: FutureBuilder<SubmissionResponse>(
-        future: _submissionsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryColor),
-            );
-          }
 
-          if (snapshot.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Error: ${snapshot.error}',
-                  textAlign: TextAlign.center,
-                  style: AppStyle.font14GreyW400.copyWith(
-                    color: AppColors.redColor,
-                  ),
-                ),
-              ),
-            );
-          }
-
-          if (!snapshot.hasData || snapshot.data!.data.isEmpty) {
-            return Center(
-              child: Text(
-                'No student submitted this task yet.',
-                style: AppStyle.font14GreyW400,
-              ),
-            );
-          }
-
-          final submissions = snapshot.data!.data;
-
-          return ListView.builder(
-            itemCount: submissions.length,
-            padding: EdgeInsets.symmetric(vertical: 10.h),
-            itemBuilder: (context, index) {
-              final item = submissions[index];
-              final bool isGraded = item.status == 'graded';
-              final String studentName = item.student.user.name.isNotEmpty
-                  ? item.student.user.name
-                  : 'Unknown Student';
-
-              return GestureDetector(
-                onTap: () {
-                  _showGradeDialog(
-                    context,
-                    submissionId: item.id.toString(),
-                    studentId: item.studentId.toString(),
-                    currentScore: item.score.toString(),
-                    currentFeedback: item.feedback,
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                  padding: EdgeInsets.all(12.dg),
-                  decoration: BoxDecoration(
-                    color: isGraded
-                        ? const Color(0xFFE8F5E9)
-                        : const Color(0xFFFFF3E0),
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: isGraded
-                          ? AppColors.greenColor
-                          : AppColors.orangeColor,
-                      width: 1.5,
+      body: BlocProvider<SubmissionSearchCubit>(
+        create: (_) => _searchCubit,
+        child: Padding(
+          padding: EdgeInsets.all(12.w),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _taskIdController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.redColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: AppColors.primaryColor),
+                        ),
+                        labelText: 'Task ID',
+                        labelStyle: TextStyle(color: AppColors.primaryColor),
+                      ),
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 24.r,
-                        backgroundColor: isGraded
-                            ? AppColors.greenColor.withOpacity(0.2)
-                            : AppColors.orangeColor.withOpacity(0.2),
-                        child: Text(
-                          studentName.isNotEmpty
-                              ? studentName[0].toUpperCase()
-                              : 'S',
-                          style: AppStyle.font15BlackBold.copyWith(
-                            color: isGraded
-                                ? AppColors.greenColor
-                                : AppColors.orangeColor,
-                          ),
+                  SizedBox(width: 8.w),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      final String taskId = _taskIdController.text.trim();
+
+                      if (taskId.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Enter valid Task ID')),
+                        );
+                        return;
+                      }
+                      _searchCubit.searchByTaskId(taskId);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                    ),
+                    child: Text('Search', style: AppStyle.font14WhiteBold),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 12.h),
+              Expanded(
+                child: BlocBuilder<SubmissionSearchCubit, SubmissionSearchState>(
+                  builder: (context, state) {
+                    if (state is SubmissionSearchLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primaryColor,
                         ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(studentName, style: AppStyle.font15BlackBold),
-                            SizedBox(height: 4.h),
-                            Text(
-                              'Status: ${item.status.toUpperCase()}',
-                              style: AppStyle.font14GreyW400.copyWith(
-                                color: isGraded
-                                    ? AppColors.greenColor
-                                    : AppColors.orangeColor,
-                                fontWeight: FontWeight.bold,
+                      );
+                    }
+
+                    if (state is SubmissionSearchFailure) {
+                      return Center(child: Text(state.error));
+                    }
+
+                    if (state is SubmissionSearchSuccess) {
+                      final submissions = state.submissions;
+
+                      return ListView.builder(
+                        itemCount: submissions.length,
+                        itemBuilder: (context, index) {
+                          final item = submissions[index];
+                          final sid = item.id;
+
+                          _gradeControllers.putIfAbsent(
+                            sid,
+                            () => TextEditingController(
+                              text: item.score == 0
+                                  ? ''
+                                  : item.score.toString(),
+                            ),
+                          );
+
+                          _isSaving.putIfAbsent(sid, () => false);
+
+                          final controller = _gradeControllers[sid]!;
+
+                          return Card(
+                            color: AppColors.glassyColor,
+                            margin: EdgeInsets.symmetric(vertical: 6.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 10.h,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // ================= TOP INFO =================
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 18.r,
+                                        backgroundColor: AppColors.primaryColor,
+                                        child: Text(
+                                          item.student.user.name.isNotEmpty
+                                              ? item.student.user.name[0]
+                                                    .toUpperCase()
+                                              : 'S',
+                                          style: const TextStyle(
+                                            color: AppColors.whiteColor,
+                                          ),
+                                        ),
+                                      ),
+
+                                      SizedBox(width: 10.w),
+
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.student.user.name,
+                                              style: AppStyle.font18WhiteW500,
+                                            ),
+                                            Text(
+                                              "Student ID: ${item.studentId}",
+                                              style: AppStyle.font14GreyW400,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8.w,
+                                          vertical: 4.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: item.score > 0
+                                              ? Colors.green.withOpacity(0.1)
+                                              : Colors.orange.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            8.r,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          item.score > 0 ? "Graded" : "Pending",
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: item.score > 0
+                                                ? Colors.green
+                                                : Colors.orange,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 10.h),
+
+                                  // ================= FILE =================
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.picture_as_pdf,
+                                        color: Colors.red,
+                                      ),
+                                      SizedBox(width: 6.w),
+                                      Expanded(
+                                        child: Text(
+                                          item.filePath.split('/').last,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            _openSubmissionFile(item.filePath),
+                                        child: const Text("Open"),
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 10.h),
+
+                                  // ================= GRADE =================
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          controller: controller,
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                            isDense: true,
+                                            labelText: "Grade",
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                      ),
+
+                                      SizedBox(width: 8.w),
+
+                                      _isSaving[sid] == true
+                                          ? const SizedBox(
+                                              width: 22,
+                                              height: 22,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
+                                            )
+                                          : ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    AppColors.primaryColor,
+                                              ),
+                                              onPressed: () async {
+                                                final text = controller.text
+                                                    .trim();
+                                                if (text.isEmpty) return;
+
+                                                setState(
+                                                  () => _isSaving[sid] = true,
+                                                );
+
+                                                final studentIdForApi =
+                                                    item
+                                                        .student
+                                                        .studentCode
+                                                        .isNotEmpty
+                                                    ? item.student.studentCode
+                                                    : item.studentId.toString();
+
+                                                final success = await _teacherRepo
+                                                    .gradeAssignment(
+                                                      submissionId: sid
+                                                          .toString(),
+                                                      assignmentId:
+                                                          widget.assignmentId,
+                                                      studentId:
+                                                          studentIdForApi,
+                                                      score: text,
+                                                      feedback: '',
+                                                      teacherId:
+                                                          PrefHelper.getUserId() ??
+                                                          '11',
+                                                      classId: widget.classId,
+                                                    );
+
+                                                if (!mounted) return;
+
+                                                setState(
+                                                  () => _isSaving[sid] = false,
+                                                );
+
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      success
+                                                          ? "Saved"
+                                                          : "Failed",
+                                                    ),
+                                                  ),
+                                                );
+
+                                                if (success) {
+                                                  _searchCubit.searchByTaskId(
+                                                    _taskIdController.text
+                                                        .trim(),
+                                                  );
+                                                }
+                                              },
+                                              child: Text(
+                                                "Save",
+                                                style: AppStyle.font14WhiteBold,
+                                              ),
+                                            ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      if (item.filePath.isNotEmpty)
-                        IconButton(
-                          onPressed: () => _openSubmissionFile(item.filePath),
-                          icon: Icon(
-                            Icons.picture_as_pdf,
-                            color: Colors.red[700],
-                            size: 28.sp,
-                          ),
-                        ),
-                      SizedBox(width: 8.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text('Score', style: AppStyle.font14GreyW400),
-                          SizedBox(height: 2.h),
-                          Text(
-                            isGraded ? '${item.score}/10' : '-/10',
-                            style: AppStyle.font15BlackBold.copyWith(
-                              color: isGraded
-                                  ? AppColors.greenColor
-                                  : AppColors.greyColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                          );
+                        },
+                      );
+                    }
+
+                    return const Center(
+                      child: Text('Enter Task ID and press Search'),
+                    );
+                  },
                 ),
-              );
-            },
-          );
-        },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

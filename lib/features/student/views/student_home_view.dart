@@ -95,8 +95,8 @@ class _StudentHomeViewState extends State<StudentHomeView> {
                       },
                     ),
                     CustomStuCard(
-                      title: 'Quizzes',
-                      imagePath: 'assets/images/quiz.jfif',
+                      title: 'Materials',
+                      imagePath: 'assets/images/materials.jfif',
                       onTap: () {
                         context.pushNamed(Routes.studentQuizzes);
                       },

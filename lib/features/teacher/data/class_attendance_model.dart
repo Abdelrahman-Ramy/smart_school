@@ -14,21 +14,16 @@ class ClassAttendanceResponse {
   });
 
   factory ClassAttendanceResponse.fromJson(Map<String, dynamic> json) {
-    var list = json['data'] as List?;
-    List<ClassAttendanceItem> parsedList = list != null
-        ? list.map((i) => ClassAttendanceItem.fromJson(i)).toList()
-        : [];
+    final list = json['data'] as List? ?? [];
 
     return ClassAttendanceResponse(
       success: json['success'] ?? false,
-      date: json['date']?.toString() ?? "",
-      classId: json['class_id'] is int
-          ? json['class_id']
-          : int.tryParse(json['class_id']?.toString() ?? '') ?? 0,
-      count: json['count'] is int
-          ? json['count']
-          : int.tryParse(json['count']?.toString() ?? '') ?? 0,
-      data: parsedList,
+      date: json['date']?.toString() ?? '',
+      classId: _parseInt(json['class_id']),
+      count: _parseInt(json['count']),
+      data: list
+          .map((e) => ClassAttendanceItem.fromJson(e))
+          .toList(),
     );
   }
 }
@@ -36,26 +31,32 @@ class ClassAttendanceResponse {
 class ClassAttendanceItem {
   final int id;
   final int studentId;
+  final String studentCode;
   final String studentName;
   final String status;
 
   ClassAttendanceItem({
     required this.id,
     required this.studentId,
+    required this.studentCode,
     required this.studentName,
     required this.status,
   });
 
   factory ClassAttendanceItem.fromJson(Map<String, dynamic> json) {
     return ClassAttendanceItem(
-      id: json['id'] is int
-          ? json['id']
-          : int.tryParse(json['id']?.toString() ?? '') ?? 0,
-      studentId: json['student_id'] is int
-          ? json['student_id']
-          : int.tryParse(json['student_id']?.toString() ?? '') ?? 0,
-      studentName: json['student_name']?.toString() ?? "Unknown Student",
-      status: json['status']?.toString() ?? "absent",
+      id: _parseInt(json['id']),
+      studentId: _parseInt(json['student_id']),
+      studentCode: json['student_code']?.toString() ??
+          json['student_id']?.toString() ??
+          '',
+      studentName: json['student_name']?.toString() ?? 'Unknown Student',
+      status: json['status']?.toString() ?? 'absent',
     );
   }
+}
+
+int _parseInt(dynamic value) {
+  if (value is int) return value;
+  return int.tryParse(value?.toString() ?? '') ?? 0;
 }

@@ -82,23 +82,23 @@ class GradeCard extends StatelessWidget {
                       ),
                     ),
                     Gap(8.w),
-                    Text('Grade:', style: AppStyle.font16BlackBold),
-                    Gap(6.w),
-                    Text(
-                      grade,
-                      style: AppStyle.font15BlackBold.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    // Text('Grade:', style: AppStyle.font16BlackBold),
+                    // Gap(6.w),
+                    // Text(
+                    //   grade,
+                    //   style: AppStyle.font15BlackBold.copyWith(
+                    //     fontWeight: FontWeight.w500,
+                    //   ),
+                    // ),
                   ],
                 )
-              else
-                Text(
-                  'Not Graded Yet',
-                  style: AppStyle.font15BlackBold.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+              // else
+              //   Text(
+              //     'Not Graded Yet',
+              //     style: AppStyle.font15BlackBold.copyWith(
+              //       fontWeight: FontWeight.w500,
+              //     ),
+              //   ),
             ],
           ),
         ],

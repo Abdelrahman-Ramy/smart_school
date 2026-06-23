@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_school/core/helpers/pref_helper.dart';
 import 'package:smart_school/core/routing/app_router.dart';
@@ -7,6 +8,8 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/parent/views/parent_root.dart';
 import 'package:smart_school/features/student/views/student_root.dart';
+import 'package:smart_school/features/teacher/cubit/attendance_cubit.dart';
+import 'package:smart_school/features/teacher/data/teacher_repo.dart';
 import 'package:smart_school/features/teacher/views/teacher_root.dart';
 import 'package:smart_school/firebase_options.dart';
 
@@ -29,17 +32,24 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          bottomSheetTheme: const BottomSheetThemeData(
-            backgroundColor: AppColors.whiteColor,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => AttendanceCubit(TeacherRepo()),
           ),
-          splashColor: Colors.transparent,
-          scaffoldBackgroundColor: AppColors.whiteColor,
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            bottomSheetTheme: const BottomSheetThemeData(
+              backgroundColor: AppColors.whiteColor,
+            ),
+            splashColor: Colors.transparent,
+            scaffoldBackgroundColor: AppColors.whiteColor,
+          ),
+          home: const LoginView(),
+          onGenerateRoute: AppRouter().generateRoute,
         ),
-        home: const LoginView(),
-        onGenerateRoute: AppRouter().generateRoute,
       ),
     );
   }

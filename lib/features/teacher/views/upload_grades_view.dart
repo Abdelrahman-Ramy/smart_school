@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_button.dart';
@@ -9,6 +11,9 @@ import 'package:smart_school/core/widgets/custom_snackbar.dart';
 import 'package:smart_school/features/teacher/widgets/custom_info_banner.dart';
 import 'package:smart_school/features/teacher/widgets/exam_header_fields.dart';
 import 'package:smart_school/features/teacher/widgets/student_grade_row.dart';
+
+import 'package:smart_school/features/teacher/cubit/upload_grades_cubit.dart';
+import 'package:smart_school/features/teacher/cubit/upload_grades_state.dart';
 import 'package:smart_school/features/teacher/data/teacher_repo.dart';
 
 class UploadGradesView extends StatefulWidget {
@@ -26,101 +31,101 @@ class UploadGradesView extends StatefulWidget {
 }
 
 class _UploadGradesViewState extends State<UploadGradesView> {
-  bool isUploading = false;
-  bool isLoadingStudents = false;
-  List<dynamic> fetchedStudents = [];
+  late UploadGradesCubit cubit;
 
   final TextEditingController totalMarksController = TextEditingController(
     text: '10',
   );
+
   final TextEditingController examNameController = TextEditingController(
     text: 'Quiz 1',
   );
 
-  final Map<int, TextEditingController> _scoreControllers = {};
-  final _repo = TeacherRepo();
+  final Map<String, TextEditingController> _scoreControllers = {};
+
+  bool isUploading = false;
+  bool isLoadingStudents = false;
+
+  List<dynamic> fetchedStudents = [];
 
   @override
   void initState() {
     super.initState();
-    _loadStudentsData();
+    cubit = UploadGradesCubit(TeacherRepo());
+    _loadStudents();
   }
 
-  Future<void> _loadStudentsData() async {
+  // =========================
+  // INIT CONTROLLERS (FIXED)
+  // =========================
+  void _initControllers(List<dynamic> students) {
+    for (var student in students) {
+      final String studentId = student['student_id'].toString();
+
+      _scoreControllers.putIfAbsent(
+        studentId,
+        () => TextEditingController(text: '0'),
+      );
+    }
+  }
+
+  // =========================
+  // LOAD STUDENTS
+  // =========================
+  Future<void> _loadStudents() async {
     if (widget.students.isNotEmpty) {
-      setState(() {
-        fetchedStudents = widget.students;
-      });
-      _initControllers(widget.students);
+      fetchedStudents = widget.students;
+      _initControllers(fetchedStudents);
+
+      setState(() {});
       return;
     }
 
     setState(() => isLoadingStudents = true);
+
     try {
-      final response = await _repo.apiService.get(
-        '/teacher/attendance/class/today/${widget.classId}',
+      final response = await TeacherRepo().apiService.get(
+        '/teacher/classes/${widget.classId}/students',
       );
 
-      if (response is Map<String, dynamic> && response['data'] != null) {
-        final data = response['data'];
-        List<dynamic> studentsList = [];
+      final List<dynamic> students = response['data']?['students'] ?? [];
 
-        if (data is Map<String, dynamic> && data['students'] != null) {
-          studentsList = data['students'];
-        } else if (data is Map<String, dynamic> && data['records'] != null) {
-          studentsList = data['records'];
-        } else if (data is List) {
-          studentsList = data;
-        }
+      fetchedStudents = students;
 
-        setState(() {
-          fetchedStudents = studentsList;
-        });
-        _initControllers(studentsList);
-      }
+      _initControllers(students);
+
+      setState(() {});
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        customSnackbar(
-          errorMsg: 'Failed to load students: ${e.toString()}',
-          icon: Icons.info,
-          color: AppColors.greyColor,
-        ),
-      );
+      debugPrint(e.toString());
     } finally {
       setState(() => isLoadingStudents = false);
     }
   }
 
-  void _initControllers(List<dynamic> students) {
-    for (var student in students) {
-      if (student != null) {
-        final int? studentId = student is Map
-            ? (student['id'] ?? student['student_id'])
-            : (student.id ?? student.studentId);
+  // =========================
+  // FIXED: COLLECT SCORES
+  // =========================
+  Map<String, String> _collectScores() {
+    final map = <String, String>{};
 
-        if (studentId != null) {
-          _scoreControllers[studentId] = TextEditingController(text: '0');
-        }
-      }
+    for (final student in fetchedStudents) {
+      final String studentId = student['student_id'].toString();
+
+      map[studentId] = _scoreControllers[studentId]?.text.trim() ?? '0';
     }
+
+    return map;
   }
 
-  @override
-  void dispose() {
-    totalMarksController.dispose();
-    examNameController.dispose();
-    for (var controller in _scoreControllers.values) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
+  // =========================
+  // UPLOAD
+  // =========================
   Future<void> _uploadQuizAndGrades() async {
     if (examNameController.text.trim().isEmpty ||
         totalMarksController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         customSnackbar(
-          errorMsg: 'Please fill quiz details',
+          errorMsg: 'Please fill grade details',
           icon: Icons.info,
           color: AppColors.greyColor,
         ),
@@ -131,89 +136,50 @@ class _UploadGradesViewState extends State<UploadGradesView> {
     setState(() => isUploading = true);
 
     try {
-      final String todayDate =
-          "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
-
-      final quizRes = await _repo.addQuiz(
-        classId: widget.classId,
+      await cubit.uploadGrades(
         title: examNameController.text.trim(),
-        description: examNameController.text.trim(),
-        quizDate: todayDate,
-        totalMarks: totalMarksController.text.trim(),
+        maxScore: totalMarksController.text.trim(),
+        scores: _collectScores(),
       );
 
-      if (quizRes.success && quizRes.data != null) {
-        final String quizId = quizRes.data!.id.toString();
+      final state = cubit.state;
 
-        if (fetchedStudents.isNotEmpty) {
-          for (var student in fetchedStudents) {
-            if (student is Map) {
-              final studentIdKeyId = student['id'];
-              final studentIdKeyStudentId = student['student_id'];
-              final studentIdKeyUserId = student['user_id'];
-              final score =
-                  _scoreControllers[studentIdKeyId ?? studentIdKeyStudentId]
-                      ?.text
-                      .trim() ??
-                  '0';
-
-              try {
-                await _repo.saveStudentQuizResult(
-                  quizId: quizId,
-                  studentId: studentIdKeyStudentId ?? studentIdKeyId,
-                  score: score,
-                );
-              } catch (_) {
-                try {
-                  await _repo.saveStudentQuizResult(
-                    quizId: quizId,
-                    studentId: studentIdKeyId ?? studentIdKeyStudentId,
-                    score: score,
-                  );
-                } catch (_) {
-                  try {
-                    if (studentIdKeyUserId != null) {
-                      await _repo.saveStudentQuizResult(
-                        quizId: quizId,
-                        studentId: studentIdKeyUserId,
-                        score: score,
-                      );
-                    }
-                  } catch (e) {
-                    print(
-                      "Failed to save quiz result for student ${student['name'] ?? 'Unknown'}: $e",
-                    );
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+      if (state is UploadGradesSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
             customSnackbar(
-              errorMsg: quizRes.message,
+              errorMsg: state.message,
               icon: Icons.check,
               color: Colors.green.shade900,
             ),
           );
-          Navigator.of(context).pop(true);
-        }
+
+        Navigator.of(context).pop(true);
       }
-    } catch (e) {
-      if (mounted) {
+
+      if (state is UploadGradesFailure) {
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar(
-            errorMsg: e.toString(),
-            icon: Icons.info,
-            color: AppColors.redColor,
+            errorMsg: state.error,
+            icon: CupertinoIcons.info,
+            color: Colors.red.shade900,
           ),
         );
       }
     } finally {
-      if (mounted) setState(() => isUploading = false);
+      setState(() => isUploading = false);
     }
+  }
+
+  @override
+  void dispose() {
+    totalMarksController.dispose();
+    examNameController.dispose();
+
+    for (var c in _scoreControllers.values) {
+      c.dispose();
+    }
+
+    super.dispose();
   }
 
   @override
@@ -235,6 +201,7 @@ class _UploadGradesViewState extends State<UploadGradesView> {
             ),
           ),
         ),
+
         body: isUploading
             ? const Center(
                 child: CircularProgressIndicator(color: AppColors.primaryColor),
@@ -248,63 +215,57 @@ class _UploadGradesViewState extends State<UploadGradesView> {
                       totalMarksNameController: examNameController,
                     ),
                     Gap(20.h),
+
                     const CustomInfoBanner(
                       text: 'Enter the scores for each student below.',
                     ),
+
                     isLoadingStudents
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(vertical: 40.h),
-                            child: const Center(
+                        ? const Padding(
+                            padding: EdgeInsets.all(40),
+                            child: Center(
                               child: CircularProgressIndicator(
                                 color: AppColors.primaryColor,
                               ),
                             ),
                           )
                         : fetchedStudents.isEmpty
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(vertical: 40.h),
-                            child: const Center(
-                              child: Text('No students found in this class'),
-                            ),
+                        ? const Padding(
+                            padding: EdgeInsets.all(40),
+                            child: Center(child: Text('No students found')),
                           )
-                        : Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.r),
-                              border: Border.all(color: Colors.grey[100]!),
-                            ),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: fetchedStudents.length,
-                              itemBuilder: (context, index) {
-                                final student = fetchedStudents[index];
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: fetchedStudents.length,
+                            itemBuilder: (context, index) {
+                              final student = fetchedStudents[index];
 
-                                final String studentName = student is Map
-                                    ? (student['student_name'] ??
-                                          student['name'] ??
-                                          'Unknown')
-                                    : (student.studentName ??
-                                          student.name ??
-                                          'Unknown');
+                              final String studentId = student['student_id']
+                                  .toString();
 
-                                final int? studentId = student is Map
-                                    ? (student['id'] ?? student['student_id'])
-                                    : (student.id ?? student.studentId);
+                              final String name = student is Map
+                                  ? (student['student_name'] ??
+                                        student['name'] ??
+                                        'Unknown')
+                                  : (student.studentName ??
+                                        student.name ??
+                                        'Unknown');
 
-                                return StudentGradeRow(
-                                  name: studentName,
-                                  rollNo: '${index + 1}',
-                                  totalMarks: totalMarksController.text,
-                                  controller: _scoreControllers[studentId],
-                                );
-                              },
-                            ),
+                              return StudentGradeRow(
+                                name: name,
+                                rollNo: '${index + 1}',
+                                totalMarks: totalMarksController.text,
+                                controller: _scoreControllers[studentId],
+                              );
+                            },
                           ),
                   ],
                 ),
               ),
+
         bottomSheet: isUploading || isLoadingStudents
-            ? const SizedBox.shrink()
+            ? const SizedBox()
             : Container(
                 height: 100.h,
                 decoration: BoxDecoration(
@@ -314,11 +275,7 @@ class _UploadGradesViewState extends State<UploadGradesView> {
                     topRight: Radius.circular(30),
                   ),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade800,
-                      blurRadius: 15,
-                      offset: const Offset(0, 0),
-                    ),
+                    BoxShadow(color: Colors.grey.shade800, blurRadius: 15),
                   ],
                 ),
                 child: Padding(

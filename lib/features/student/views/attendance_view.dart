@@ -9,6 +9,14 @@ import 'package:smart_school/features/student/widgets/attendance_row_item.dart';
 class AttendanceView extends StatelessWidget {
   const AttendanceView({super.key});
 
+  static const List<Map<String, dynamic>> _dummyAttendance = [
+    {'subject': 'English', 'absences': 3},
+    {'subject': 'Mathematics', 'absences': 1},
+    {'subject': 'Biology', 'absences': 0},
+    {'subject': 'Arabic', 'absences': 5},
+    {'subject': 'History', 'absences': 2},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,28 +52,41 @@ class AttendanceView extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('  Subject', style: AppStyle.font20BlackW500.copyWith(fontWeight: FontWeight.bold)),
-                  Text('Absences', style: AppStyle.font20BlackW500.copyWith(fontWeight: FontWeight.bold)),
+                  Text(
+                    '  Subject',
+                    style: AppStyle.font20BlackW500.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Absences',
+                    style: AppStyle.font20BlackW500.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
             Gap(5.h),
             const Divider(thickness: 0.8),
-
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 5,
+              itemCount: _dummyAttendance.length,
               separatorBuilder: (context, index) =>
-              const Divider(thickness: 0.8, height: 0),
+                  const Divider(thickness: 0.8, height: 0),
               itemBuilder: (context, index) {
-                return const AttendanceRowItem(subject: 'English', absences: 3);
+                final record = _dummyAttendance[index];
+                return AttendanceRowItem(
+                  subject: record['subject'],
+                  absences: record['absences'],
+                );
               },
             ),
             const Divider(thickness: 0.8),
             Gap(30.h),
             buildWarningBox(),
-            Gap(50.h), 
+            Gap(50.h),
           ],
         ),
       ),
@@ -97,7 +118,7 @@ class AttendanceView extends StatelessWidget {
             left: -5.w,
             child: Icon(
               CupertinoIcons.exclamationmark_triangle_fill,
-              color: Colors.red,
+              color: AppColors.redColor,
               size: 24.sp,
             ),
           ),

@@ -2,17 +2,44 @@ class SubmissionResponse {
   final bool success;
   final List<SubmissionModel> data;
 
-  SubmissionResponse({required this.success, required this.data});
+  SubmissionResponse({
+    required this.success,
+    required this.data,
+  });
 
-  factory SubmissionResponse.fromJson(Map<String, dynamic> json) {
-    return SubmissionResponse(
-      success: json['success'] ?? false,
-      data: (json['data'] as List?)
-              ?.map((e) => SubmissionModel.fromJson(e as Map<String, dynamic>))
-              .toList() ?? [],
-    );
+  factory SubmissionResponse.fromJson(dynamic json) {
+    if (json is List) {
+      return SubmissionResponse(
+        success: true,
+        data: json
+            .map((e) => SubmissionModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    }
+
+    if (json is Map<String, dynamic>) {
+      final rawData = json['data'];
+
+      final listData = rawData is List ? rawData : <dynamic>[];
+
+      return SubmissionResponse(
+        success: json['success'] == true,
+        data: listData
+            .map((e) => SubmissionModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    }
+
+    return SubmissionResponse(success: false, data: []);
   }
 }
+
+int _toInt(dynamic v) {
+  if (v == null) return 0;
+  if (v is int) return v;
+  return int.tryParse(v.toString()) ?? 0;
+}
+
 
 class SubmissionModel {
   final int id;
@@ -39,15 +66,19 @@ class SubmissionModel {
 
   factory SubmissionModel.fromJson(Map<String, dynamic> json) {
     return SubmissionModel(
-      id: json['id'] ?? 0,
-      assignmentId: json['assignment_id'] ?? 0,
-      studentId: json['student_id'] ?? 0,
-      filePath: json['file_path'] ?? '',
-      score: json['score'] ?? 0,
-      feedback: json['feedback'] ?? '',
-      status: json['status'] ?? '',
-      createdAt: json['created_at'] ?? '',
-      student: SubmissionStudentModel.fromJson(json['student'] ?? {}),
+      id: _toInt(json['id']),
+      assignmentId: _toInt(json['assignment_id']),
+      studentId: _toInt(json['student_id']),
+      filePath: json['file_path']?.toString() ?? '',
+      score: _toInt(json['score']),
+      feedback: json['feedback']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
+      createdAt: json['created_at']?.toString() ?? '',
+      student: SubmissionStudentModel.fromJson(
+        json['student'] is Map<String, dynamic>
+            ? json['student']
+            : {},
+      ),
     );
   }
 }
@@ -71,12 +102,14 @@ class SubmissionStudentModel {
 
   factory SubmissionStudentModel.fromJson(Map<String, dynamic> json) {
     return SubmissionStudentModel(
-      id: json['id'] ?? 0,
+      id: _toInt(json['id']),
       studentCode: json['student_id']?.toString() ?? '',
       gradeLevel: json['grade_level']?.toString() ?? '',
       section: json['section']?.toString() ?? '',
-      classId: json['class_id'] ?? 0,
-      user: SubmissionUserModel.fromJson(json['user'] ?? {}),
+      classId: _toInt(json['class_id']),
+      user: SubmissionUserModel.fromJson(
+        json['user'] is Map<String, dynamic> ? json['user'] : {},
+      ),
     );
   }
 }
@@ -98,7 +131,7 @@ class SubmissionUserModel {
 
   factory SubmissionUserModel.fromJson(Map<String, dynamic> json) {
     return SubmissionUserModel(
-      id: json['id'] ?? 0,
+      id: _toInt(json['id']),
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',

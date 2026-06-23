@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
+import 'package:smart_school/features/teacher/data/student_attendance_model.dart';
 import 'package:smart_school/features/teacher/data/teacher_repo.dart';
 
 class StudentAttendanceHistoryView extends StatefulWidget {
@@ -19,7 +20,8 @@ class StudentAttendanceHistoryView extends StatefulWidget {
 class _StudentAttendanceHistoryViewState
     extends State<StudentAttendanceHistoryView> {
   bool isLoading = true;
-  List<dynamic> historyList = [];
+
+  List<AttendanceHistoryItem> historyList = [];
 
   @override
   void initState() {
@@ -30,15 +32,27 @@ class _StudentAttendanceHistoryViewState
   Future<void> _fetchHistory() async {
     try {
       final repo = TeacherRepo();
+
       final response = await repo.getStudentAttendanceHistory(
         studentId: widget.studentId,
       );
+      debugPrint("SUCCESS CALL");
+      debugPrint("TYPE = ${response.runtimeType}");
+      debugPrint("DATA = ${response.data}");
+      debugPrint("HISTORY = ${response.data.history}");
+
+      final history = response.data.history;
+
       setState(() {
-        historyList = response.data;
+        historyList = history;
         isLoading = false;
       });
     } catch (e) {
-      setState(() => isLoading = false);
+      setState(() {
+        isLoading = false;
+      });
+
+      debugPrint("ERROR FETCH HISTORY: $e");
     }
   }
 
@@ -69,16 +83,19 @@ class _StudentAttendanceHistoryViewState
               itemCount: historyList.length,
               itemBuilder: (context, index) {
                 final item = historyList[index];
-                bool isPresent = item.status == 'present';
+
+                final isPresent = item.status == 'present';
+
                 return Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
                     vertical: 14.h,
                   ),
+                  margin: EdgeInsets.only(bottom: 10.h),
                   decoration: BoxDecoration(
                     color: Colors.grey[50],
                     borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.grey[200]!),
+                    border: Border.all(color: Colors.grey.shade200),
                   ),
                   child: Row(
                     children: [
@@ -88,11 +105,11 @@ class _StudentAttendanceHistoryViewState
                         color: AppColors.greyColor,
                       ),
                       Gap(12.w),
-                      Text(
-                        item.date.toString(),
-                        style: AppStyle.font16BlackBold,
-                      ),
+
+                      Text(item.date, style: AppStyle.font16BlackBold),
+
                       const Spacer(),
+
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 12.w,
