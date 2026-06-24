@@ -64,13 +64,18 @@ class _StudentProfileViewState extends State<StudentProfileView> {
               buildStaticField(
                 Icons.person_outline,
                 'Name',
-                userModel?.name.toString() ?? "Abdelrahmddan",
+                userModel?.name.toString() ?? "name",
               ),
-              buildStaticField(Icons.grade, 'Grade', '5B'),
+              buildStaticField(Icons.grade, 'Grade', userModel?.grade.toString() ?? "5B"),
               buildStaticField(
                 Icons.badge_outlined,
-                'ID',
-                userModel?.id?.toString() ?? "42022101"
+                'ID in App',
+                userModel?.id?.toString() ?? "1.........9",
+              ),
+              buildStaticField(
+                Icons.badge_outlined,
+                'ID in School',
+                userModel?.id?.toString() ?? "1.........9",
               ),
               buildStaticField(
                 Icons.phone_outlined,
@@ -104,7 +109,7 @@ class _StudentProfileViewState extends State<StudentProfileView> {
         children: [
           Row(
             children: [
-              Icon(icon, size: 20.sp, color: Colors.grey),
+              Icon(icon, size: 20.sp, color: AppColors.greyColor),
               Gap(10.w),
               Text(label, style: AppStyle.font15GreyW400),
             ],

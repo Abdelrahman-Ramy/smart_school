@@ -83,7 +83,10 @@ class _TeacherNotificationsViewState extends State<TeacherNotificationsView> {
         scrolledUnderElevation: 0,
         elevation: 0,
         centerTitle: true,
-        leading: const Icon(Icons.arrow_back, color: Colors.transparent),
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(Icons.arrow_back, color: Colors.black),
+        ),
         title: Text('Notifications', style: AppStyle.font22BlackW500),
       ),
       body: Column(

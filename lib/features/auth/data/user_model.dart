@@ -14,6 +14,7 @@ class UserModel {
   final bool? isActive;
   final String? createdAt;
   final String? updatedAt;
+  
 
   UserModel({
     this.id,
@@ -58,3 +59,5 @@ class UserModel {
     );
   }
 }
+
+

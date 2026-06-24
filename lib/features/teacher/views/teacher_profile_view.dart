@@ -61,13 +61,13 @@ AuthRepo authRepo = AuthRepo();
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(30.h),
-              buildStaticField(Icons.person_outline, 'Name',  userModel?.name?.toString() ?? 'Mohamed'),
+              buildStaticField(Icons.person_outline, 'Name',  userModel?.name?.toString() ?? 'name'),
               buildStaticField(
                 Icons.phone_outlined,
                 'Phone number',
-                 userModel?.phone ?? '+20 123 456 789',
+                 userModel?.phone ?? '+20 123 456 7890',
               ),
-              buildStaticField(Icons.email, 'email',  userModel?.email ?? 'Mohamed'),
+              buildStaticField(Icons.email, 'email',  userModel?.email ?? 'example@gmail.com'),
               buildStaticField(
                 Icons.menu_book,
                 'Subject specialization',

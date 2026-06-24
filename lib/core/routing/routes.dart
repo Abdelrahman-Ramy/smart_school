@@ -40,4 +40,7 @@ class Routes {
   static const String usersChatList = '/users_chat_list';
   static const String assignmentSubmissions = '/assignment_submissions';
   static const String studentAttendanceHistory = '/student_attendance_history';
+  static const String parentChildrenView = '/parent_children_view';
+
+  
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
+import 'package:smart_school/features/student/views/student_chat_bot_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_chat_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_home_view.dart';
 import 'package:smart_school/features/teacher/views/teacher_notifications_view.dart';
@@ -23,7 +24,7 @@ class _TeacherRootState extends State<TeacherRoot> {
     screens = [
       const TeacherHomeView(),
       const TeacherChatView(),
-      const TeacherNotificationsView(),
+      const StudentChatBotView(),
       const TeacherSettingsView(),
     ];
     controller = PageController(initialPage: currentScreen);
@@ -67,8 +68,8 @@ class _TeacherRootState extends State<TeacherRoot> {
                 label: 'Chat',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.notifications),
-                label: 'Notifications',
+                icon: Icon(Icons.smart_toy),
+                label: 'Chat Bot',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.settings),

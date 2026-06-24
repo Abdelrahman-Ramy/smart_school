@@ -95,15 +95,21 @@ class _ParentSettingsViewState extends State<ParentSettingsView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          userModel?.name?.toString() ?? 'Ali',
+                        userModel == null
+                          ? const Center(
+                            child: CupertinoActivityIndicator(
+                                color: AppColors.whiteColor,
+                              ),
+                          )
+                          : Text(
+                          userModel?.name?.toString() ?? 'name',
                           style: AppStyle.font20BlackW500.copyWith(
                             color: AppColors.whiteColor,
                           ),
                         ),
                         Gap(5.h),
                         Text(
-                          userModel?.email ?? '',
+                          userModel?.email ?? 'example@gmail.com',
                           style: AppStyle.font13White500.copyWith(
                             fontSize: 12.sp,
                           ),
@@ -121,7 +127,7 @@ class _ParentSettingsViewState extends State<ParentSettingsView> {
 
                     child: Center(
                       child: Text(
-                        'ID:  ${userModel?.id.toString()}' ?? "00",
+                        'ID:  ${userModel?.id.toString()?? "00"}' ,
                         style: AppStyle.font14WhiteBold.copyWith(
                           color: AppColors.primaryColor,
                         ),
@@ -179,7 +185,9 @@ class _ParentSettingsViewState extends State<ParentSettingsView> {
               SettingsItem(
                 icon: Icons.person_add_alt,
                 title: 'Add Child',
-                onTap: () {},
+                onTap: () {
+                  context.pushNamed(Routes.parentChildrenView);
+                },
               ),
               Gap(190.h),
               AppTextButton(

@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
-import 'package:smart_school/core/widgets/custom_snackbar.dart';
-import 'package:smart_school/features/auth/data/auth_repo.dart';
-import 'package:smart_school/features/auth/data/user_model.dart';
+import 'package:smart_school/features/parent/cubits/parent_profile_cubit.dart';
+import 'package:smart_school/features/parent/cubits/parent_profile_state.dart';
+import 'package:smart_school/features/parent/data/parent_repo.dart';
 
 class ParentProfileView extends StatefulWidget {
   const ParentProfileView({super.key});
@@ -17,93 +17,93 @@ class ParentProfileView extends StatefulWidget {
 }
 
 class _ParentProfileViewState extends State<ParentProfileView> {
-  UserModel? userModel;
-  bool isLoading = false;
-
-  AuthRepo authRepo = AuthRepo();
-  @override
-  void initState() {
-    super.initState();
-    fetchUserData();
-  }
-
-  Future<void> fetchUserData() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      final user = await authRepo.getProfile();
-      setState(() {
-        userModel = user;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      String errorMsg = 'Error in Profile';
-      if (e is ApiError) {
-        errorMsg = e.message;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        customSnackbar(errorMsg: errorMsg, color: AppColors.redColor),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
-        scrolledUnderElevation: 0,
-        elevation: 0,
-        title: Text('Personal Information', style: AppStyle.font22BlackW500),
-        leading: IconButton(
-          icon: const Icon(CupertinoIcons.back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Gap(30.h),
-                    buildStaticField(
-                      Icons.person_outline,
-                      'Name',
-                      userModel?.name ?? 'Ali',
-                    ),
-                    buildStaticField(
-                      Icons.phone_outlined,
-                      'Phone number of Parent',
-                      userModel?.phone ?? '+20 123 456 789',
-                    ),
-                    buildStaticField(
-                      Icons.email,
-                      'email',
-                      userModel?.email ?? 'ali@gmail.com',
-                    ),
-                    // buildStaticField(Icons.group_outlined, 'Gender', 'Male'),
-                    buildStaticField(
-                      Icons.child_care_rounded,
-                      'Name of Child',
-                      'Moussa',
-                    ),
-                    buildStaticField(
-                      Icons.location_on_outlined,
-                      'Address',
-                      userModel?.address ?? 'Cairo, Egypt',
-                    ),
-                    Gap(30.h),
-                  ],
+    return BlocProvider(
+      create: (_) => ParentProfileCubit(ParentRepo())..getProfile(),
+      child: BlocBuilder<ParentProfileCubit, ParentProfileState>(
+        builder: (context, state) {
+          if (state is ParentProfileLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator(color: AppColors.primaryColor)),
+            );
+          }
+
+          if (state is ParentProfileError) {
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: AppColors.whiteColor,
+                scrolledUnderElevation: 0,
+                elevation: 0,
+                title: Text(
+                  'Personal Information',
+                  style: AppStyle.font22BlackW500,
+                ),
+                leading: IconButton(
+                  icon: const Icon(CupertinoIcons.back, color: Colors.black),
+                  onPressed: () => Navigator.pop(context),
                 ),
               ),
-            ),
+              body: Center(child: Text(state.message)),
+            );
+          }
+
+          if (state is ParentProfileLoaded) {
+            final user = state.profile.user;
+
+            final childName = user.students.isNotEmpty
+                ? user.students.first.name
+                : "No Child";
+
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: AppColors.whiteColor,
+                scrolledUnderElevation: 0,
+                elevation: 0,
+                title: Text(
+                  'Personal Information',
+                  style: AppStyle.font22BlackW500,
+                ),
+                leading: IconButton(
+                  icon: const Icon(CupertinoIcons.back, color: Colors.black),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+              body: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Gap(30.h),
+                      buildStaticField(Icons.person_outline, 'Name', user.name ?? 'name'),
+                      buildStaticField(
+                        Icons.phone_outlined,
+                        'Phone number of Parent',
+                        user.phone ?? '+20 123 456 7890',
+                      ),
+                      buildStaticField(Icons.email, 'email', user.email),
+                      buildStaticField(
+                        Icons.child_care_rounded,
+                        'Name of Child',
+                        childName,
+                      ),
+                      buildStaticField(
+                        Icons.location_on_outlined,
+                        'Address',
+                        user.address ?? '-',
+                      ),
+                      Gap(30.h),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+
+          return const Scaffold(body: SizedBox());
+        },
+      ),
     );
   }
 

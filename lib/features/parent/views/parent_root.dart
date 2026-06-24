@@ -5,6 +5,7 @@ import 'package:smart_school/features/parent/views/parent_chat_view.dart';
 import 'package:smart_school/features/parent/views/parent_home_view.dart';
 import 'package:smart_school/features/parent/views/parent_notifications_view.dart';
 import 'package:smart_school/features/parent/views/parent_settings_view.dart';
+import 'package:smart_school/features/student/views/student_chat_bot_view.dart';
 
 class ParentRoot extends StatefulWidget {
   const ParentRoot({super.key});
@@ -22,8 +23,8 @@ class _ParentRootState extends State<ParentRoot> {
   void initState() {
     screens = [
       const ParentHomeView(),
-      ParentChatView(),
-      const ParentNotificationsView(),
+      const ParentChatView(),
+      const StudentChatBotView(),
       const ParentSettingsView(),
     ];
     controller = PageController(initialPage: currentScreen);
@@ -67,8 +68,8 @@ class _ParentRootState extends State<ParentRoot> {
                 label: 'Chat',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.notifications),
-                label: 'Notifications',
+                icon: Icon(Icons.smart_toy),
+                label: 'Chat Bot',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.settings),

@@ -48,90 +48,93 @@ class _TeacherHomeViewState extends State<TeacherHomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Gap(20.h),
-              Row(
-                children: [
-                  Image.asset(width: 260.w, 'assets/images/logo_name.png'),
-                  Gap(60.w),
-                  GestureDetector(
-                    onTap: () {
-                      context.pushNamed(Routes.parentNotifications);
-                    },
-                    child: const Icon(
-                      Icons.notifications_active,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-              Gap(20.h),
-              Text('Welcome Mr,', style: AppStyle.font25BlackBold),
-              Text(
-                userModel?.name?.toString() ?? 'Mohamed',
-                style: AppStyle.font25BlackBold,
-              ),
-              Gap(30.h),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 18.w,
-                  mainAxisSpacing: 18.h,
-                  childAspectRatio: 1.2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Gap(20.h),
+                Row(
                   children: [
-                    CustomStuCon(
-                      text: 'View Classes',
-                      icon: Icons.grid_view,
+                    Image.asset(width: 260.w, 'assets/images/logo_name.png'),
+                    Gap(60.w),
+                    GestureDetector(
                       onTap: () {
-                        context.pushNamed(Routes.teacherViewClasses);
+                        context.pushNamed(Routes.parentNotifications);
                       },
-                    ),
-                    CustomStuCon(
-                      text: 'Upload Attendance',
-                      icon: Icons.how_to_reg,
-                      onTap: () {
-                        context.pushNamed(Routes.teacherUploadAttendance);
-                      },
-                    ),
-                    CustomStuCon(
-                      text: 'Upload Grades',
-                      icon: Icons.leaderboard,
-                      onTap: () {
-                        context.pushNamed(Routes.teacherUploadGrades);
-                      },
-                    ),
-                    CustomStuCon(
-                      text: 'Upload Tasks',
-                      icon: Icons.task_alt,
-                      onTap: () {
-                        context.pushNamed(
-                          Routes.teacherUploadTasks,
-                          arguments: teacherClassModel.classId.toString(),
-                        );
-                      },
-                    ),
-                    CustomStuCon(
-                      text: 'Upload Materials',
-                      icon: Icons.cloud_upload,
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                          Routes.teacherUploadMaterials,
-                          arguments: teacherClassModel.classId.toString(),
-                        );
-                      },
+                      child: const Icon(
+                        Icons.notifications_active,
+                        color: AppColors.primaryColor,
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                Gap(20.h),
+                Text('Welcome Mr,', style: AppStyle.font25BlackBold),
+                Text(
+                  userModel?.name?.toString() ?? 'Mohamed',
+                  style: AppStyle.font25BlackBold,
+                ),
+                Gap(30.h),
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 18.w,
+                    mainAxisSpacing: 18.h,
+                    childAspectRatio: 1.2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      CustomStuCon(
+                        text: 'View Classes',
+                        icon: Icons.grid_view,
+                        onTap: () {
+                          context.pushNamed(Routes.teacherViewClasses);
+                        },
+                      ),
+                      CustomStuCon(
+                        text: 'Upload Attendance',
+                        icon: Icons.how_to_reg,
+                        onTap: () {
+                          context.pushNamed(Routes.teacherUploadAttendance);
+                        },
+                      ),
+                      CustomStuCon(
+                        text: 'Upload Grades',
+                        icon: Icons.leaderboard,
+                        onTap: () {
+                          context.pushNamed(Routes.teacherUploadGrades);
+                        },
+                      ),
+                      CustomStuCon(
+                        text: 'Upload Tasks',
+                        icon: Icons.task_alt,
+                        onTap: () {
+                          context.pushNamed(
+                            Routes.teacherUploadTasks,
+                            arguments: teacherClassModel.classId.toString(),
+                          );
+                        },
+                      ),
+                      CustomStuCon(
+                        text: 'Upload Materials',
+                        icon: Icons.cloud_upload,
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            Routes.teacherUploadMaterials,
+                            arguments: teacherClassModel.classId.toString(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

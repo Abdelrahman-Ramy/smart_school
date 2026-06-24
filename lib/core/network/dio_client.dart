@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:smart_school/core/helpers/pref_helper.dart';
+
 class DioClient {
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://expand-checkout-benjamin-involves.trycloudflare.com/api/v1",
+      baseUrl: "https://ist-pound-coupons-apollo.trycloudflare.com/api/v1",
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -16,8 +17,10 @@ class DioClient {
         onRequest: (options, handler) async {
           String? token = await PrefHelper.getToken();
           if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';  }
-          return handler.next(options); },
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
         onResponse: (response, handler) {
           return handler.next(response);
         },

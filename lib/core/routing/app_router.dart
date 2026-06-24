@@ -10,6 +10,7 @@ import 'package:smart_school/features/chats/views/chat_screen.dart';
 import 'package:smart_school/features/chats/views/chat_view.dart';
 import 'package:smart_school/features/chats/views/users_chat_list_view.dart';
 import 'package:smart_school/features/parent/views/parent_chat_view.dart';
+import 'package:smart_school/features/parent/views/parent_children_view.dart';
 import 'package:smart_school/features/parent/views/parent_home_view.dart';
 import 'package:smart_school/features/parent/views/parent_notifications_view.dart';
 import 'package:smart_school/features/parent/views/parent_profile_view.dart';
@@ -18,7 +19,7 @@ import 'package:smart_school/features/parent/views/parent_settings_view.dart';
 import 'package:smart_school/features/student/views/assignments_view.dart';
 import 'package:smart_school/features/student/views/attendance_view.dart';
 import 'package:smart_school/features/student/views/grades_view.dart';
-import 'package:smart_school/features/student/views/quizzes_view.dart';
+import 'package:smart_school/features/student/views/material_view.dart';
 import 'package:smart_school/features/student/views/schedule_view.dart';
 import 'package:smart_school/features/student/views/student_chat_bot_view.dart';
 import 'package:smart_school/features/student/views/student_home_view.dart';
@@ -69,7 +70,7 @@ class AppRouter {
       case Routes.studentGrades:
         return MaterialPageRoute(builder: (context) => const GradesView());
       case Routes.studentQuizzes:
-        return MaterialPageRoute(builder: (context) => const QuizzesView());
+        return MaterialPageRoute(builder: (context) => const MaterialView());
       case Routes.studentSchedule:
         return MaterialPageRoute(builder: (context) => const ScheduleView());
       case Routes.studentChatBot:
@@ -95,6 +96,10 @@ class AppRouter {
       case Routes.parentProfile:
         return MaterialPageRoute(
           builder: (context) => const ParentProfileView(),
+        );
+      case Routes.parentChildrenView:
+        return MaterialPageRoute(
+          builder: (context) => const ParentChildrenView(),
         );
       case Routes.parentChat:
         return MaterialPageRoute(builder: (context) => const ParentChatView());

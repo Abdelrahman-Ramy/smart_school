@@ -13,7 +13,6 @@ import 'package:smart_school/core/widgets/app_text_button.dart';
 import 'package:smart_school/core/widgets/app_text_feild.dart';
 import 'package:smart_school/core/widgets/custom_snackbar.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
-import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/widgets/custom_selected_type.dart';
 import 'package:smart_school/features/chats/services/firebase_chat_service.dart';
 

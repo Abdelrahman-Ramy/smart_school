@@ -98,15 +98,21 @@ class _TeacherSettingsViewState extends State<TeacherSettingsView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          userModel?.name?.toString() ?? 'Mohamed',
+                        userModel == null
+                          ? const Center(
+                            child: CupertinoActivityIndicator(
+                                color: AppColors.whiteColor,
+                              ),
+                          )
+                          : Text(
+                          userModel?.name?.toString() ?? 'name',
                           style: AppStyle.font20BlackW500.copyWith(
                             color: AppColors.whiteColor,
                           ),
                         ),
                         Gap(5.h),
                         Text(
-                           userModel?.email ?? 'Mohamed@gmail.com',
+                           userModel?.email ?? 'example@gmail.com',
                           style: AppStyle.font13White500.copyWith(
                             fontSize: 12.sp,
                           ),
@@ -124,7 +130,7 @@ class _TeacherSettingsViewState extends State<TeacherSettingsView> {
 
                     child: Center(
                       child: Text(
-                        'ID:  ${userModel?.id.toString()}' ?? "42022101",
+                        'ID:  ${userModel?.id.toString() ?? "00"}' ,
                         style: AppStyle.font14WhiteBold.copyWith(
                           color: AppColors.primaryColor,
                         ),

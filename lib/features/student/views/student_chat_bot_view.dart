@@ -39,7 +39,7 @@ class _StudentChatBotViewState extends State<StudentChatBotView>
         );
       }
     });
-    ChatStorage.saveMessages(messages);
+    // ChatStorage.saveMessages(messages);
 
     try {
       final answer = await chatService.sendMessage(question);
@@ -58,7 +58,7 @@ class _StudentChatBotViewState extends State<StudentChatBotView>
           );
         }
       });
-      ChatStorage.saveMessages(messages);
+      // ChatStorage.saveMessages(messages);
     } catch (e) {
       print("ERROR HAPPENED: $e");
       setState(() {
@@ -67,19 +67,18 @@ class _StudentChatBotViewState extends State<StudentChatBotView>
     }
   }
 
-  void loadChat() async {
-    final savedMessages = await ChatStorage.loadMessages();
+  // void loadChat() async {
+  //   final savedMessages = await ChatStorage.loadMessages();
 
-    setState(() {
-      messages = savedMessages;
-    });
-  }
+  //   setState(() {
+  //     messages = savedMessages;
+  //   });
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    loadChat();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
 
   @override
   bool get wantKeepAlive => true;

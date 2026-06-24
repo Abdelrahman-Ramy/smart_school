@@ -28,4 +28,6 @@ class AppColors {
   static const Color glassyColor = Color(0xffc7d0d0);
   static const Color glassyLightColor = Color.fromARGB(136, 255, 253, 253);
   static const Color blueMoreLightColor = Color(0xffc7d0d0);
+  static const Color purpleColor = Colors.purple;
+  static const Color tealColor = Colors.teal;
 }

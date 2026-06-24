@@ -24,7 +24,7 @@ class ApiService {
 
   /// post
   // send body(email, pass)
-  Future<dynamic> post(String endPoint, dynamic body,) async {
+  Future<dynamic> post(String endPoint, dynamic body) async {
     try {
       final response = await _dioClient.dio.post(endPoint, data: body);
       return response.data;
@@ -44,9 +44,15 @@ class ApiService {
   }
 
   /// delete
-  Future<dynamic> delete(String endPoint, Map<String, dynamic> body) async {
+  /// Sends parameters as query string and ensures the HTTP method is DELETE
+  /// (some servers/proxies reject DELETE bodies or mis-handle Dio's delete with data).
+  Future<dynamic> delete(String endPoint, [Map<String, dynamic>? body]) async {
     try {
-      final response = await _dioClient.dio.delete(endPoint, data: body);
+      final response = await _dioClient.dio.request(
+        endPoint,
+        options: Options(method: 'DELETE'),
+        queryParameters: body,
+      );
       return response.data;
     } on DioException catch (e) {
       throw ApiExceptions.handleError(e);
