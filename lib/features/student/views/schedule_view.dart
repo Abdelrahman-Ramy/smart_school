@@ -57,6 +57,7 @@ class ScheduleView extends StatelessWidget {
                   onDaySelected: (day) {
                     context.read<ScheduleCubit>().changeDay(day);
                   },
+                );
               },
             ),
 

@@ -36,39 +36,6 @@ class _ParentHomeViewState extends State<ParentHomeView> {
   List<ParentResultModel> results = [];
   List<ParentScheduleModel> schedules = [];
 
-  static const List<Map<String, dynamic>> _dummyGrades = [
-    {
-      'title': 'Mathematics',
-      'subTitle': 'Unit 3 Test',
-      'percentage': '95',
-      'icon': Icons.calculate_outlined,
-    },
-    {
-      'title': 'English',
-      'subTitle': 'Grammar Quiz',
-      'percentage': '88',
-      'icon': Icons.g_translate_outlined,
-    },
-    {
-      'title': 'Science',
-      'subTitle': 'Physics Lab Exam',
-      'percentage': '76',
-      'icon': Icons.science_outlined,
-    },
-    {
-      'title': 'History',
-      'subTitle': 'Midterm Revision',
-      'percentage': '91',
-      'icon': Icons.menu_book_outlined,
-    },
-    {
-      'title': 'Arabic',
-      'subTitle': 'Reading Assessment',
-      'percentage': '100',
-      'icon': Icons.translate_outlined,
-    },
-  ];
-
   @override
   void initState() {
     super.initState();
