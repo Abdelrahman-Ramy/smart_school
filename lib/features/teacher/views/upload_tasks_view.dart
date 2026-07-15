@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_school/core/helpers/pref_helper.dart';
-import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
@@ -158,30 +157,6 @@ class _UploadTasksViewState extends State<UploadTasksView> {
       type: 'homework',
       filePath: pickedFile?.path,
     );
-  }
-          ),
-        );
-      }
-    } catch (e) {
-      String errorMsg = 'Failed to upload assignment';
-      if (e is ApiError) {
-        errorMsg = e.message;
-      }
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar(
-            errorMsg: errorMsg,
-            icon: CupertinoIcons.info,
-            color: Colors.red.shade900,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => isUploading = false);
-      }
-    }
->>>>>>> aa255c4e198149f3f192b9c73d020e7d3c5707aa
   }
 
   @override
