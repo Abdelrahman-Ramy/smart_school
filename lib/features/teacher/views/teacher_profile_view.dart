@@ -15,7 +15,7 @@ class TeacherProfileView extends StatefulWidget {
 }
 
 class _TeacherProfileViewState extends State<TeacherProfileView> {
-AuthRepo authRepo = AuthRepo();
+  AuthRepo authRepo = AuthRepo();
 
   UserModel? userModel;
 
@@ -61,23 +61,35 @@ AuthRepo authRepo = AuthRepo();
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(30.h),
-              buildStaticField(Icons.person_outline, 'Name',  userModel?.name?.toString() ?? 'name'),
+              buildStaticField(
+                Icons.person_outline,
+                'Name',
+                userModel?.name?.toString() ?? 'name',
+              ),
               buildStaticField(
                 Icons.phone_outlined,
                 'Phone number',
-                 userModel?.phone ?? '+20 123 456 7890',
+                userModel?.phone ?? '+20 123 456 7890',
               ),
-              buildStaticField(Icons.email, 'email',  userModel?.email ?? 'example@gmail.com'),
+              buildStaticField(
+                Icons.badge_outlined,
+                'ID in APP',
+                userModel?.teacher?.teacherId?.toString() ?? '00',
+              ),
+              buildStaticField(
+                Icons.email,
+                'email',
+                userModel?.email ?? 'example@gmail.com',
+              ),
               buildStaticField(
                 Icons.menu_book,
                 'Subject specialization',
-                'Math',
+                userModel?.teacher?.subject ?? 'Subject',
               ),
-              buildStaticField(Icons.group_outlined, 'Gender', 'Male'),
               buildStaticField(
                 Icons.location_on_outlined,
                 'Address',
-                 userModel?.address?.toString() ?? 'Cairo, Egypt',
+                userModel?.address?.toString() ?? 'Address',
               ),
               Gap(30.h),
             ],

@@ -15,8 +15,8 @@ import 'package:smart_school/core/widgets/app_text_feild.dart';
 import 'package:smart_school/core/widgets/custom_snackbar.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/data/user_model.dart';
-import 'package:smart_school/features/auth/views/forget_pass_view.dart';
 import 'package:smart_school/features/chats/services/firebase_chat_service.dart';
+import 'package:smart_school/features/notifications/data/notification_push_service.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -57,11 +57,15 @@ class _LoginViewState extends State<LoginView> {
               .collection("users")
               .doc(user.id.toString())
               .set({
-                "id": user.id,
+                "api_id": user.id.toString(),
+                "firebase_uid": user.id.toString(),
                 "name": user.name,
                 "email": user.email,
                 "role": user.role,
               }, SetOptions(merge: true));
+              await PrefHelper.saveUserId(user.id.toString());
+
+          await NotificationPushService.instance.syncCurrentUserToken();
 
           await FirebaseFirestore.instance
               .collection("userChats")

@@ -66,7 +66,12 @@ class _StudentProfileViewState extends State<StudentProfileView> {
                 'Name',
                 userModel?.name.toString() ?? "name",
               ),
-              buildStaticField(Icons.grade, 'Grade', userModel?.grade.toString() ?? "5B"),
+              // grade : null
+              buildStaticField(
+                Icons.grade,
+                'Grade',
+                userModel?.student?.classId?.toString() ?? "grade",
+              ),
               buildStaticField(
                 Icons.badge_outlined,
                 'ID in App',
@@ -75,7 +80,7 @@ class _StudentProfileViewState extends State<StudentProfileView> {
               buildStaticField(
                 Icons.badge_outlined,
                 'ID in School',
-                userModel?.id?.toString() ?? "1.........9",
+                userModel?.student?.studentId?.toString() ?? '42022101',
               ),
               buildStaticField(
                 Icons.phone_outlined,
@@ -87,11 +92,10 @@ class _StudentProfileViewState extends State<StudentProfileView> {
                 'Gmail',
                 userModel?.email.toString() ?? 'abdo_ramy@gmail.com',
               ),
-              buildStaticField(Icons.group_outlined, 'Gender', 'Male'),
               buildStaticField(
                 Icons.location_on_outlined,
                 'Address',
-                userModel?.address ?? "Cairo, Egypt"
+                userModel?.address ?? "Cairo, Egypt",
               ),
               Gap(30.h),
             ],

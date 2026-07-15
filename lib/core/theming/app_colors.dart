@@ -30,4 +30,5 @@ class AppColors {
   static const Color blueMoreLightColor = Color(0xffc7d0d0);
   static const Color purpleColor = Colors.purple;
   static const Color tealColor = Colors.teal;
+  static const Color whyColor = Color(0xfff4f4ea);
 }

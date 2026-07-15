@@ -8,6 +8,7 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/data/user_model.dart';
+import 'package:smart_school/features/notifications/widgets/notification_badge_icon.dart';
 import 'package:smart_school/features/student/widgets/custom_stu_con.dart';
 import 'package:smart_school/features/teacher/data/teacher_class_model.dart';
 
@@ -62,22 +63,26 @@ class _TeacherHomeViewState extends State<TeacherHomeView> {
                   children: [
                     Image.asset(width: 260.w, 'assets/images/logo_name.png'),
                     Gap(60.w),
-                    GestureDetector(
+                    NotificationBadgeIcon(
+                      icon: Icons.notifications_active,
+                      iconColor: AppColors.primaryColor,
                       onTap: () {
-                        context.pushNamed(Routes.parentNotifications);
+                        context.pushNamed(Routes.teacherNotifications);
                       },
-                      child: const Icon(
-                        Icons.notifications_active,
-                        color: AppColors.primaryColor,
-                      ),
                     ),
                   ],
                 ),
                 Gap(20.h),
-                Text('Welcome Mr,', style: AppStyle.font25BlackBold),
                 Text(
-                  userModel?.name?.toString() ?? 'Mohamed',
+                  'Welcome Mr, ${userModel?.name?.toString() ?? 'name'}',
                   style: AppStyle.font25BlackBold,
+                ),
+                Gap(10.h),
+                Text(
+                  'Tap on the view classes to see your classes and manage your students.',
+                  style: AppStyle.font15BlackBold.copyWith(
+                    color: AppColors.tealColor,
+                  ),
                 ),
                 Gap(30.h),
                 Expanded(
@@ -97,37 +102,41 @@ class _TeacherHomeViewState extends State<TeacherHomeView> {
                         },
                       ),
                       CustomStuCon(
+                        color: AppColors.primaryColor.withOpacity(0.1),
                         text: 'Upload Attendance',
                         icon: Icons.how_to_reg,
                         onTap: () {
-                          context.pushNamed(Routes.teacherUploadAttendance);
+                          // context.pushNamed(Routes.teacherUploadAttendance);
                         },
                       ),
                       CustomStuCon(
+                        color: AppColors.primaryColor.withOpacity(0.1),
                         text: 'Upload Grades',
                         icon: Icons.leaderboard,
                         onTap: () {
-                          context.pushNamed(Routes.teacherUploadGrades);
+                          // context.pushNamed(Routes.teacherUploadGrades);
                         },
                       ),
                       CustomStuCon(
+                        color: AppColors.primaryColor.withOpacity(0.1),
                         text: 'Upload Tasks',
                         icon: Icons.task_alt,
                         onTap: () {
-                          context.pushNamed(
-                            Routes.teacherUploadTasks,
-                            arguments: teacherClassModel.classId.toString(),
-                          );
+                          // context.pushNamed(
+                          //   Routes.teacherUploadTasks,
+                          //   arguments: teacherClassModel.classId.toString(),
+                          // );
                         },
                       ),
                       CustomStuCon(
+                        color: AppColors.primaryColor.withOpacity(0.1),
                         text: 'Upload Materials',
                         icon: Icons.cloud_upload,
                         onTap: () {
-                          Navigator.of(context).pushNamed(
-                            Routes.teacherUploadMaterials,
-                            arguments: teacherClassModel.classId.toString(),
-                          );
+                          // Navigator.of(context).pushNamed(
+                          //   Routes.teacherUploadMaterials,
+                          //   arguments: teacherClassModel.classId.toString(),
+                          // );
                         },
                       ),
                     ],

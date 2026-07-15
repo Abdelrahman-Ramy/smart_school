@@ -54,10 +54,30 @@ dependencies:
   http: ^1.6.0
   speech_to_text: ^7.4.0
   url_launcher: ^6.3.2
+  firebase_messaging: ^16.4.1
+  flutter_local_notifications: ^22.0.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  smooth_page_indicator: ^2.0.1
+  
+
+
+
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_launcher_icons: ^0.14.4  
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/playstore-icon.png"  
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/playstore-icon.png" 
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

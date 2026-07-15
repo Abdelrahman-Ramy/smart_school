@@ -83,7 +83,7 @@ class AttendanceView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '  Subject',
+                            '  Class',
                             style: AppStyle.font20BlackW500.copyWith(
                               fontWeight: FontWeight.bold,
                             ),

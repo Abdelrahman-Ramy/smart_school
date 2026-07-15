@@ -1,6 +1,9 @@
+import 'package:smart_school/features/student/data/student_model.dart';
+import 'package:smart_school/features/teacher/data/teacher_model.dart';
+
 class UserModel {
   final int? id;
-  final String? firebaseUid; 
+  final String? firebaseUid;
   final String? name;
   final String? email;
   final String? password;
@@ -11,10 +14,11 @@ class UserModel {
   final String? dob;
   final String? specialization;
   final String? grade;
+  final TeacherModel? teacher;
+  final StudentModel? student;
   final bool? isActive;
   final String? createdAt;
   final String? updatedAt;
-  
 
   UserModel({
     this.id,
@@ -29,6 +33,8 @@ class UserModel {
     this.dob,
     this.specialization,
     this.grade,
+    this.teacher,
+    this.student,
     this.isActive,
     this.createdAt,
     this.updatedAt,
@@ -48,7 +54,12 @@ class UserModel {
       dob: json['dob'],
       specialization: json['specialization'],
       grade: json['grade'],
-
+      teacher: json['teacher'] != null
+          ? TeacherModel.fromJson(json['teacher'])
+          : null,
+      student: json['student'] != null
+          ? StudentModel.fromJson(json['student'])
+          : null,
       isActive:
           json['is_active'] == true ||
           json['is_active'] == 1 ||
@@ -59,5 +70,3 @@ class UserModel {
     );
   }
 }
-
-

@@ -7,8 +7,9 @@ import 'package:smart_school/core/theming/app_style.dart';
 class CustomStuCon extends StatelessWidget {
   final String text;
   final IconData icon;
+  final Color? color;
   final void Function() onTap;
-  const CustomStuCon({super.key, required this.text, required this.icon, required this.onTap,});
+  const CustomStuCon({super.key, required this.text, required this.icon, required this.onTap, this.color,});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class CustomStuCon extends StatelessWidget {
         width: 160.w,
         height: 90.h,
         decoration: BoxDecoration(
-          color: AppColors.glassyColor,
+          color: color ?? AppColors.glassyColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(

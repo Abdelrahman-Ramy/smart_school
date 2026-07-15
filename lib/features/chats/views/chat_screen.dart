@@ -36,9 +36,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteColor,
         elevation: 0,
         scrolledUnderElevation: 0,
         title: Text("Chat", style: AppStyle.font22BlackW500),
@@ -103,7 +103,6 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
 
-          // INPUT AREA (هنعمله بعد شوية)
           Container(
             padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
             color: Colors.white,
@@ -132,7 +131,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 CircleAvatar(
                   backgroundColor: AppColors.primaryColor,
                   child: IconButton(
-                    icon: Icon(Icons.send, color: Colors.white, size: 20.sp),
+                    icon: Icon(Icons.send, color: AppColors.whiteColor, size: 20.sp),
                     onPressed: () async {
                       if (messageController.text.isEmpty || chatId == null)
                         return;

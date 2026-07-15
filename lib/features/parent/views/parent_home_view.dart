@@ -6,7 +6,6 @@ import 'package:smart_school/core/helpers/extensions.dart';
 import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
-import 'package:smart_school/core/widgets/settings_item.dart';
 import 'package:smart_school/features/parent/widgets/attendance_calendar_card.dart';
 import 'package:smart_school/features/parent/widgets/custom_small_card_attend.dart';
 import 'package:smart_school/features/parent/widgets/grads_card.dart';
@@ -15,6 +14,7 @@ import 'package:smart_school/features/parent/data/parent_repo.dart';
 import 'package:smart_school/features/parent/data/parent_attendance_model.dart';
 import 'package:smart_school/features/parent/data/parent_results_model.dart';
 import 'package:smart_school/features/parent/data/parent_schedule_model.dart';
+import 'package:smart_school/features/notifications/widgets/notification_badge_icon.dart';
 
 class ParentHomeView extends StatefulWidget {
   const ParentHomeView({super.key});
@@ -101,15 +101,13 @@ class _ParentHomeViewState extends State<ParentHomeView> {
                 Row(
                   children: [
                     Image.asset(width: 260.w, 'assets/images/logo_name.png'),
-                    const Spacer(),
-                    GestureDetector(
+                    Gap(50.w),
+                    NotificationBadgeIcon(
+                      icon: Icons.notifications_active,
+                      iconColor: AppColors.primaryColor,
                       onTap: () {
                         context.pushNamed(Routes.parentNotifications);
                       },
-                      child: const Icon(
-                        Icons.notifications_active,
-                        color: AppColors.primaryColor,
-                      ),
                     ),
                   ],
                 ),

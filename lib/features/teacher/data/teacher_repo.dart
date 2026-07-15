@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:smart_school/core/network/api_error.dart';
 import 'package:smart_school/core/network/api_exception.dart';
@@ -318,6 +319,52 @@ class TeacherRepo {
     }
   }
 
+  Future<void> createNotification({
+    required String receiverId,
+    required String senderId,
+    required String senderName,
+    required String title,
+    required String body,
+    required String type,
+    required String relatedId,
+  }) async {
+    try {
+      print("CREATE NOTIFICATION CALLED");
+      print("receiverId = $receiverId");
+
+      final doc = await FirebaseFirestore.instance
+          .collection('notifications')
+          .add({
+            'receiverId': receiverId,
+            'senderId': senderId,
+            'senderName': senderName,
+            'title': title,
+            'body': body,
+            'type': type,
+            'relatedId': relatedId,
+            'isRead': false,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+      print("Notification Created: ${doc.id}");
+    } catch (e) {
+      print("CREATE NOTIFICATION ERROR: $e");
+    }
+  }
+
+  Future<String?> getFirebaseIdFromStudentApiId(String apiId) async {
+    final query = await FirebaseFirestore.instance
+        .collection('users')
+        .where('api_id', isEqualTo: apiId.toString())
+        .limit(1)
+        .get();
+    print("QUERY RESULT: ${query.docs.length}");
+    print("DATA: ${query.docs}");
+
+    if (query.docs.isEmpty) return null;
+
+    return query.docs.first.id;
+  }
   // Future<QuizCreateResponse> addQuiz({
   //   required String classId,
   //   required String title,

@@ -4,7 +4,7 @@ import 'package:smart_school/core/helpers/pref_helper.dart';
 class DioClient {
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://ist-pound-coupons-apollo.trycloudflare.com/api/v1",
+      baseUrl: "https://pci-mounting-logos-lexmark.trycloudflare.com/api/v1",
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +8,7 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/features/auth/data/auth_repo.dart';
 import 'package:smart_school/features/auth/data/user_model.dart';
+import 'package:smart_school/features/notifications/widgets/notification_badge_icon.dart';
 import 'package:smart_school/features/student/widgets/custom_stu_card.dart';
 
 class StudentHomeView extends StatefulWidget {
@@ -38,11 +40,12 @@ class _StudentHomeViewState extends State<StudentHomeView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    fetchUserData();
-  }
-  
+void initState() {
+  super.initState();
+
+  fetchUserData();
+
+}
 
   @override
   Widget build(BuildContext context) {
@@ -58,22 +61,23 @@ class _StudentHomeViewState extends State<StudentHomeView> {
                 children: [
                   Image.asset(width: 260.w, 'assets/images/logo_name.png'),
                   Gap(60.w),
-                  GestureDetector(
-                    onTap: () {
-                      context.pushNamed(Routes.studentNotifications);
-                    },
-                    child: const Icon(
-                      Icons.notifications_active,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
+                  // NotificationBadgeIcon(
+                  //   icon: Icons.notifications_active,
+                  //   iconColor: AppColors.primaryColor,
+                  //   onTap: () {
+                  //     context.pushNamed(Routes.studentNotifications);
+                  //   },
+                  // ),
                 ],
               ),
               Gap(20.h),
               Text('Good Morning,', style: AppStyle.font25BlackBold),
               Row(
                 children: [
-                  Text(userModel?.name?.toString() ?? "Abdelrahman", style: AppStyle.font25BlackBold),
+                  Text(
+                    userModel?.name?.toString() ?? "name..",
+                    style: AppStyle.font25BlackBold,
+                  ),
                   const Icon(Icons.sunny, color: AppColors.yellowColor),
                 ],
               ),
@@ -122,7 +126,6 @@ class _StudentHomeViewState extends State<StudentHomeView> {
                         context.pushNamed(Routes.studentSchedule);
                       },
                     ),
-                    
                   ],
                 ),
               ),

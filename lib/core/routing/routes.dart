@@ -41,6 +41,7 @@ class Routes {
   static const String assignmentSubmissions = '/assignment_submissions';
   static const String studentAttendanceHistory = '/student_attendance_history';
   static const String parentChildrenView = '/parent_children_view';
+  static const String onboardingScreen = '/onboarding_screen';
 
   
 }

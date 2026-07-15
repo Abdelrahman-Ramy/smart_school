@@ -29,81 +29,111 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: isRead ? AppColors.whiteColor : AppColors.blueMoreLightColor,
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200, width: 1.w),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(10.w),
-            decoration: BoxDecoration(
-              color: AppColors.whiteColor,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Icon(icon, color: iconColor, size: 28.sp),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: isRead ? AppColors.whiteColor : AppColors.blueMoreLightColor,
+          border: Border(
+            bottom: BorderSide(color: Colors.grey.shade200, width: 1.w),
           ),
-          Gap(15.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(title, style: AppStyle.font16BlackBold.copyWith(fontSize: 18.sp)),
-                    Text(time, style: AppStyle.font15GreyW500),
-                  ],
-                ),
-                Gap(5.h),
-                isClick == false
-                    ? Text(
-                        subtitle,
-                        style: AppStyle.font14GreyW400.copyWith(
-                          fontSize: 15.sp,
-                          color: Colors.black87,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    : RichText(
-                        text: TextSpan(
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(10.w),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Icon(icon, color: iconColor, size: 28.sp),
+            ),
+            Gap(15.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Row(
                           children: [
-                            TextSpan(
-                              text: subtitle,
-                              style: AppStyle.font14GreyW400.copyWith(
-                                color: Colors.black87,
-                                fontSize: 15.sp,
+                            Flexible(
+                              child: Text(
+                                title,
+                                style: AppStyle.font16BlackBold.copyWith(
+                                  fontSize: 18.sp,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            TextSpan(
-                              text: "click to view.",
-                              style: TextStyle(
-                                color: AppColors.blueColor,
-                                fontSize: 15.sp,
-                                decoration: TextDecoration.underline,
+                            if (!isRead) ...[
+                              Gap(8.w),
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                              recognizer: TapGestureRecognizer()..onTap = () {},
-                            ),
+                            ],
                           ],
                         ),
                       ),
-              ],
+                      Text(time, style: AppStyle.font15GreyW500),
+                    ],
+                  ),
+                  Gap(5.h),
+                  isClick == false
+                      ? Text(
+                          subtitle,
+                          style: AppStyle.font14GreyW400.copyWith(
+                            fontSize: 15.sp,
+                            color: Colors.black87,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: subtitle,
+                                style: AppStyle.font14GreyW400.copyWith(
+                                  color: Colors.black87,
+                                  fontSize: 15.sp,
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'click to view.',
+                                style: TextStyle(
+                                  color: AppColors.blueColor,
+                                  fontSize: 15.sp,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {},
+                              ),
+                            ],
+                          ),
+                        ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

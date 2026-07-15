@@ -118,6 +118,27 @@ class _UploadGradesViewState extends State<UploadGradesView> {
   }
 
   // =========================
+  // SEND NOTIFICATIONS
+  // =========================
+  Future<void> _sendNotifications() async {
+    for (final student in fetchedStudents) {
+      final studentId = student['student_id'].toString();
+
+      await TeacherRepo().createNotification(
+        receiverId: studentId,
+        senderId: "teacher_id_here",
+        senderName: "Teacher",
+        title: "New Grades Uploaded",
+        body: "Your quiz results have been published",
+        type: "grade",
+        relatedId: "",
+      );
+    }
+
+    print("NOTIFICATIONS SENT");
+  }
+
+  // =========================
   // UPLOAD
   // =========================
   Future<void> _uploadQuizAndGrades() async {
@@ -146,12 +167,14 @@ class _UploadGradesViewState extends State<UploadGradesView> {
 
       if (state is UploadGradesSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
-            customSnackbar(
-              errorMsg: state.message,
-              icon: Icons.check,
-              color: Colors.green.shade900,
-            ),
-          );
+          customSnackbar(
+            errorMsg: state.message,
+            icon: Icons.check,
+            color: Colors.green.shade900,
+          ),
+        );
+
+        await _sendNotifications();
 
         Navigator.of(context).pop(true);
       }
@@ -289,6 +312,7 @@ class _UploadGradesViewState extends State<UploadGradesView> {
                     textStyle: AppStyle.font18WhiteW500.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
+
                     onPressed: _uploadQuizAndGrades,
                   ),
                 ),

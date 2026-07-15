@@ -76,6 +76,9 @@ class FirebaseChatService {
   Future<void> sendMessage({
     required String chatId,
     required String text,
+    bool hasAttachment = false,
+    String? attachmentUrl,
+    String? attachmentName,
   }) async {
     final myId = currentUserId;
 
@@ -97,27 +100,43 @@ class FirebaseChatService {
 
     final userName = userDoc.data()?['name'] ?? 'Unknown';
 
+    /// =========================
+    /// 1 - SEND MESSAGE
+    /// =========================
     await chatRef.collection('messages').add({
       'text': text,
       'senderId': myId,
       'senderName': userName,
       'timestamp': FieldValue.serverTimestamp(),
       'isRead': false,
+      'hasAttachment': hasAttachment,
+      if (attachmentUrl != null) 'attachmentUrl': attachmentUrl,
+      if (attachmentName != null) 'attachmentName': attachmentName,
     });
 
-    await chatRef.update({
-      'lastMessage': text,
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
-
+    /// =========================
+    /// 2 - UPDATE CHAT INFO
+    /// =========================
     await chatRef.set({
       'lastMessage': text,
       'updatedAt': FieldValue.serverTimestamp(),
       'unread_$otherId': FieldValue.increment(1),
     }, SetOptions(merge: true));
 
-    final test = await chatRef.get();
-    print(test.data());
+    /// =========================
+    /// 3 - CREATE NOTIFICATION (IMPORTANT)
+    /// =========================
+    await FirebaseFirestore.instance.collection('notifications').add({
+      'receiverId': otherId,
+      'senderId': myId,
+      'senderName': userName,
+      'title': 'New message',
+      'body': text,
+      'type': 'chat',
+      'relatedId': chatId,
+      'isRead': false,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
 
   // =========================

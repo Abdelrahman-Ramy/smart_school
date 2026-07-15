@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/features/auth/views/login_view.dart';
-import 'package:smart_school/features/student/views/student_root.dart';
+import 'package:smart_school/features/onboarding/onboarding_screen.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -27,7 +27,7 @@ class _SplashViewState extends State<SplashView> {
       const Duration(seconds: 3),
       () => Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginView()),
+        MaterialPageRoute(builder: (context) => const OnboardingScreen()),
       ),
     );
   }

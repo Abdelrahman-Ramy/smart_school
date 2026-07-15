@@ -9,9 +9,8 @@ class UploadGradesCubit extends Cubit<UploadGradesState> {
 
   List<dynamic> _students = [];
 
-  /// ================= LOAD STUDENTS =================
+  // ================= LOAD STUDENTS =================
   Future<void> loadStudents(String classId) async {
-    
     emit(UploadGradesLoading());
 
     try {
@@ -19,8 +18,7 @@ class UploadGradesCubit extends Cubit<UploadGradesState> {
         '/teacher/classes/$classId/students',
       );
 
-      final List<dynamic> students =
-          response['data']?['students'] ?? [];
+      final List<dynamic> students = response['data']?['students'] ?? [];
 
       _students = students;
 
@@ -30,7 +28,7 @@ class UploadGradesCubit extends Cubit<UploadGradesState> {
     }
   }
 
-  /// ================= UPLOAD GRADES =================
+  // ================= UPLOAD GRADES =================
   Future<void> uploadGrades({
     required String title,
     required String maxScore,
@@ -39,10 +37,7 @@ class UploadGradesCubit extends Cubit<UploadGradesState> {
     emit(UploadGradesSubmitting());
 
     try {
-      final quiz = await repo.createQuiz(
-        title: title,
-        maxScore: maxScore,
-      );
+      final quiz = await repo.createQuiz(title: title, maxScore: maxScore);
 
       if (quiz == null) {
         emit(UploadGradesFailure('Failed to create quiz'));
@@ -50,31 +45,48 @@ class UploadGradesCubit extends Cubit<UploadGradesState> {
       }
 
       for (final student in _students) {
-        final String studentId =
-            student['student_id'].toString();
+        final apiStudentId = student['student_id'].toString();
 
-        final bool success = await repo.saveGradeResult(
+        final success = await repo.saveGradeResult(
           title: title,
-          studentId: studentId,
-          score: scores[studentId] ?? '0',
+          studentId: apiStudentId,
+          score: scores[apiStudentId] ?? '0',
           maxScore: maxScore,
         );
 
         if (!success) {
-          emit(
-            UploadGradesFailure(
-              'Failed to save grade for $studentId',
-            ),
-          );
+          emit(UploadGradesFailure('Failed to save grade for $apiStudentId'));
           return;
         }
+
+        final firebaseId = await repo.getFirebaseIdFromStudentApiId(
+          apiStudentId,
+        );
+
+        print("API ID: $apiStudentId");
+        print("Firebase ID: $firebaseId");
+
+        if (firebaseId == null || firebaseId.isEmpty) {
+          print("No Firebase ID found for student $apiStudentId");
+          continue;
+        }
+
+        await repo.createNotification(
+          receiverId: student['student_id'].toString(),
+          senderId: 'teacher',
+          senderName: 'Teacher',
+          title: 'New Grades Released',
+          body: 'Your result for $title has been published',
+          type: 'grade',
+          relatedId: title,
+        );
+
+        print("Notification sent to $firebaseId");
       }
 
-      emit(
-        UploadGradesSuccess(
-          'Grades uploaded successfully',
-        ),
-      );
+      print("ENTERED NOTIFICATION STEP");
+
+      emit(UploadGradesSuccess('Grades uploaded successfully'));
     } catch (e) {
       emit(UploadGradesFailure(e.toString()));
     }
