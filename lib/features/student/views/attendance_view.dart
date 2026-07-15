@@ -14,6 +14,14 @@ import 'package:smart_school/features/student/data/student_repo.dart';
 class AttendanceView extends StatelessWidget {
   const AttendanceView({super.key});
 
+  static const List<Map<String, dynamic>> _dummyAttendance = [
+    {'subject': 'English', 'absences': 3},
+    {'subject': 'Mathematics', 'absences': 1},
+    {'subject': 'Biology', 'absences': 0},
+    {'subject': 'Arabic', 'absences': 5},
+    {'subject': 'History', 'absences': 2},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -34,7 +42,6 @@ class AttendanceView extends StatelessWidget {
             ),
           ),
         ),
-
         body: BlocBuilder<AttendanceCubit, AttendanceState>(
           builder: (context, state) {
             if (state is AttendanceLoading) {
@@ -131,6 +138,62 @@ class AttendanceView extends StatelessWidget {
 
             return const SizedBox();
           },
+=======
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 20.h),
+              child: Text(
+                'Review all recorded absences across\nsubjects',
+                style: AppStyle.font16BlackBold.copyWith(height: 1.5),
+              ),
+            ),
+            Gap(10.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '  Subject',
+                    style: AppStyle.font20BlackW500.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Absences',
+                    style: AppStyle.font20BlackW500.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Gap(5.h),
+            const Divider(thickness: 0.8),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _dummyAttendance.length,
+              separatorBuilder: (context, index) =>
+                  const Divider(thickness: 0.8, height: 0),
+              itemBuilder: (context, index) {
+                final record = _dummyAttendance[index];
+                return AttendanceRowItem(
+                  subject: record['subject'],
+                  absences: record['absences'],
+                );
+              },
+            ),
+            const Divider(thickness: 0.8),
+            Gap(30.h),
+            buildWarningBox(),
+            Gap(50.h),
+          ],
+>>>>>>> aa255c4e198149f3f192b9c73d020e7d3c5707aa
         ),
       ),
     );

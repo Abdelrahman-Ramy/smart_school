@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:smart_school/core/helpers/pref_helper.dart';
-
 class DioClient {
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: "https://pci-mounting-logos-lexmark.trycloudflare.com/api/v1",
+      baseUrl: "http://13.53.168.190/api/v1",
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -19,6 +18,9 @@ class DioClient {
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
+          // print("REQUEST URL: ${options.baseUrl}${options.path}");
+          // print("REQUEST DATA: ${options.data}");
+          // print("REQUEST HEADERS: ${options.headers}");
           return handler.next(options);
         },
         onResponse: (response, handler) {

@@ -46,7 +46,6 @@ class ScheduleView extends StatelessWidget {
           elevation: 0,
           title: Text('Schedule', style: AppStyle.font22BlackW500),
         ),
-
         body: Column(
           children: [
             Gap(20.h),
@@ -58,7 +57,6 @@ class ScheduleView extends StatelessWidget {
                   onDaySelected: (day) {
                     context.read<ScheduleCubit>().changeDay(day);
                   },
-                );
               },
             ),
 

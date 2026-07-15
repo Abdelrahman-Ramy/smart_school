@@ -159,6 +159,30 @@ class _UploadTasksViewState extends State<UploadTasksView> {
       filePath: pickedFile?.path,
     );
   }
+          ),
+        );
+      }
+    } catch (e) {
+      String errorMsg = 'Failed to upload assignment';
+      if (e is ApiError) {
+        errorMsg = e.message;
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(
+            errorMsg: errorMsg,
+            icon: CupertinoIcons.info,
+            color: Colors.red.shade900,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isUploading = false);
+      }
+    }
+>>>>>>> aa255c4e198149f3f192b9c73d020e7d3c5707aa
+  }
 
   @override
   Widget build(BuildContext context) {
