@@ -25,7 +25,9 @@ class _ParentProfileViewState extends State<ParentProfileView> {
         builder: (context, state) {
           if (state is ParentProfileLoading) {
             return const Scaffold(
-              body: Center(child: CircularProgressIndicator(color: AppColors.primaryColor)),
+              body: Center(
+                child: CircularProgressIndicator(color: AppColors.primaryColor),
+              ),
             );
           }
 

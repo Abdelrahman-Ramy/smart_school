@@ -7,7 +7,6 @@ import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/features/teacher/cubit/attendance_cubit.dart';
 import 'package:smart_school/features/teacher/cubit/attendance_state.dart';
 
-
 class ClassTodayAttendanceView extends StatefulWidget {
   final int classId;
 

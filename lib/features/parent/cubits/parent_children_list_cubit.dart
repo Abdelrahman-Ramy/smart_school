@@ -19,8 +19,6 @@ class ParentChildrenListCubit extends Cubit<ParentChildrenListState> {
     }
   }
 
-  
-
   Future<void> unlinkStudent({required String studentId}) async {
     try {
       emit(ParentChildrenListLoading());
@@ -34,6 +32,4 @@ class ParentChildrenListCubit extends Cubit<ParentChildrenListState> {
       emit(ParentChildrenListError(e.toString()));
     }
   }
-
-
 }

@@ -1,5 +1,3 @@
-
-
 class TeacherModel {
   final int? teacherId;
   final String? subject;
@@ -17,7 +15,6 @@ class TeacherModel {
     );
   }
 }
-
 
 class TeacherClassModel {
   final int? id;

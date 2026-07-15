@@ -26,7 +26,7 @@ class NotificationRemoteDataSource {
     Query<Map<String, dynamic>> query = _collection
         .where('receiverId', isEqualTo: receiverId)
         .orderBy('createdAt', descending: true);
-        print("FIRESTORE QUERY receiverId: $receiverId");
+    print("FIRESTORE QUERY receiverId: $receiverId");
 
     if (unreadOnly) {
       query = query.where('isRead', isEqualTo: false);
@@ -37,7 +37,6 @@ class NotificationRemoteDataSource {
           .map((doc) => NotificationModel.fromDocument(doc))
           .toList(),
     );
-    
   }
 
   Stream<int> watchUnreadCount({required String receiverId}) {

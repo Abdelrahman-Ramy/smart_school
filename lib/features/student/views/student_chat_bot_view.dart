@@ -282,7 +282,6 @@ class _buildChatInputState extends State<buildChatInput> {
               isListening ? Icons.mic : CupertinoIcons.mic_circle,
               color: isListening ? Colors.red : AppColors.blackColor,
               size: isListening ? 33.sp : 32.sp,
-              
             ),
           ),
 

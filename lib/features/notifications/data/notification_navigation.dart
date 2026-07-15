@@ -28,7 +28,6 @@ class NotificationNavigation {
       case 'attendance':
         return;
 
-      
       case 'grade':
         return;
 

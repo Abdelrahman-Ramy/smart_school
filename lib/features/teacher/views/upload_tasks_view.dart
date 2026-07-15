@@ -180,7 +180,6 @@ class _UploadTasksViewState extends State<UploadTasksView> {
           actions: [
             TextButton(
               onPressed: () {
-                
                 Navigator.of(context).pushNamed(
                   Routes.assignmentSubmissions,
                   arguments: {

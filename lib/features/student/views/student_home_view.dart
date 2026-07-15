@@ -39,12 +39,11 @@ class _StudentHomeViewState extends State<StudentHomeView> {
   }
 
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  fetchUserData();
-
-}
+    fetchUserData();
+  }
 
   @override
   Widget build(BuildContext context) {

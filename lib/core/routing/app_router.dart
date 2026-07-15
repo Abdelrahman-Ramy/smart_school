@@ -195,11 +195,11 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => StudentAttendanceHistoryView(studentId: studentId),
         );
-        case Routes.onboardingScreen:
+      case Routes.onboardingScreen:
         return MaterialPageRoute(
           builder: (context) => const OnboardingScreen(),
         );
-        
+
       default:
         return MaterialPageRoute(
           builder: (context) => Scaffold(

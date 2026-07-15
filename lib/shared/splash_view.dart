@@ -39,9 +39,7 @@ class _SplashViewState extends State<SplashView> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Image.asset(
-              'assets/images/logo_splash.png',
-            ),
+            Image.asset('assets/images/logo_splash.png'),
 
             AnimatedPositioned(
               duration: const Duration(milliseconds: 2500),

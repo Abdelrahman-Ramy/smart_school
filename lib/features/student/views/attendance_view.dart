@@ -37,7 +37,9 @@ class AttendanceView extends StatelessWidget {
         body: BlocBuilder<AttendanceCubit, AttendanceState>(
           builder: (context, state) {
             if (state is AttendanceLoading) {
-              return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor,));
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primaryColor),
+              );
             }
 
             if (state is AttendanceError) {
