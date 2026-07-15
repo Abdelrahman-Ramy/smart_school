@@ -25,7 +25,7 @@ class ParentChildrenListCubit extends Cubit<ParentChildrenListState> {
     try {
       emit(ParentChildrenListLoading());
 
-      final message = await repo.unlinkStudent(studentId: studentId);
+      await repo.unlinkStudent(studentId: studentId);
 
       final updatedList = await repo.getMyChildren();
 

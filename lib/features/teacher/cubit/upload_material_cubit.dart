@@ -19,11 +19,10 @@ class UploadMaterialCubit extends Cubit<UploadMaterialState> {
         filePath: filePath,
       );
 
-      final msg = res.message ?? 'Upload completed';
       if (res.success == true) {
-        emit(UploadMaterialSuccess(msg));
+        emit(UploadMaterialSuccess(res.message));
       } else {
-        emit(UploadMaterialFailure(msg));
+        emit(UploadMaterialFailure(res.message));
       }
     } catch (e) {
       emit(UploadMaterialFailure(e.toString()));

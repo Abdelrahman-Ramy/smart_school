@@ -110,8 +110,6 @@ class _TeacherChatViewState extends State<TeacherChatView> {
                       );
 
                       final unread = chat['unread_$myId'] ?? 0;
-                      final lastMessage = (chat['lastMessage'] ?? '')
-                          .toString();
 
                       return FutureBuilder(
                         future: chatService.getUserById(otherId),

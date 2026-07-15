@@ -107,8 +107,6 @@ class _ParentChatViewState extends State<ParentChatView> {
                       );
 
                       final unread = chat['unread_$myId'] ?? 0;
-                      final lastMessage = (chat['lastMessage'] ?? '')
-                          .toString();
 
                       return FutureBuilder(
                         future: chatService.getUserById(otherId),

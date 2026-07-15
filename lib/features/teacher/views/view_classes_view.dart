@@ -29,10 +29,6 @@ class _ViewClassesViewState extends State<ViewClassesView> {
     _cubit.fetchClasses();
   }
 
-  void _refreshClasses() {
-    _cubit.fetchClasses();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

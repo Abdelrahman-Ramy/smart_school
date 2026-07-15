@@ -6,8 +6,6 @@ import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/auth/views/register_view.dart';
 import 'package:smart_school/features/auth/views/reset_pass_view.dart';
 import 'package:smart_school/features/auth/views/verification_view.dart';
-import 'package:smart_school/features/chats/views/chat_screen.dart';
-import 'package:smart_school/features/chats/views/chat_view.dart';
 import 'package:smart_school/features/chats/views/users_chat_list_view.dart';
 import 'package:smart_school/features/onboarding/onboarding_screen.dart';
 import 'package:smart_school/features/parent/views/parent_chat_view.dart';

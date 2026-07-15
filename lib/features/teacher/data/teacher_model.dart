@@ -1,4 +1,4 @@
-import 'package:smart_school/features/teacher/data/teacher_class_model.dart';
+
 
 class TeacherModel {
   final int? teacherId;

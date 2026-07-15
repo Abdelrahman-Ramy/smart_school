@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school/core/routing/routes.dart';
 import 'package:smart_school/features/chats/views/chat_view.dart';
 import 'package:smart_school/features/notifications/data/notification_entity.dart';
 

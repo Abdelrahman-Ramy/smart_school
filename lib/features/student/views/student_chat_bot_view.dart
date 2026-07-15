@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
-import 'package:smart_school/features/chatbot/data/chat_storage.dart';
+
 import 'package:smart_school/features/chatbot/views/chat_service.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 

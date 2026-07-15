@@ -82,63 +82,6 @@ class _UploadGradesViewState extends State<UploadMaterialsView> {
     }
   }
 
-  void _uploadMaterialAction() async {
-    final title = titleController.text.trim();
-    final file = pickedFile;
-
-    if (title.isEmpty || file == null || file.path == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        customSnackbar(
-          errorMsg: 'Please enter a title and select a valid local file',
-          icon: CupertinoIcons.info,
-          color: AppColors.greyColor,
-        ),
-      );
-      return;
-    }
-
-    setState(() {
-      isUploading = true;
-    });
-
-    try {
-      final response = await _teacherRepo.uploadMaterial(
-        classId: widget.classId,
-        title: title,
-        filePath: file.path!,
-      );
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar(
-            errorMsg: response.message!,
-            icon: Icons.check,
-            color: Colors.green.shade900,
-          ),
-        );
-        if (response.success) {
-          Navigator.of(context).pop();
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          customSnackbar(
-            errorMsg: 'Upload failed: $e',
-            icon: CupertinoIcons.info,
-            color: Colors.red.shade900,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          isUploading = false;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UploadMaterialCubit>(

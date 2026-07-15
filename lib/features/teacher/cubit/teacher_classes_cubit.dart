@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:smart_school/features/teacher/data/teacher_class_model.dart';
+
 import 'package:smart_school/features/teacher/data/teacher_repo.dart';
 import 'teacher_classes_state.dart';
 

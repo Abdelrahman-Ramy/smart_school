@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:smart_school/core/helpers/pref_helper.dart';
+
 import 'package:smart_school/features/notifications/data/notification_model.dart';
 
 class NotificationRemoteDataSource {

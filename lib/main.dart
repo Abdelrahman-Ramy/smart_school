@@ -7,7 +7,6 @@ import 'package:smart_school/core/helpers/pref_helper.dart';
 import 'package:smart_school/core/routing/app_navigator.dart';
 import 'package:smart_school/core/routing/app_router.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
-import 'package:smart_school/features/auth/views/login_view.dart';
 import 'package:smart_school/features/notifications/data/notification_push_service.dart';
 import 'package:smart_school/features/teacher/cubit/attendance_cubit.dart';
 import 'package:smart_school/features/teacher/data/teacher_repo.dart';

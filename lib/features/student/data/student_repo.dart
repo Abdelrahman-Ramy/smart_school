@@ -5,7 +5,7 @@ import 'package:smart_school/features/student/data/attendance_model.dart';
 import 'package:smart_school/features/student/data/grade_model.dart';
 import 'package:smart_school/features/student/data/student_material_model.dart';
 import 'package:smart_school/features/student/data/student_schedule_model.dart';
-import 'package:smart_school/features/teacher/data/assignment_model.dart';
+
 
 class StudentRepo {
   final ApiService apiService = ApiService();

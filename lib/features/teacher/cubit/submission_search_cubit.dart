@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:smart_school/features/teacher/cubit/submission_search_state.dart';
 import 'package:smart_school/features/teacher/data/teacher_repo.dart';
 import 'package:smart_school/features/teacher/data/assignment_model.dart';
-import 'package:smart_school/features/teacher/data/submission_model.dart';
+
 
 class SubmissionSearchCubit extends Cubit<SubmissionSearchState> {
   final TeacherRepo _repo;

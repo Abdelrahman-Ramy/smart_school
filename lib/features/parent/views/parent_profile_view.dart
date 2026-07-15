@@ -76,7 +76,7 @@ class _ParentProfileViewState extends State<ParentProfileView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Gap(30.h),
-                      buildStaticField(Icons.person_outline, 'Name', user.name ?? 'name'),
+                      buildStaticField(Icons.person_outline, 'Name', user.name),
                       buildStaticField(
                         Icons.phone_outlined,
                         'Phone number of Parent',

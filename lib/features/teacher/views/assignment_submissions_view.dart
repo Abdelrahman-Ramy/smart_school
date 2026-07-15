@@ -6,7 +6,7 @@ import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/core/theming/app_style.dart';
 import 'package:smart_school/core/widgets/app_text_feild.dart';
 import 'package:smart_school/core/widgets/custom_snackbar.dart';
-import 'package:smart_school/core/helpers/pref_helper.dart';
+
 import 'package:smart_school/features/teacher/data/teacher_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_school/features/teacher/cubit/submission_search_cubit.dart';
@@ -170,7 +170,7 @@ class _AssignmentSubmissionsViewState extends State<AssignmentSubmissionsView> {
                             final item = submissions[index];
                             final sid = item.id;
 
-                            final controller = _gradeControllers.putIfAbsent(
+                            _gradeControllers.putIfAbsent(
                               sid,
                               () => TextEditingController(
                                 text: item.score == 0

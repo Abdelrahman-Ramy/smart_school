@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_school/core/theming/app_colors.dart';
 import 'package:smart_school/features/parent/views/parent_chat_view.dart';
 import 'package:smart_school/features/parent/views/parent_home_view.dart';
-import 'package:smart_school/features/parent/views/parent_notifications_view.dart';
+
 import 'package:smart_school/features/parent/views/parent_settings_view.dart';
 import 'package:smart_school/features/student/views/student_chat_bot_view.dart';
 
